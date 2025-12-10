@@ -2,9 +2,17 @@ import React, { useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { INITIAL_BUDGET, INITIAL_GUESTS } from '../constants';
 import { BudgetItem, Guest } from '../types';
-import { Plus, Trash2, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { Plus, Trash2, CheckCircle, XCircle, Clock, PieChart as PieIcon, Users, Calendar } from 'lucide-react';
 
-const COLORS = ['#14b8a6', '#f59e0b', '#8b5cf6', '#ec4899', '#3b82f6', '#9ca3af'];
+// Sandy Beach Theme Colors
+const COLORS = [
+    '#2A9D8F', // Ocean Teal
+    '#E9C46A', // Sand Gold
+    '#F4A261', // Warm Sand
+    '#E76F51', // Coral/Terracotta
+    '#264653', // Deep Reef
+    '#8AB17D'  // Sea Grass
+];
 
 const PlanningTools: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'budget' | 'guests' | 'timeline'>('budget');
@@ -28,89 +36,104 @@ const PlanningTools: React.FC = () => {
     setGuests(guests.filter(g => g.id !== id));
   };
 
+  const tabs = [
+      { id: 'budget', label: 'Budget Planner', icon: PieIcon },
+      { id: 'guests', label: 'Guest List', icon: Users },
+      { id: 'timeline', label: 'Timeline', icon: Calendar },
+  ];
+
   return (
-    <div className="max-w-7xl mx-auto py-12 px-4">
-      <h2 className="text-4xl font-serif font-bold text-stone-800 text-center mb-8">Wedding Dashboard</h2>
+    <div className="max-w-6xl mx-auto py-16 px-4">
+      <div className="text-center mb-12">
+        <h2 className="text-4xl font-serif font-bold text-amari-900 mb-2">Wedding Dashboard</h2>
+        <p className="text-stone-500">Manage your big day details in one place.</p>
+      </div>
       
-      {/* Tabs */}
-      <div className="flex justify-center mb-10 border-b border-stone-200">
-        <button 
-          onClick={() => setActiveTab('budget')}
-          className={`px-6 py-3 font-medium text-sm transition-colors border-b-2 ${activeTab === 'budget' ? 'border-amari-500 text-amari-600' : 'border-transparent text-stone-500 hover:text-stone-800'}`}
-        >
-          Budget Planner
-        </button>
-        <button 
-          onClick={() => setActiveTab('guests')}
-          className={`px-6 py-3 font-medium text-sm transition-colors border-b-2 ${activeTab === 'guests' ? 'border-amari-500 text-amari-600' : 'border-transparent text-stone-500 hover:text-stone-800'}`}
-        >
-          Guest List
-        </button>
-        <button 
-          onClick={() => setActiveTab('timeline')}
-          className={`px-6 py-3 font-medium text-sm transition-colors border-b-2 ${activeTab === 'timeline' ? 'border-amari-500 text-amari-600' : 'border-transparent text-stone-500 hover:text-stone-800'}`}
-        >
-          Timeline
-        </button>
+      {/* Custom Tab Navigation */}
+      <div className="flex justify-center mb-12">
+        <div className="bg-white p-1.5 rounded-2xl shadow-sm border border-amari-100 inline-flex">
+            {tabs.map((tab) => (
+                <button 
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`px-6 py-3 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ${
+                    activeTab === tab.id 
+                    ? 'bg-amari-500 text-white shadow-md' 
+                    : 'text-stone-500 hover:text-amari-600 hover:bg-amari-50'
+                }`}
+                >
+                <tab.icon size={16} />
+                {tab.label}
+                </button>
+            ))}
+        </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg min-h-[500px] p-6">
+      <div className="bg-white rounded-3xl shadow-xl shadow-amari-100/50 min-h-[500px] p-8 md:p-12 border border-amari-100">
         
         {/* BUDGET TOOL */}
         {activeTab === 'budget' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="h-80 w-full">
-              <h3 className="text-xl font-bold mb-4 text-stone-700">Expense Breakdown</h3>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="h-[400px] w-full relative">
+              <h3 className="text-xl font-bold mb-4 text-amari-900 font-serif text-center absolute top-0 w-full">Expense Breakdown</h3>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={budgetItems}
+                    data={budgetItems as any[]}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    fill="#8884d8"
-                    paddingAngle={5}
+                    innerRadius={80}
+                    outerRadius={120}
+                    paddingAngle={4}
                     dataKey="estimated"
-                    label
+                    cornerRadius={6}
+                    stroke="none"
                   >
                     {budgetItems.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value) => `$${value}`} />
-                  <Legend />
+                  <Tooltip 
+                    formatter={(value) => `$${value}`} 
+                    contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
+                  />
+                  <Legend verticalAlign="bottom" height={36} iconType="circle" />
                 </PieChart>
               </ResponsiveContainer>
+              {/* Center Total */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none mt-4">
+                  <p className="text-xs text-stone-400 uppercase tracking-widest font-bold">Total</p>
+                  <p className="text-2xl font-bold text-amari-900">${totalEstimated.toLocaleString()}</p>
+              </div>
             </div>
             
-            <div className="space-y-6">
-              <div className="flex justify-between items-center p-4 bg-stone-50 rounded-lg">
-                <div>
-                  <p className="text-sm text-stone-500">Total Estimated</p>
-                  <p className="text-2xl font-bold text-stone-800">${totalEstimated.toLocaleString()}</p>
-                </div>
-                <div className="text-right">
-                   <p className="text-sm text-stone-500">Total Actual</p>
-                   <p className={`text-2xl font-bold ${totalActual > totalEstimated ? 'text-red-500' : 'text-green-600'}`}>${totalActual.toLocaleString()}</p>
-                </div>
+            <div className="space-y-8">
+              <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-amari-50 p-6 rounded-2xl border border-amari-100">
+                    <p className="text-xs text-stone-500 uppercase tracking-wider font-bold mb-1">Estimated</p>
+                    <p className="text-3xl font-serif font-bold text-amari-600">${totalEstimated.toLocaleString()}</p>
+                  </div>
+                  <div className="bg-amari-50 p-6 rounded-2xl border border-amari-100">
+                    <p className="text-xs text-stone-500 uppercase tracking-wider font-bold mb-1">Actual</p>
+                    <p className={`text-3xl font-serif font-bold ${totalActual > totalEstimated ? 'text-amari-terracotta' : 'text-amari-500'}`}>${totalActual.toLocaleString()}</p>
+                  </div>
               </div>
 
-              <div className="overflow-x-auto">
+              <div className="overflow-hidden rounded-2xl border border-amari-100">
                 <table className="w-full text-sm text-left">
-                  <thead className="bg-stone-100 text-stone-600 uppercase text-xs">
+                  <thead className="bg-amari-100/50 text-amari-900 uppercase text-xs font-bold">
                     <tr>
-                      <th className="px-4 py-3">Category</th>
-                      <th className="px-4 py-3">Estimated ($)</th>
-                      <th className="px-4 py-3">Actual ($)</th>
+                      <th className="px-6 py-4">Category</th>
+                      <th className="px-6 py-4 text-right">Est ($)</th>
+                      <th className="px-6 py-4 text-right">Act ($)</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-stone-100">
+                  <tbody className="divide-y divide-amari-100">
                     {budgetItems.map(item => (
-                      <tr key={item.id}>
-                        <td className="px-4 py-3 font-medium">{item.category}</td>
-                        <td className="px-4 py-3">{item.estimated}</td>
-                        <td className="px-4 py-3">{item.actual}</td>
+                      <tr key={item.id} className="hover:bg-amari-50 transition-colors">
+                        <td className="px-6 py-4 font-medium text-stone-700">{item.category}</td>
+                        <td className="px-6 py-4 text-right text-stone-500">{item.estimated}</td>
+                        <td className="px-6 py-4 text-right font-medium text-amari-600">{item.actual}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -122,49 +145,65 @@ const PlanningTools: React.FC = () => {
 
         {/* GUEST LIST TOOL */}
         {activeTab === 'guests' && (
-          <div>
-            <div className="flex gap-4 mb-6">
+          <div className="max-w-3xl mx-auto">
+            <div className="flex gap-4 mb-8 p-2 bg-amari-50 rounded-2xl border border-amari-100">
               <input 
                 type="text" 
                 value={newGuestName} 
                 onChange={(e) => setNewGuestName(e.target.value)}
-                placeholder="Guest Name"
-                className="flex-1 border border-stone-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amari-500 outline-none"
+                placeholder="Enter guest name..."
+                className="flex-1 bg-transparent px-4 py-2 outline-none text-amari-900 placeholder:text-stone-400"
               />
               <button 
                 onClick={addGuest}
-                className="bg-amari-600 text-white px-6 py-2 rounded-lg hover:bg-amari-700 flex items-center gap-2"
+                className="bg-amari-500 text-white px-6 py-3 rounded-xl hover:bg-amari-600 flex items-center gap-2 font-bold transition shadow-md"
               >
-                <Plus size={18} /> Add
+                <Plus size={18} /> Add Guest
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {guests.map(guest => (
-                <div key={guest.id} className="border border-stone-200 rounded-lg p-4 flex justify-between items-center bg-stone-50">
-                  <div>
-                    <h4 className="font-bold text-stone-800">{guest.name}</h4>
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      guest.rsvpStatus === 'Confirmed' ? 'bg-green-100 text-green-700' :
-                      guest.rsvpStatus === 'Declined' ? 'bg-red-100 text-red-700' :
-                      'bg-yellow-100 text-yellow-700'
-                    }`}>
-                      {guest.rsvpStatus}
-                    </span>
+                <div key={guest.id} className="group bg-white border border-amari-100 rounded-2xl p-5 flex justify-between items-center hover:shadow-lg hover:border-amari-200 transition-all duration-300">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-amari-100 flex items-center justify-center text-amari-600 font-serif font-bold text-lg">
+                        {guest.name.charAt(0)}
+                    </div>
+                    <div>
+                        <h4 className="font-bold text-amari-900">{guest.name}</h4>
+                        <div className="flex items-center gap-1.5 mt-1">
+                            <span className={`w-2 h-2 rounded-full ${
+                            guest.rsvpStatus === 'Confirmed' ? 'bg-green-400' :
+                            guest.rsvpStatus === 'Declined' ? 'bg-red-400' :
+                            'bg-yellow-400'
+                            }`}></span>
+                            <span className="text-xs text-stone-500">{guest.rsvpStatus}</span>
+                        </div>
+                    </div>
                   </div>
-                  <button onClick={() => removeGuest(guest.id)} className="text-stone-400 hover:text-red-500">
+                  <button onClick={() => removeGuest(guest.id)} className="text-stone-300 hover:text-amari-terracotta transition p-2">
                     <Trash2 size={18} />
                   </button>
                 </div>
               ))}
             </div>
-            {guests.length === 0 && <p className="text-center text-stone-400 py-12">No guests added yet.</p>}
+            {guests.length === 0 && (
+                <div className="text-center py-20">
+                    <div className="w-20 h-20 bg-amari-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Users className="text-amari-200" size={32} />
+                    </div>
+                    <p className="text-stone-400">Your guest list is currently empty.</p>
+                </div>
+            )}
           </div>
         )}
 
         {/* TIMELINE TOOL */}
         {activeTab === 'timeline' && (
-          <div className="relative pl-8 border-l-2 border-amari-100 space-y-8 max-w-2xl mx-auto py-4">
+          <div className="relative pl-8 md:pl-0 max-w-2xl mx-auto py-8">
+            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-amari-200 transform -translate-x-1/2 hidden md:block"></div>
+            <div className="absolute left-[39px] top-0 bottom-0 w-px bg-amari-200 block md:hidden"></div>
+
             {[
               { time: '14:00', title: 'Guest Arrival', desc: 'Welcome drinks at the Nomad Beach Bar.' },
               { time: '15:00', title: 'Ceremony', desc: 'Beachfront vows exchange under the floral arch.' },
@@ -173,13 +212,34 @@ const PlanningTools: React.FC = () => {
               { time: '19:00', title: 'Dinner Service', desc: 'Swahili buffet and speeches.' },
               { time: '21:00', title: 'Dancing', desc: 'DJ starts the party under the stars.' },
             ].map((event, idx) => (
-              <div key={idx} className="relative">
-                <div className="absolute -left-[41px] bg-amari-500 rounded-full p-1 border-4 border-white shadow-sm">
-                  <Clock size={16} className="text-white" />
+              <div key={idx} className={`relative mb-12 flex flex-col md:flex-row items-center ${idx % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
+                 {/* Dot */}
+                <div className="absolute left-0 md:left-1/2 w-6 h-6 bg-amari-500 rounded-full border-4 border-white shadow-md transform -translate-x-1/2 z-10 hidden md:block"></div>
+                
+                {/* Mobile Dot */}
+                <div className="absolute left-8 w-6 h-6 bg-amari-500 rounded-full border-4 border-white shadow-md transform -translate-x-1/2 z-10 block md:hidden"></div>
+
+                <div className="w-full md:w-1/2 pl-16 md:pl-0 md:pr-12 md:text-right">
+                   {idx % 2 !== 0 && (
+                       <div className="md:pr-12">
+                           <span className="inline-block px-3 py-1 bg-amari-100 text-amari-800 text-xs font-bold rounded-full mb-2">{event.time}</span>
+                           <h5 className="text-xl font-serif font-bold text-amari-900 mb-2">{event.title}</h5>
+                           <p className="text-stone-500 text-sm leading-relaxed">{event.desc}</p>
+                       </div>
+                   )}
+                   {idx % 2 === 0 && <div className="hidden md:block"></div>}
                 </div>
-                <h4 className="font-bold text-amari-900">{event.time}</h4>
-                <h5 className="text-lg font-serif font-semibold text-stone-800">{event.title}</h5>
-                <p className="text-stone-500 text-sm">{event.desc}</p>
+                
+                <div className="w-full md:w-1/2 pl-16 md:pl-12 text-left">
+                   {idx % 2 === 0 && (
+                        <div>
+                           <span className="inline-block px-3 py-1 bg-amari-100 text-amari-800 text-xs font-bold rounded-full mb-2">{event.time}</span>
+                           <h5 className="text-xl font-serif font-bold text-amari-900 mb-2">{event.title}</h5>
+                           <p className="text-stone-500 text-sm leading-relaxed">{event.desc}</p>
+                       </div>
+                   )}
+                   {idx % 2 !== 0 && <div className="hidden md:block"></div>}
+                </div>
               </div>
             ))}
           </div>
