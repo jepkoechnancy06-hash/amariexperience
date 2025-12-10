@@ -16,11 +16,11 @@ const CouplesLanding = () => (
     <div className="relative min-h-[700px] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <img 
-          src="https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=2070&auto=format&fit=crop" 
-          alt="Diani Beach Wedding" 
+          src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=2072&auto=format&fit=crop" 
+          alt="Diani Sunset Boat" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-amari-900/30 via-transparent to-amari-50/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-amari-50/90"></div>
       </div>
       
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto mt-20">
