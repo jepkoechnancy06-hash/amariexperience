@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Amari Experience | Diani Wedding Planner</title>
+    <link rel="preconnect" href="https://parkside.pewa.ke" crossorigin />
+    <link rel="dns-prefetch" href="https://parkside.pewa.ke" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -41,6 +43,18 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
+      :root {
+        /* Mirrors Tailwind theme colors (see tailwind.config above) */
+        --amari-50: #EADBD4;
+        --amari-100: #E1CDC7;
+        --amari-200: #D4C1B3;
+        --amari-300: #53ABA9;
+        --amari-500: #04757B;
+        --amari-600: #2A5360;
+        --amari-900: #2A5360;
+        --amari-terracotta: #D4C1B3;
+      }
+
       html {
         scroll-behavior: smooth;
       }
@@ -53,6 +67,65 @@
       .font-script {
         font-family: 'Playfair Display', serif;
         font-style: italic;
+      }
+
+      /* Utilities missing from Tailwind CDN defaults (no plugins) */
+      .line-clamp-2 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+
+      /* Minimal "enter" animation system compatible with existing classnames */
+      @keyframes amari-enter {
+        from {
+          opacity: 0;
+          transform: translate3d(var(--amari-enter-x, 0), var(--amari-enter-y, 0), 0)
+            scale(var(--amari-enter-scale, 1));
+          filter: blur(var(--amari-enter-blur, 0px));
+        }
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0) scale(1);
+          filter: blur(0);
+        }
+      }
+
+      .animate-in {
+        animation-name: amari-enter;
+        animation-duration: var(--amari-enter-duration, 700ms);
+        animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+        animation-fill-mode: both;
+        will-change: transform, opacity, filter;
+      }
+      .slide-in-from-bottom-4 { --amari-enter-y: 1rem; }
+      .slide-in-from-bottom-6 { --amari-enter-y: 1.5rem; }
+      .slide-in-from-bottom-5 { --amari-enter-y: 1.25rem; }
+      .slide-in-from-left-2 { --amari-enter-x: -0.5rem; }
+      .slide-in-from-top-4 { --amari-enter-y: -1rem; }
+      .zoom-in { --amari-enter-scale: 0.97; }
+      .fade-in { --amari-enter-x: 0; --amari-enter-y: 0; }
+
+      /* These "duration-xxx" and "delay-xxx" classes are used for animations in the codebase */
+      .duration-300 { --amari-enter-duration: 300ms; }
+      .duration-500 { --amari-enter-duration: 500ms; }
+      .duration-700 { --amari-enter-duration: 700ms; }
+      .duration-1000 { --amari-enter-duration: 1000ms; }
+      .delay-100 { animation-delay: 100ms; }
+      .delay-75 { animation-delay: 75ms; }
+      .delay-200 { animation-delay: 200ms; }
+      .delay-150 { animation-delay: 150ms; }
+      .delay-300 { animation-delay: 300ms; }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .animate-in {
+          animation: none !important;
+          opacity: 1 !important;
+          transform: none !important;
+          filter: none !important;
+        }
       }
     </style>
   <script type="importmap">

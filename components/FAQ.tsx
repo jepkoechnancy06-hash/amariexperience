@@ -3,28 +3,31 @@ import React from 'react';
 const FAQ: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto py-16 px-4">
-      <div className="text-center mb-12">
-        <span className="text-amari-500 font-bold uppercase tracking-widest text-xs mb-3 block">FAQ</span>
-        <h2 className="text-4xl md:text-5xl font-serif font-bold text-amari-900">
-          Planning a Destination Wedding in Kenya (and Everything Around It)
-        </h2>
-        <p className="mt-6 text-stone-600 max-w-3xl mx-auto text-lg font-light leading-relaxed">
-          Amari is a destination wedding platform — first and foremost.
-        </p>
-        <p className="mt-3 text-stone-600 max-w-3xl mx-auto text-lg font-light leading-relaxed">
-          We’re built to support couples, planners, and families planning weddings in Kenya, while also making it easier to organise the celebrations and experiences that naturally surround them.
-        </p>
-        <p className="mt-3 text-stone-600 max-w-3xl mx-auto text-lg font-light leading-relaxed">
-          This guide covers the essentials for planning a destination wedding in Kenya, plus helpful information for proposals, receptions, bachelor and bachelorette parties, vow renewals, honeymoons, anniversaries, and guest travel.
-        </p>
-        <p className="mt-3 text-stone-600 max-w-3xl mx-auto text-lg font-light leading-relaxed">
-          For personalised questions, Amari’s built-in AI is available to guide you further.
-        </p>
+      <div className="relative overflow-hidden rounded-[2.5rem] border border-amari-100 bg-white shadow-xl mb-12">
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?q=80&w=2400&auto=format&fit=crop"
+            alt="Beach sunrise"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-white/95"></div>
+        </div>
+        <div className="relative px-6 md:px-12 py-14 md:py-20 text-center">
+          <span className="inline-flex items-center justify-center rounded-full bg-white/15 backdrop-blur-md border border-white/25 px-6 py-2 text-white text-xs font-bold uppercase tracking-[0.25em] animate-in slide-in-from-bottom-4 duration-700">
+            FAQ
+          </span>
+          <h2 className="mt-6 text-4xl md:text-6xl font-serif font-bold text-white drop-shadow-sm leading-tight animate-in slide-in-from-bottom-6 duration-1000 delay-100">
+            Planning a Destination Wedding in Kenya
+          </h2>
+          <p className="mt-6 text-amari-50 max-w-3xl mx-auto text-lg md:text-xl font-light leading-relaxed animate-in slide-in-from-bottom-6 duration-1000 delay-200">
+            The essentials for weddings, guest travel, and the celebrations around your big day — with in-app AI for personalized guidance.
+          </p>
+        </div>
       </div>
 
       <div className="space-y-8">
         <section className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">💍 Weddings in Kenya – Legal &amp; Symbolic Options</h3>
+          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">Weddings in Kenya – Legal &amp; Symbolic Options</h3>
           <p className="text-stone-600 leading-relaxed">
             Kenya legally recognises marriages involving foreign nationals, provided official requirements are met.
           </p>
@@ -39,7 +42,7 @@ const FAQ: React.FC = () => {
         </section>
 
         <section className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">📄 Legal marriage basics (at a glance)</h3>
+          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">Legal marriage basics (at a glance)</h3>
           <p className="text-stone-600 leading-relaxed">Legal marriages may require:</p>
           <ul className="list-disc pl-6 space-y-2 text-stone-600 leading-relaxed mt-3">
             <li>Valid passports</li>
@@ -54,7 +57,7 @@ const FAQ: React.FC = () => {
         </section>
 
         <section className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">💒 Symbolic ceremonies &amp; wedding events</h3>
+          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">Symbolic ceremonies &amp; wedding events</h3>
           <p className="text-stone-600 leading-relaxed">
             Symbolic ceremonies are common for destination weddings and allow flexibility in location and format.
           </p>
@@ -72,7 +75,7 @@ const FAQ: React.FC = () => {
         </section>
 
         <section className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">🎉 Beyond the wedding day</h3>
+          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">Beyond the wedding day</h3>
           <p className="text-stone-600 leading-relaxed">While weddings are our core focus, Amari also supports planning for:</p>
           <ul className="list-disc pl-6 space-y-2 text-stone-600 leading-relaxed mt-3">
             <li>Proposals</li>
@@ -88,7 +91,7 @@ const FAQ: React.FC = () => {
         </section>
 
         <section className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">✈️ Travel &amp; entry for couples and guests</h3>
+          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">Travel &amp; entry for couples and guests</h3>
           <p className="text-stone-600 leading-relaxed">
             Most visitors to Kenya require an official e-Travel Authorisation (eTA) prior to arrival, depending on nationality.
           </p>
@@ -98,7 +101,7 @@ const FAQ: React.FC = () => {
         </section>
 
         <section className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">👗 What to wear in Kenya</h3>
+          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">What to wear in Kenya</h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-amari-50 rounded-2xl border border-amari-100 p-6">
               <h4 className="text-lg font-bold text-amari-900 mb-3">For weddings &amp; events</h4>
@@ -120,7 +123,7 @@ const FAQ: React.FC = () => {
         </section>
 
         <section className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">🛡️ Safety &amp; general guidance</h3>
+          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">Safety &amp; general guidance</h3>
           <p className="text-stone-600 leading-relaxed">Kenya is an established destination for international weddings and tourism.</p>
           <p className="text-stone-600 leading-relaxed mt-4">General tips:</p>
           <ul className="list-disc pl-6 space-y-2 text-stone-600 leading-relaxed mt-3">
@@ -132,7 +135,7 @@ const FAQ: React.FC = () => {
         </section>
 
         <section className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">🔗 Official Government &amp; Travel Resources</h3>
+          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">Official Government &amp; Travel Resources</h3>
           <p className="text-stone-600 leading-relaxed">For accurate and up-to-date information:</p>
           <ul className="list-disc pl-6 space-y-2 text-stone-600 leading-relaxed mt-3">
             <li>
@@ -166,7 +169,7 @@ const FAQ: React.FC = () => {
         </section>
 
         <section className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">🤝 What Amari Does (and Doesn’t Do)</h3>
+          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">What Amari Does (and Doesn’t Do)</h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-amari-50 rounded-2xl border border-amari-100 p-6">
               <h4 className="text-lg font-bold text-amari-900 mb-3">Amari does:</h4>
@@ -192,9 +195,9 @@ const FAQ: React.FC = () => {
         </section>
 
         <section className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">✨ Final Note</h3>
+          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">Final note</h3>
           <p className="text-stone-600 leading-relaxed">
-            Amari is built for destination weddings — and everything that makes them unforgettable. This the FAQ page
+            Amari is built for destination weddings — and everything that makes them unforgettable. If you have a specific question, use the in-app assistant for tailored guidance.
           </p>
         </section>
       </div>

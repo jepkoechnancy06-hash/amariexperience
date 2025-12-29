@@ -65,7 +65,7 @@ const VendorOnboarding: React.FC = () => {
         
         <div className="relative z-10 animate-in slide-in-from-top-4 duration-700">
           <div className="flex items-center gap-3 mb-10">
-             <div className="w-10 h-10 bg-amari-500 rounded-xl flex items-center justify-center shadow-lg shadow-amari-900/50">
+             <div className="w-10 h-10 bg-amari-500 rounded-xl flex items-center justify-center shadow-lg">
                 <Waves size={20} className="text-white" />
              </div>
              <div>
@@ -147,7 +147,7 @@ const VendorOnboarding: React.FC = () => {
             <p className="text-stone-500 mt-2 text-lg">Join us in simplifying destination weddings in Kenya.</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8 bg-white p-8 md:p-10 rounded-[2rem] shadow-xl shadow-amari-100/50 border border-amari-100">
+          <form onSubmit={handleSubmit} className="space-y-8 bg-white p-8 md:p-10 rounded-[2rem] shadow-xl border border-amari-100">
             
             {/* Section 1 */}
             <div className="space-y-8">
@@ -278,7 +278,7 @@ const VendorOnboarding: React.FC = () => {
             <div className="pt-10">
               <button 
                 type="submit" 
-                className="group relative w-full bg-amari-600 text-white text-lg font-bold py-5 rounded-2xl hover:bg-amari-900 transition-all shadow-xl shadow-amari-200 hover:shadow-2xl hover:-translate-y-1 active:scale-95 duration-300"
+                className="group relative w-full bg-amari-600 text-white text-lg font-bold py-5 rounded-2xl hover:bg-amari-900 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 active:scale-95 duration-300"
               >
                 Submit Application
                 <ArrowRight className="absolute right-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0" size={20} />

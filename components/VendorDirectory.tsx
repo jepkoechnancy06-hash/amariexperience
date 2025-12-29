@@ -12,19 +12,35 @@ const VendorDirectory: React.FC = () => {
 
   return (
     <div className="py-20 px-4 max-w-7xl mx-auto">
-      <div className="text-center mb-16">
-        <span className="text-amari-500 font-bold uppercase tracking-widest text-xs mb-3 block">The Best of Diani</span>
-        <h2 className="text-4xl md:text-5xl font-serif font-bold text-amari-900">Curated Vendor Directory</h2>
-        <p className="mt-6 text-stone-600 max-w-2xl mx-auto text-lg font-light">
-          Discover Diani's most trusted wedding professionals. From beachfront venues to Swahili caterers, find the perfect match for your vision.
-        </p>
+      <div className="relative overflow-hidden rounded-[2.5rem] border border-amari-100 bg-white shadow-xl mb-14">
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?q=80&w=2400&auto=format&fit=crop"
+            alt="Beach wedding details"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-white/95"></div>
+        </div>
+
+        <div className="relative px-6 md:px-12 py-14 md:py-20 text-center">
+          <span className="inline-flex items-center justify-center rounded-full bg-white/15 backdrop-blur-md border border-white/25 px-6 py-2 text-white text-xs font-bold uppercase tracking-[0.25em] animate-in slide-in-from-bottom-4 duration-700">
+            The Best of Diani
+          </span>
+          <h2 className="mt-6 text-4xl md:text-6xl font-serif font-bold text-white drop-shadow-sm leading-tight animate-in slide-in-from-bottom-6 duration-1000 delay-100">
+            Curated Vendor Directory
+          </h2>
+          <p className="mt-6 text-amari-50 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed animate-in slide-in-from-bottom-6 duration-1000 delay-200">
+            From beachfront venues to Swahili caterers — discover trusted professionals who make your coastal celebration feel effortless.
+          </p>
+        </div>
       </div>
 
       {/* Filters */}
       <div className="flex flex-wrap justify-center gap-3 mb-12">
         <button 
           onClick={() => setSelectedCategory('All')}
-          className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${selectedCategory === 'All' ? 'bg-amari-600 text-white shadow-lg shadow-amari-200 transform -translate-y-0.5' : 'bg-white text-stone-500 hover:bg-amari-50 hover:text-amari-600 border border-amari-100'}`}
+          aria-pressed={selectedCategory === 'All'}
+          className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${selectedCategory === 'All' ? 'bg-amari-600 text-white shadow-lg transform -translate-y-0.5' : 'bg-white text-stone-500 hover:bg-amari-50 hover:text-amari-600 border border-amari-100'}`}
         >
           All
         </button>
@@ -32,7 +48,8 @@ const VendorDirectory: React.FC = () => {
           <button 
             key={cat}
             onClick={() => setSelectedCategory(cat)}
-            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${selectedCategory === cat ? 'bg-amari-600 text-white shadow-lg shadow-amari-200 transform -translate-y-0.5' : 'bg-white text-stone-500 hover:bg-amari-50 hover:text-amari-600 border border-amari-100'}`}
+            aria-pressed={selectedCategory === cat}
+            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${selectedCategory === cat ? 'bg-amari-600 text-white shadow-lg transform -translate-y-0.5' : 'bg-white text-stone-500 hover:bg-amari-50 hover:text-amari-600 border border-amari-100'}`}
           >
             {cat}
           </button>
@@ -42,7 +59,7 @@ const VendorDirectory: React.FC = () => {
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         {filteredVendors.map(vendor => (
-          <div key={vendor.id} className="bg-white rounded-3xl shadow-sm hover:shadow-xl hover:shadow-amari-100/50 transition duration-500 overflow-hidden group border border-amari-100/50 flex flex-col h-full">
+          <div key={vendor.id} className="bg-white rounded-3xl shadow-sm hover:shadow-xl transition duration-500 overflow-hidden group border border-amari-100/50 flex flex-col h-full">
             <div className="relative h-64 overflow-hidden">
               <img src={vendor.imageUrl} alt={vendor.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-700 ease-out" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -76,7 +93,7 @@ const VendorDirectory: React.FC = () => {
               <p className="text-stone-500 text-sm mb-6 line-clamp-2 leading-relaxed flex-grow">{vendor.description}</p>
               
               <div className="pt-6 border-t border-amari-50 flex gap-3 mt-auto">
-                <button className="flex-1 bg-amari-900 text-white py-3 rounded-xl text-sm font-bold hover:bg-amari-600 transition shadow-lg shadow-amari-100">View Profile</button>
+                <button className="flex-1 bg-amari-900 text-white py-3 rounded-xl text-sm font-bold hover:bg-amari-600 transition shadow-lg">View Profile</button>
                 <button className="flex items-center justify-center w-12 bg-amari-50 text-amari-600 rounded-xl hover:bg-amari-100 border border-amari-100 transition">
                   <MessageSquare size={18} />
                 </button>

@@ -6,14 +6,14 @@ import { Plus, Trash2, PieChart as PieIcon, Users, Calendar, MapPin } from 'luci
 
 const ITINERARY_STORAGE_KEY = 'amari_guest_itinerary_v1';
 
-// Sandy Beach Theme Colors
+// Use the existing Amari theme palette (defined in index.html)
 const COLORS = [
-    '#2A9D8F', // Ocean Teal
-    '#E9C46A', // Sand Gold
-    '#F4A261', // Warm Sand
-    '#E76F51', // Coral/Terracotta
-    '#264653', // Deep Reef
-    '#8AB17D'  // Sea Grass
+  'var(--amari-500)',
+  'var(--amari-300)',
+  'var(--amari-600)',
+  'var(--amari-200)',
+  'var(--amari-100)',
+  'var(--amari-50)',
 ];
 
 const PlanningTools: React.FC = () => {
@@ -101,9 +101,26 @@ const PlanningTools: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto py-16 px-4">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl font-serif font-bold text-amari-900 mb-2">Wedding Dashboard</h2>
-        <p className="text-stone-500">Manage your big day details in one place.</p>
+      <div className="relative overflow-hidden rounded-[2.5rem] border border-amari-100 bg-white shadow-xl mb-12">
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2400&auto=format&fit=crop"
+            alt="Ocean horizon"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-white/95"></div>
+        </div>
+        <div className="relative px-6 md:px-12 py-14 md:py-20 text-center">
+          <span className="inline-flex items-center justify-center rounded-full bg-white/15 backdrop-blur-md border border-white/25 px-6 py-2 text-white text-xs font-bold uppercase tracking-[0.25em] animate-in slide-in-from-bottom-4 duration-700">
+            Planning Hub
+          </span>
+          <h2 className="mt-6 text-4xl md:text-6xl font-serif font-bold text-white drop-shadow-sm leading-tight animate-in slide-in-from-bottom-6 duration-1000 delay-100">
+            Wedding Dashboard
+          </h2>
+          <p className="mt-6 text-amari-50 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed animate-in slide-in-from-bottom-6 duration-1000 delay-200">
+            Keep budget, guests, and timelines aligned — so you can focus on the sea, the sunset, and the moment you say “I do.”
+          </p>
+        </div>
       </div>
       
       {/* Custom Tab Navigation */}
@@ -126,7 +143,7 @@ const PlanningTools: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-xl shadow-amari-100/50 min-h-[500px] p-8 md:p-12 border border-amari-100">
+      <div className="bg-white rounded-3xl shadow-xl min-h-[500px] p-8 md:p-12 border border-amari-100">
         
         {/* BUDGET TOOL */}
         {activeTab === 'budget' && (
@@ -150,10 +167,7 @@ const PlanningTools: React.FC = () => {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip 
-                    formatter={(value) => `$${value}`} 
-                    contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
-                  />
+                  <Tooltip formatter={(value) => `$${value}`} />
                   <Legend verticalAlign="bottom" height={36} iconType="circle" />
                 </PieChart>
               </ResponsiveContainer>

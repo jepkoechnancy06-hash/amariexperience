@@ -110,9 +110,26 @@ const InspirationGallery: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto py-12 px-4">
-       <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-800">Inspiration Board</h2>
-        <p className="mt-4 text-stone-600">Guests and vendors can post photos, stories, and real experiences from Diani.</p>
+      <div className="relative overflow-hidden rounded-[2.5rem] border border-amari-100 bg-white shadow-xl mb-12">
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=2400&auto=format&fit=crop"
+            alt="Beach celebration details"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-white/95"></div>
+        </div>
+        <div className="relative px-6 md:px-12 py-14 md:py-20 text-center">
+          <span className="inline-flex items-center justify-center rounded-full bg-white/15 backdrop-blur-md border border-white/25 px-6 py-2 text-white text-xs font-bold uppercase tracking-[0.25em] animate-in slide-in-from-bottom-4 duration-700">
+            Real Moments
+          </span>
+          <h2 className="mt-6 text-4xl md:text-6xl font-serif font-bold text-white drop-shadow-sm leading-tight animate-in slide-in-from-bottom-6 duration-1000 delay-100">
+            Inspiration Board
+          </h2>
+          <p className="mt-6 text-amari-50 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed animate-in slide-in-from-bottom-6 duration-1000 delay-200">
+            Guests and vendors share photos, stories, and coastal ideas — so your wedding feels like Diani before you even arrive.
+          </p>
+        </div>
       </div>
 
       <div className="bg-white rounded-3xl shadow-sm border border-amari-100 p-6 md:p-8 mb-10">

@@ -5,12 +5,26 @@ const Community: React.FC = () => {
   return (
     <>
       <div className="max-w-6xl mx-auto py-16 px-4">
-        <div className="text-center mb-12">
-          <span className="text-amari-500 font-bold uppercase tracking-widest text-xs mb-3 block">Community</span>
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-amari-900">Welcome to the Diani Community Hub</h2>
-          <p className="mt-6 text-stone-600 max-w-3xl mx-auto text-lg font-light leading-relaxed">
-            The Diani Community Hub is your space to connect, share, and celebrate life in our stunning coastal town. From tourism and culture to local businesses and social initiatives, this hub brings together everyone who calls Diani home—or anyone passionate about it.
-          </p>
+        <div className="relative overflow-hidden rounded-[2.5rem] border border-amari-100 bg-white shadow-xl mb-12">
+          <div className="absolute inset-0">
+            <img
+              src="https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=2400&auto=format&fit=crop"
+              alt="Coastal shoreline"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-white/95"></div>
+          </div>
+          <div className="relative px-6 md:px-12 py-14 md:py-20 text-center">
+            <span className="inline-flex items-center justify-center rounded-full bg-white/15 backdrop-blur-md border border-white/25 px-6 py-2 text-white text-xs font-bold uppercase tracking-[0.25em] animate-in slide-in-from-bottom-4 duration-700">
+              Community
+            </span>
+            <h2 className="mt-6 text-4xl md:text-6xl font-serif font-bold text-white drop-shadow-sm leading-tight animate-in slide-in-from-bottom-6 duration-1000 delay-100">
+              Welcome to the Diani Community Hub
+            </h2>
+            <p className="mt-6 text-amari-50 max-w-3xl mx-auto text-lg md:text-xl font-light leading-relaxed animate-in slide-in-from-bottom-6 duration-1000 delay-200">
+              Connect, share, and celebrate life in our stunning coastal town — from culture and tourism to local businesses and social initiatives.
+            </p>
+          </div>
         </div>
 
         <div className="space-y-8">

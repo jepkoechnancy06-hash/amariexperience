@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X, Heart, Sunset, Waves } from 'lucide-react';
 import WhatsAppChat from './WhatsAppChat';
 
@@ -9,18 +9,71 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
-  const isActive = (path: string) => {
-    return location.pathname === path 
-      ? 'text-amari-500 font-semibold border-b-2 border-amari-500' 
-      : 'text-stone-600 hover:text-amari-500 hover:bg-amari-50/50 rounded-lg transition-colors';
-  };
+  const isCouplesRoute = location.pathname === '/' || location.pathname === '/couples';
+
+  const navLinkBase =
+    'px-3 py-2 rounded-xl text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-amari-300 focus-visible:ring-offset-2';
+
+  const navLinkClass = useMemo(
+    () =>
+      ({ isActive }: { isActive: boolean }) =>
+        `${navLinkBase} ${
+          isActive
+            ? 'text-amari-600 bg-amari-50'
+            : 'text-stone-600 hover:text-amari-600 hover:bg-amari-50/60'
+        }`,
+    [navLinkBase]
+  );
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      document.body.style.overflow = '';
+      return;
+    }
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isMobileMenuOpen]);
 
   return (
     <div className="min-h-screen flex flex-col bg-amari-50">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] bg-white text-amari-900 px-4 py-2 rounded-xl shadow-lg border border-amari-100"
+      >
+        Skip to content
+      </a>
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-amari-100/50">
+      <nav
+        className={`sticky top-0 z-50 border-b border-amari-100/50 backdrop-blur-md transition-shadow ${
+          isScrolled ? 'bg-white/90 shadow-sm' : 'bg-white/80'
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-24">
             <div className="flex items-center">
@@ -37,12 +90,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-8">
-              <Link to="/couples" className={`py-2 ${isActive('/couples')}`}>For Couples</Link>
-              <Link to="/vendors" className={`py-2 ${isActive('/vendors')}`}>Directory</Link>
-              <Link to="/tools" className={`py-2 ${isActive('/tools')}`}>Tools</Link>
-              <Link to="/concierge" className={`py-2 ${isActive('/concierge')}`}>Concierge</Link>
+              <Link
+                to="/"
+                aria-current={isCouplesRoute ? 'page' : undefined}
+                className={`${navLinkBase} ${
+                  isCouplesRoute
+                    ? 'text-amari-600 bg-amari-50'
+                    : 'text-stone-600 hover:text-amari-600 hover:bg-amari-50/60'
+                }`}
+              >
+                For Couples
+              </Link>
+              <NavLink to="/vendors" className={navLinkClass}>Directory</NavLink>
+              <NavLink to="/tools" className={navLinkClass}>Tools</NavLink>
+              <NavLink to="/gallery" className={navLinkClass}>Inspiration</NavLink>
+              <NavLink to="/concierge" className={navLinkClass}>Concierge</NavLink>
+              <NavLink to="/about" className={navLinkClass}>About</NavLink>
+              <NavLink to="/contact" className={navLinkClass}>Contact</NavLink>
+              <NavLink to="/faq" className={navLinkClass}>FAQ</NavLink>
               <div className="h-8 w-px bg-amari-100 mx-2"></div>
-              <Link to="/partner" className={`bg-amari-600 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-amari-900 transition shadow-lg shadow-amari-200 hover:shadow-xl flex items-center gap-2 ${location.pathname === '/partner' ? 'ring-2 ring-offset-2 ring-amari-600' : ''}`}>
+              <Link to="/partner" className={`bg-amari-600 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-amari-900 transition shadow-lg hover:shadow-xl flex items-center gap-2 ${location.pathname === '/partner' ? 'ring-2 ring-offset-2 ring-amari-600' : ''}`}>
                 Partner with Us
               </Link>
             </div>
@@ -51,6 +118,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="md:hidden flex items-center">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="mobile-menu"
                 className="text-amari-600 hover:text-amari-900 focus:outline-none p-2 rounded-lg hover:bg-amari-50 transition"
               >
                 {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -61,29 +130,39 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-amari-100 shadow-xl absolute w-full">
+          <div id="mobile-menu" className="md:hidden bg-white border-t border-amari-100 shadow-xl absolute w-full">
             <div className="px-4 pt-4 pb-6 space-y-2">
-              <Link to="/partner" onClick={() => setIsMobileMenuOpen(false)} className="block w-full text-center bg-amari-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-amari-900 mb-6 shadow-md">
+              <Link to="/partner" className="block w-full text-center bg-amari-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-amari-900 mb-6 shadow-md">
                 Partner with Us
               </Link>
-              <Link to="/couples" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">For Couples</Link>
-              <Link to="/vendors" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">Directory</Link>
-              <Link to="/tools" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">Planning Tools</Link>
-              <Link to="/concierge" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">Concierge</Link>
+              <Link
+                to="/"
+                aria-current={isCouplesRoute ? 'page' : undefined}
+                className={`block px-4 py-3 rounded-xl font-medium transition ${
+                  isCouplesRoute
+                    ? 'bg-amari-50 text-amari-600'
+                    : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'
+                }`}
+              >
+                For Couples
+              </Link>
+              <NavLink to="/vendors" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Directory</NavLink>
+              <NavLink to="/tools" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Planning Tools</NavLink>
+              <NavLink to="/gallery" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Inspiration Board</NavLink>
+              <NavLink to="/concierge" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Concierge</NavLink>
               <div className="pt-2 mt-2 border-t border-amari-100/70"></div>
-              <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">About Us</Link>
-              <Link to="/community" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">Community</Link>
-              <Link to="/activities" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">Activities</Link>
-              <Link to="/gallery" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">Inspiration Board</Link>
-              <Link to="/history" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">Diani History</Link>
-              <Link to="/faq" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">FAQ</Link>
+              <NavLink to="/about" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>About Us</NavLink>
+              <NavLink to="/community" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Community</NavLink>
+              <NavLink to="/activities" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Activities</NavLink>
+              <NavLink to="/history" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Diani History</NavLink>
+              <NavLink to="/faq" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>FAQ</NavLink>
             </div>
           </div>
         )}
       </nav>
 
       {/* Main Content */}
-      <main className="flex-grow">
+      <main id="main-content" className="flex-grow">
         {children}
       </main>
 

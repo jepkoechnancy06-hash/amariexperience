@@ -3,15 +3,29 @@ import React from 'react';
 const DianiHistory: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto py-16 px-4">
-      <div className="text-center mb-12">
-        <span className="text-amari-500 font-bold uppercase tracking-widest text-xs mb-3 block">History</span>
-        <h2 className="text-4xl md:text-5xl font-serif font-bold text-amari-900">The Beautiful History of Diani</h2>
-        <p className="mt-6 text-stone-600 max-w-4xl mx-auto text-lg font-light leading-relaxed">
-          Diani was born of the sea and the sun. First home to the Digo people, it later welcomed Arab and Persian traders whose journeys shaped Swahili culture along the coast. Under British rule, it rested quietly, waiting. Then it awakened—its white sands and turquoise waters calling travelers, lovers, and dreamers. Today, Diani is where many histories meet, and every tide feels like a promise.
-        </p>
+      <div className="relative overflow-hidden rounded-[2.5rem] border border-amari-100 bg-white shadow-xl mb-12">
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1470770903676-69b98201ea1c?q=80&w=2400&auto=format&fit=crop"
+            alt="Coastal sunrise"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-white/95"></div>
+        </div>
+        <div className="relative px-6 md:px-12 py-14 md:py-20 text-center">
+          <span className="inline-flex items-center justify-center rounded-full bg-white/15 backdrop-blur-md border border-white/25 px-6 py-2 text-white text-xs font-bold uppercase tracking-[0.25em] animate-in slide-in-from-bottom-4 duration-700">
+            History
+          </span>
+          <h2 className="mt-6 text-4xl md:text-6xl font-serif font-bold text-white drop-shadow-sm leading-tight animate-in slide-in-from-bottom-6 duration-1000 delay-100">
+            The Beautiful History of Diani
+          </h2>
+          <p className="mt-6 text-amari-50 max-w-4xl mx-auto text-lg md:text-xl font-light leading-relaxed animate-in slide-in-from-bottom-6 duration-1000 delay-200">
+            Diani was born of the sea and the sun. First home to the Digo people, it later welcomed Arab and Persian traders whose journeys shaped Swahili culture along the coast. Under British rule, it rested quietly, waiting. Then it awakened—its white sands and turquoise waters calling travelers, lovers, and dreamers. Today, Diani is where many histories meet, and every tide feels like a promise.
+          </p>
+        </div>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-xl shadow-amari-100/50 p-8 md:p-12 border border-amari-100">
+      <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-amari-100">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <div>
             <h3 className="text-2xl font-serif font-bold text-amari-900 mb-3">Roots</h3>
