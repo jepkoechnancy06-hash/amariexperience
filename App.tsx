@@ -16,6 +16,7 @@ import FAQ from './components/FAQ';
 import ContactUs from './components/ContactUs';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
+import ScrollToTop from './components/ScrollToTop';
 import { ArrowRight, Check, Star, Heart, Sun, MapPin } from 'lucide-react';
 
 const CouplesLanding = () => (
@@ -166,6 +167,7 @@ const ConciergePage = () => (
 const App: React.FC = () => {
   return (
     <Router>
+      <ScrollToTop />
       <Layout>
         <Routes>
           <Route path="/" element={<CouplesLanding />} />

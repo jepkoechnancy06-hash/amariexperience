@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Heart, Sunset, Waves } from 'lucide-react';
+import WhatsAppChat from './WhatsAppChat';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -86,32 +87,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {children}
       </main>
 
-      {/* WhatsApp */}
-      <a
-        href={`https://wa.me/254796535120?text=${encodeURIComponent('Hi Amari! I would like help planning a destination wedding in Kenya.')}`}
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Chat with us on WhatsApp"
-        className="fixed bottom-6 left-6 z-40 group"
-      >
-        <div className="flex items-center gap-3 bg-amari-600 text-white px-4 py-3 rounded-full shadow-xl hover:bg-amari-500 transition-all transform hover:scale-105">
-          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10">
-            <svg
-              viewBox="0 0 32 32"
-              width="22"
-              height="22"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M16.04 3C9.4 3 4 8.38 4 15c0 2.32.68 4.55 1.98 6.47L4.7 29l7.68-1.23A12.05 12.05 0 0 0 16.04 27C22.68 27 28.08 21.62 28.08 15S22.68 3 16.04 3Zm0 21.9c-2.1 0-4.15-.6-5.91-1.72l-.43-.27-4.55.73.76-4.43-.28-.45A9.76 9.76 0 0 1 6.4 15c0-5.35 4.33-9.7 9.64-9.7 5.31 0 9.64 4.35 9.64 9.7 0 5.35-4.33 9.7-9.64 9.7Zm5.6-7.18c-.3-.15-1.78-.88-2.06-.98-.28-.1-.49-.15-.7.15-.2.3-.8.98-.98 1.18-.18.2-.36.22-.66.07-.3-.15-1.27-.47-2.42-1.5-.89-.8-1.49-1.78-1.67-2.08-.17-.3-.02-.46.13-.6.13-.13.3-.36.45-.54.15-.18.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.7-1.69-.96-2.31-.25-.6-.5-.52-.7-.53h-.6c-.2 0-.52.07-.8.37-.27.3-1.06 1.03-1.06 2.5 0 1.48 1.09 2.91 1.24 3.11.15.2 2.15 3.29 5.2 4.62.73.32 1.3.51 1.74.65.73.23 1.4.2 1.93.12.59-.09 1.78-.73 2.03-1.44.25-.7.25-1.31.18-1.44-.08-.13-.28-.2-.58-.35Z" />
-            </svg>
-          </span>
-          <span className="font-medium">Chat with us</span>
-        </div>
-      </a>
+      <WhatsAppChat />
 
       {/* Footer */}
-      <footer className="bg-amari-900 text-amari-200 py-16 border-t-[6px] border-amari-300">
+      <footer
+        className="bg-amari-900 text-amari-200 py-16 border-t-[6px] border-amari-300"
+        onClickCapture={(e) => {
+          const el = e.target as HTMLElement;
+          if (el.closest('a')) {
+            window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+          }
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="space-y-6">
             <div className="flex items-center gap-3">
