@@ -27,7 +27,7 @@ const AdminDashboard: React.FC = () => {
     <div className="max-w-7xl mx-auto py-12 px-4 min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h2 className="text-3xl font-serif font-bold text-stone-800">Admin Dashboard</h2>
+          <h2 className="text-3xl font-serif font-bold text-amari-500">Admin Dashboard</h2>
           <p className="text-stone-600">Review and manage incoming vendor applications.</p>
         </div>
         <div className="flex gap-3">

@@ -82,7 +82,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <Waves size={24} />
                 </div>
                 <div>
-                    <h1 className="text-2xl font-serif font-bold text-amari-900 tracking-wide">AMARI</h1>
+                  <h1 className="text-2xl font-serif font-bold text-amari-500 tracking-wide">AMARI</h1>
                     <p className="text-[10px] text-amari-500 uppercase tracking-[0.2em] -mt-1 font-medium group-hover:text-amari-600 transition-colors">Experience</p>
                 </div>
               </Link>
@@ -120,7 +120,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="mobile-menu"
-                className="text-amari-600 hover:text-amari-900 focus:outline-none p-2 rounded-lg hover:bg-amari-50 transition"
+                className="text-amari-600 hover:text-amari-500 focus:outline-none p-2 rounded-lg hover:bg-amari-50 transition"
               >
                 {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>

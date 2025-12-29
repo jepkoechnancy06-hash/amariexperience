@@ -27,7 +27,7 @@ const Activities: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-3">Ocean & Water</h3>
+          <h3 className="text-2xl font-serif font-bold text-amari-500 mb-3">Ocean & Water</h3>
           <ul className="text-stone-600 leading-relaxed space-y-2 list-disc pl-5">
             <li>Snorkelling</li>
             <li>Dhow cruises (sunrise or sunset)</li>
@@ -37,7 +37,7 @@ const Activities: React.FC = () => {
         </div>
 
         <div className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-3">Relaxation</h3>
+          <h3 className="text-2xl font-serif font-bold text-amari-500 mb-3">Relaxation</h3>
           <ul className="text-stone-600 leading-relaxed space-y-2 list-disc pl-5">
             <li>Spas and massages</li>
             <li>Beachfront brunches</li>
@@ -47,7 +47,7 @@ const Activities: React.FC = () => {
         </div>
 
         <div className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-3">Tours & Culture</h3>
+          <h3 className="text-2xl font-serif font-bold text-amari-500 mb-3">Tours & Culture</h3>
           <ul className="text-stone-600 leading-relaxed space-y-2 list-disc pl-5">
             <li>Local markets and coastal towns</li>
             <li>Swahili food experiences</li>
@@ -57,7 +57,7 @@ const Activities: React.FC = () => {
         </div>
 
         <div className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-          <h3 className="text-2xl font-serif font-bold text-amari-900 mb-3">Group Moments</h3>
+          <h3 className="text-2xl font-serif font-bold text-amari-500 mb-3">Group Moments</h3>
           <ul className="text-stone-600 leading-relaxed space-y-2 list-disc pl-5">
             <li>Welcome dinners and rehearsal dinners</li>
             <li>Bachelor / bachelorette outings</li>

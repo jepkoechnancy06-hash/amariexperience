@@ -83,11 +83,11 @@ const CouplesLanding = () => (
             <div className="w-14 h-14 bg-amari-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-amari-200 transition-colors">
               <Star className="text-amari-600" size={28} />
             </div>
-            <h3 className="text-2xl font-serif font-bold mb-3 text-amari-900">Verified Vendors</h3>
+            <h3 className="text-2xl font-serif font-bold mb-3 text-amari-500">Verified Vendors</h3>
             <p className="text-stone-500 leading-relaxed">
               Access our exclusive network of Diani's best venues, planners, and creatives, personally vetted for quality and reliability.
             </p>
-            <Link to="/vendors" className="inline-block mt-6 text-amari-500 font-bold text-sm uppercase tracking-wider hover:text-amari-600">
+            <Link to="/vendors" className="inline-block mt-6 text-amari-400 font-bold text-sm uppercase tracking-wider hover:text-amari-500">
               Browse Directory &rarr;
             </Link>
           </div>
@@ -97,11 +97,11 @@ const CouplesLanding = () => (
             <div className="w-14 h-14 bg-amari-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-amari-200 transition-colors">
               <Sun className="text-amari-600" size={28} />
             </div>
-            <h3 className="text-2xl font-serif font-bold mb-3 text-amari-900">Smart Planning</h3>
+            <h3 className="text-2xl font-serif font-bold mb-3 text-amari-500">Smart Planning</h3>
             <p className="text-stone-500 leading-relaxed">
               Stay organized with our digital budget calculator, guest list manager, and day-of timeline creator designed for destination weddings.
             </p>
-            <Link to="/tools" className="inline-block mt-6 text-amari-500 font-bold text-sm uppercase tracking-wider hover:text-amari-600">
+            <Link to="/tools" className="inline-block mt-6 text-amari-400 font-bold text-sm uppercase tracking-wider hover:text-amari-500">
               Start Planning &rarr;
             </Link>
           </div>
@@ -111,11 +111,11 @@ const CouplesLanding = () => (
             <div className="w-14 h-14 bg-amari-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-amari-200 transition-colors">
               <Heart className="text-amari-600" size={28} />
             </div>
-            <h3 className="text-2xl font-serif font-bold mb-3 text-amari-900">Concierge Support</h3>
+            <h3 className="text-2xl font-serif font-bold mb-3 text-amari-500">Concierge Support</h3>
             <p className="text-stone-500 leading-relaxed">
               Upgrade to our premium package for a dedicated local wedding expert to handle bookings, logistics, and legal requirements.
             </p>
-            <Link to="/concierge" className="inline-block mt-6 text-amari-500 font-bold text-sm uppercase tracking-wider hover:text-amari-600">
+            <Link to="/concierge" className="inline-block mt-6 text-amari-400 font-bold text-sm uppercase tracking-wider hover:text-amari-500">
               Learn More &rarr;
             </Link>
           </div>
@@ -127,7 +127,7 @@ const CouplesLanding = () => (
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-amari-900 mb-4">A Simple Coastal Flow</h2>
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-amari-500 mb-4">A Simple Coastal Flow</h2>
           <p className="text-stone-600 max-w-2xl mx-auto">
             A clear path from “we’re dreaming” to “we’re booked” — without losing the magic.
           </p>
@@ -136,33 +136,33 @@ const CouplesLanding = () => (
         <div className="grid md:grid-cols-3 gap-8">
           <div className="bg-amari-50 border border-amari-100 rounded-3xl p-8 hover:shadow-xl transition">
             <p className="text-[10px] font-bold uppercase tracking-widest text-amari-500 mb-3">Step 1</p>
-            <h3 className="text-2xl font-serif font-bold text-amari-900 mb-3">Explore</h3>
+            <h3 className="text-2xl font-serif font-bold text-amari-500 mb-3">Explore</h3>
             <p className="text-stone-600 leading-relaxed">
               Browse vetted coastal vendors and gather inspiration that matches your style.
             </p>
-            <Link to="/gallery" className="inline-block mt-6 text-amari-500 font-bold text-sm uppercase tracking-wider hover:text-amari-600">
+            <Link to="/gallery" className="inline-block mt-6 text-amari-400 font-bold text-sm uppercase tracking-wider hover:text-amari-500">
               View Inspiration &rarr;
             </Link>
           </div>
 
           <div className="bg-amari-50 border border-amari-100 rounded-3xl p-8 hover:shadow-xl transition">
             <p className="text-[10px] font-bold uppercase tracking-widest text-amari-500 mb-3">Step 2</p>
-            <h3 className="text-2xl font-serif font-bold text-amari-900 mb-3">Plan</h3>
+            <h3 className="text-2xl font-serif font-bold text-amari-500 mb-3">Plan</h3>
             <p className="text-stone-600 leading-relaxed">
               Keep budgets, guests, and timelines organized — all in one dashboard.
             </p>
-            <Link to="/tools" className="inline-block mt-6 text-amari-500 font-bold text-sm uppercase tracking-wider hover:text-amari-600">
+            <Link to="/tools" className="inline-block mt-6 text-amari-400 font-bold text-sm uppercase tracking-wider hover:text-amari-500">
               Open Tools &rarr;
             </Link>
           </div>
 
           <div className="bg-amari-50 border border-amari-100 rounded-3xl p-8 hover:shadow-xl transition">
             <p className="text-[10px] font-bold uppercase tracking-widest text-amari-500 mb-3">Step 3</p>
-            <h3 className="text-2xl font-serif font-bold text-amari-900 mb-3">Book</h3>
+            <h3 className="text-2xl font-serif font-bold text-amari-500 mb-3">Book</h3>
             <p className="text-stone-600 leading-relaxed">
               Get local support to coordinate logistics, vendor bookings, and travel.
             </p>
-            <Link to="/concierge" className="inline-block mt-6 text-amari-500 font-bold text-sm uppercase tracking-wider hover:text-amari-600">
+            <Link to="/concierge" className="inline-block mt-6 text-amari-400 font-bold text-sm uppercase tracking-wider hover:text-amari-500">
               Concierge &rarr;
             </Link>
           </div>
@@ -176,7 +176,7 @@ const CouplesLanding = () => (
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
           <div>
             <span className="text-amari-500 font-bold uppercase tracking-widest text-xs mb-3 block">Directory Preview</span>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-amari-900">A Few Coastal Favorites</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-amari-500">A Few Coastal Favorites</h2>
             <p className="mt-4 text-stone-600 max-w-2xl">
               A quick taste of what’s inside the directory — browse by category to find your perfect fit.
             </p>

@@ -29,7 +29,7 @@ const Community: React.FC = () => {
 
         <div className="space-y-8">
           <section className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-            <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">Who We Are</h3>
+            <h3 className="text-2xl font-serif font-bold text-amari-500 mb-4">Who We Are</h3>
             <p className="text-stone-600 leading-relaxed mb-4">We are a diverse and vibrant community made up of:</p>
             <ul className="list-disc pl-6 space-y-2 text-stone-600 leading-relaxed">
               <li>Local businesses and entrepreneurs shaping Diani’s economy</li>
@@ -44,14 +44,14 @@ const Community: React.FC = () => {
           </section>
 
           <section className="bg-white rounded-3xl shadow-sm border border-amari-100 p-8">
-            <h3 className="text-2xl font-serif font-bold text-amari-900 mb-4">Making a Difference Together</h3>
+            <h3 className="text-2xl font-serif font-bold text-amari-500 mb-4">Making a Difference Together</h3>
             <p className="text-stone-600 leading-relaxed mb-6">
               As a community, we have the power to make Diani not only beautiful but also sustainable and supportive:
             </p>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-amari-50 rounded-2xl border border-amari-100 p-6">
-                <h4 className="text-lg font-bold text-amari-900 mb-3">Charity Initiatives</h4>
+                <h4 className="text-lg font-bold text-amari-500 mb-3">Charity Initiatives</h4>
                 <ul className="list-disc pl-6 space-y-2 text-stone-600 leading-relaxed">
                   <li>Organize and participate in local outreach programs, schools, health campaigns, and community development projects.</li>
                   <li>Support underprivileged families, youth programs, and local causes that strengthen the social fabric of Diani.</li>
@@ -59,7 +59,7 @@ const Community: React.FC = () => {
               </div>
 
               <div className="bg-amari-50 rounded-2xl border border-amari-100 p-6">
-                <h4 className="text-lg font-bold text-amari-900 mb-3">Nature &amp; Environmental Conservation</h4>
+                <h4 className="text-lg font-bold text-amari-500 mb-3">Nature &amp; Environmental Conservation</h4>
                 <ul className="list-disc pl-6 space-y-2 text-stone-600 leading-relaxed">
                   <li>Join beach cleanups, tree planting, and wildlife protection initiatives.</li>
                   <li>Promote sustainable tourism and eco-friendly practices that preserve Diani’s unique coastal environment for generations to come.</li>

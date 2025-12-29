@@ -28,25 +28,25 @@ const DianiHistory: React.FC = () => {
       <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-amari-100">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <div>
-            <h3 className="text-2xl font-serif font-bold text-amari-900 mb-3">Roots</h3>
+            <h3 className="text-2xl font-serif font-bold text-amari-500 mb-3">Roots</h3>
             <p className="text-stone-600 leading-relaxed">
               Diani’s earliest story is coastal and local—woven through the lives of the Digo people and the rhythms of the ocean.
             </p>
           </div>
           <div>
-            <h3 className="text-2xl font-serif font-bold text-amari-900 mb-3">Trade & Culture</h3>
+            <h3 className="text-2xl font-serif font-bold text-amari-500 mb-3">Trade & Culture</h3>
             <p className="text-stone-600 leading-relaxed">
               Traders from across the Indian Ocean brought languages, faiths, and ideas that helped shape the Swahili coast.
             </p>
           </div>
           <div>
-            <h3 className="text-2xl font-serif font-bold text-amari-900 mb-3">A Quiet Chapter</h3>
+            <h3 className="text-2xl font-serif font-bold text-amari-500 mb-3">A Quiet Chapter</h3>
             <p className="text-stone-600 leading-relaxed">
               Under British rule, the coastline changed slowly, holding onto calm stretches and everyday life.
             </p>
           </div>
           <div>
-            <h3 className="text-2xl font-serif font-bold text-amari-900 mb-3">Diani Today</h3>
+            <h3 className="text-2xl font-serif font-bold text-amari-500 mb-3">Diani Today</h3>
             <p className="text-stone-600 leading-relaxed">
               Now it’s a meeting place of stories—where celebrations feel brighter, and the sea keeps time.
             </p>

@@ -23,7 +23,7 @@ const AirlineBooking: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto py-12 px-4">
       <div className="text-center mb-10">
-        <h2 className="text-3xl font-serif font-bold text-stone-800">Flight Booking</h2>
+        <h2 className="text-3xl font-serif font-bold text-amari-500">Flight Booking</h2>
         <p className="text-stone-600 mt-2">Find the best flights to Ukunda (Diani) for you and your guests.</p>
       </div>
 
