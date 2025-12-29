@@ -43,9 +43,6 @@ const VendorOnboarding: React.FC = () => {
             Our concierge team will review your application and reach out to {formData.contactEmail} within 24-48 hours.
           </p>
           <div className="space-y-4">
-             <Link to="/admin" className="block w-full bg-amari-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-amari-800 transition shadow-lg">
-              Go to Admin Dashboard
-            </Link>
             <Link to="/couples" className="block w-full bg-white text-stone-600 border border-amari-200 px-6 py-4 rounded-xl font-bold hover:bg-amari-50 transition">
               Visit Couple's Site
             </Link>

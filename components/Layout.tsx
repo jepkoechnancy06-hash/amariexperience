@@ -76,7 +76,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link to="/gallery" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">Inspiration Board</Link>
               <Link to="/history" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">Diani History</Link>
               <Link to="/faq" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">FAQ</Link>
-              <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-xs text-amari-300 hover:text-amari-500 uppercase tracking-widest mt-4">Admin Access</Link>
             </div>
           </div>
         )}
@@ -126,7 +125,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <h4 className="text-white font-serif text-lg mb-6">For Business</h4>
             <ul className="space-y-4 text-sm">
               <li><Link to="/" className="inline-block bg-amari-300 text-amari-900 px-6 py-2.5 rounded-lg transition font-bold hover:bg-white hover:text-amari-600">Join as Vendor</Link></li>
-              <li><Link to="/admin" className="hover:text-white text-amari-500/50 text-xs block">Admin Dashboard</Link></li>
             </ul>
           </div>
         </div>
