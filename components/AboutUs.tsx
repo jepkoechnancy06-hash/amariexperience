@@ -26,6 +26,20 @@ const AboutUs: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-amari-100">
+        <div className="max-w-3xl">
+          <h3 className="text-2xl font-serif font-bold text-amari-500 mb-3">Amari Experience</h3>
+          <p className="text-stone-700 leading-relaxed">
+            Born in Diani, a beautiful, culture-rich place with so much potential, Amari Experience began with quiet moments of noticing — and falling in love. In a destination where the ocean meets heritage and celebrations unfold effortlessly, there was no single digital space that truly reflected its magic or the people who bring it to life.
+          </p>
+          <p className="mt-4 text-stone-700 leading-relaxed">
+            While its beauty lived in memories, messages, and word of mouth, Amari Experience was created to give Diani a lasting presence online — a home where love stories, local creators, and meaningful experiences could be discovered with ease and trust.
+          </p>
+          <p className="mt-4 text-stone-700 leading-relaxed">
+            Rooted in destination weddings and expanding into honeymoons, anniversaries, and romantic escapes, Amari Experience exists to honour places worth celebrating — and to share their beauty with the world.
+          </p>
+        </div>
+
+        <div className="mt-10 pt-10 border-t border-amari-100" />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           <div>
             <h3 className="text-2xl font-serif font-bold text-amari-500 mb-3">What We Do</h3>
