@@ -37,6 +37,7 @@ const VendorOnboarding: React.FC = () => {
             <CheckCircle className="text-amari-500" size={48} />
           </div>
           <h2 className="text-3xl font-serif font-bold text-amari-900 mb-4">Application Received</h2>
+          <p className="text-stone-600 mb-10 leading-relaxed">
             Our concierge team will review your application and reach out to {formData.contactEmail} within 24-48 hours.
           </p>
           <div className="space-y-4">
