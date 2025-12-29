@@ -75,6 +75,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link to="/activities" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">Activities</Link>
               <Link to="/gallery" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">Inspiration Board</Link>
               <Link to="/history" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">Diani History</Link>
+              <Link to="/faq" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-stone-600 hover:bg-amari-50 hover:text-amari-600 rounded-xl font-medium transition">FAQ</Link>
               <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-xs text-amari-300 hover:text-amari-500 uppercase tracking-widest mt-4">Admin Access</Link>
             </div>
           </div>
@@ -117,8 +118,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <li><Link to="/concierge" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Concierge Services</Link></li>
               <li><Link to="/about" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">About Us</Link></li>
               <li><Link to="/community" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Community</Link></li>
-              <li><a href="#" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Contact Us</a></li>
-              <li><a href="#" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">FAQ</a></li>
+              <li><Link to="/contact" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Contact Us</Link></li>
+              <li><Link to="/faq" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">FAQ</Link></li>
             </ul>
           </div>
           <div>
@@ -132,8 +133,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="mt-16 border-t border-white/10 pt-8 text-center text-xs flex flex-col md:flex-row justify-between items-center text-amari-100/50">
           <p>© {new Date().getFullYear()} Amari Experience. Made with ❤️ in Diani.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
-             <a href="#" className="hover:text-white transition">Privacy Policy</a>
-             <a href="#" className="hover:text-white transition">Terms of Service</a>
+             <Link to="/privacy" className="hover:text-white transition">Privacy Policy</Link>
+             <Link to="/terms" className="hover:text-white transition">Terms of Service</Link>
           </div>
         </div>
       </footer>

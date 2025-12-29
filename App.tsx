@@ -12,6 +12,10 @@ import AboutUs from './components/AboutUs';
 import Community from './components/Community';
 import Activities from './components/Activities';
 import DianiHistory from './components/DianiHistory';
+import FAQ from './components/FAQ';
+import ContactUs from './components/ContactUs';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfService from './components/TermsOfService';
 import { ArrowRight, Check, Star, Heart, Sun, MapPin } from 'lucide-react';
 
 const CouplesLanding = () => (
@@ -174,6 +178,10 @@ const App: React.FC = () => {
           <Route path="/community" element={<Community />} />
           <Route path="/activities" element={<Activities />} />
           <Route path="/history" element={<DianiHistory />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
           <Route path="/concierge" element={<ConciergePage />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
