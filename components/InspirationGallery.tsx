@@ -4,19 +4,19 @@ import { InspirationPost } from '../types';
 const STORAGE_KEY = 'amari_inspiration_posts_v1';
 
 const IMAGES = [
-  '/whatsapp-1.jpeg',
-  '/whatsapp-2.jpeg',
-  '/whatsapp-3.jpeg',
-  '/whatsapp-4.jpeg',
-  '/whatsapp-5.jpeg',
-  '/whatsapp-6.jpeg',
-  '/whatsapp-7.jpeg',
-  '/whatsapp-8.jpeg',
-  '/whatsapp-9.jpeg',
-  '/whatsapp-10.jpeg',
-  '/whatsapp-11.jpeg',
-  '/whatsapp-12.jpeg',
-  '/whatsapp-13.jpeg',
+  { src: '/whatsapp-1.jpeg', story: 'Coconuts form a committee to debate which palm is tallest. Sand approves.' },
+  { src: '/whatsapp-2.jpeg', story: 'The ocean whispers wedding vows to those who listen closely enough.' },
+  { src: '/whatsapp-3.jpeg', story: 'Sunsets in Diani paint promises in colors only lovers understand.' },
+  { src: '/whatsapp-4.jpeg', story: 'Every grain of sand holds a story waiting to be told.' },
+  { src: '/whatsapp-5.jpeg', story: 'Where the sky meets the sea, dreams take flight on golden wings.' },
+  { src: '/whatsapp-6.jpeg', story: 'Palm trees stand as witnesses to countless love stories.' },
+  { src: '/whatsapp-7.jpeg', story: 'The tide carries secrets of weddings past and futures yet to come.' },
+  { src: '/whatsapp-8.jpeg', story: 'Golden hour in Diani lasts longer than anywhere else on earth.' },
+  { src: '/whatsapp-9.jpeg', story: 'Beach paths lead not just to water, but to forever.' },
+  { src: '/whatsapp-10.jpeg', story: 'Coral reefs beneath hold more promises than any jewel box.' },
+  { src: '/whatsapp-11.jpeg', story: 'Trade winds bring stories from across the Indian Ocean.' },
+  { src: '/whatsapp-12.jpeg', story: 'Where footprints in sand become the first chapter of forever.' },
+  { src: '/whatsapp-13.jpeg', story: 'The horizon in Diani is where dreams touch reality.' },
 ];
 
 const InspirationGallery: React.FC = () => {
@@ -123,18 +123,28 @@ const InspirationGallery: React.FC = () => {
             alt="Beach celebration details"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-white/95"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-amari-900/80 via-amari-600/60 to-amari-400/40"></div>
         </div>
         <div className="relative px-6 md:px-12 py-14 md:py-20 text-center">
-          <span className="inline-flex items-center justify-center rounded-full bg-white/15 backdrop-blur-md border border-white/25 px-6 py-2 text-white text-xs font-bold uppercase tracking-[0.25em] animate-in slide-in-from-bottom-4 duration-700">
+          <span className="inline-flex items-center justify-center rounded-full bg-white/20 backdrop-blur-md border border-white/30 px-6 py-2 text-white text-xs font-bold uppercase tracking-[0.25em] animate-in slide-in-from-bottom-4 duration-700">
             Real Moments
           </span>
-          <h2 className="mt-6 text-4xl md:text-6xl font-serif font-bold text-white drop-shadow-sm leading-tight animate-in slide-in-from-bottom-6 duration-1000 delay-100">
+          <h2 className="mt-6 text-4xl md:text-6xl font-serif font-bold text-white drop-shadow-lg leading-tight animate-in slide-in-from-bottom-6 duration-1000 delay-100">
             Inspiration Board
           </h2>
-          <p className="mt-6 text-amari-50 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed animate-in slide-in-from-bottom-6 duration-1000 delay-200">
-            Guests and vendors share photos, stories, and coastal ideas — so your wedding feels like Diani before you even arrive.
+          <p className="mt-6 text-white/95 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed animate-in slide-in-from-bottom-6 duration-1000 delay-200">
+            Where love stories meet ocean breeze. Share your coastal wedding dreams and discover magic in every sunset.
           </p>
+          <div className="mt-8 flex justify-center gap-4 animate-in slide-in-from-bottom-6 duration-1000 delay-300">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-white text-sm">
+              <div className="w-2 h-2 bg-amari-300 rounded-full animate-pulse"></div>
+              <span>Live Gallery</span>
+            </div>
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-white text-sm">
+              <div className="w-2 h-2 bg-amari-400 rounded-full"></div>
+              <span>Community Stories</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -148,22 +158,34 @@ const InspirationGallery: React.FC = () => {
         </div>
 
         <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-          {IMAGES.map((src, index) => (
+          {IMAGES.map((image, index) => (
             <div
               key={index}
-              className="break-inside-avoid relative group overflow-hidden rounded-3xl border border-amari-100 bg-white shadow-sm transition will-change-transform hover:-translate-y-0.5 hover:shadow-md"
+              className="break-inside-avoid group relative overflow-hidden rounded-3xl border border-amari-100 bg-white shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-amari-200/50"
             >
-              <img
-                src={src}
-                alt="Wedding Inspiration"
-                loading="lazy"
-                decoding="async"
-                className="w-full h-auto object-cover transform transition duration-700 group-hover:scale-[1.03]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
-                <span className="inline-flex items-center justify-center rounded-full bg-white/15 backdrop-blur-md border border-white/25 px-5 py-2 uppercase text-xs tracking-widest font-bold text-white">
-                  View
-                </span>
+              <div className="relative">
+                <img
+                  src={image.src}
+                  alt="Wedding Inspiration"
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-64 object-cover transform transition duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-center p-4">
+                  <div className="text-white text-center">
+                    <p className="text-sm font-medium leading-relaxed drop-shadow-lg">{image.story}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4 bg-white/95 backdrop-blur-sm">
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex items-center justify-center rounded-full bg-amari-50 border border-amari-100 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-amari-600">
+                    Gallery
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
+                    {index + 1}
+                  </span>
+                </div>
               </div>
             </div>
           ))}
