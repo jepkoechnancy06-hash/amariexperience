@@ -78,8 +78,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex justify-between h-24">
             <div className="flex items-center">
               <Link to="/" className="flex-shrink-0 flex items-center gap-3 group">
-                <div className="bg-amari-100 text-amari-600 p-2.5 rounded-xl transition-transform group-hover:rotate-3">
-                  <Waves size={24} />
+                <div className="w-12 h-12 rounded-xl overflow-hidden transition-transform group-hover:rotate-3">
+                  <img 
+                    src="/amariexperienceslogo.jpeg" 
+                    alt="Amari Experience Logo" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
                   <h1 className="text-2xl font-serif font-bold text-amari-500 tracking-wide">AMARI</h1>
@@ -181,8 +185,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-               <div className="bg-white/10 p-2 rounded-xl">
-                  <Waves size={20} className="text-amari-300" />
+               <div className="w-10 h-10 rounded-xl overflow-hidden">
+                  <img 
+                    src="/amariexperienceslogo.jpeg" 
+                    alt="Amari Experience Logo" 
+                    className="w-full h-full object-cover"
+                  />
                </div>
                <span className="text-white text-xl font-serif tracking-wide">AMARI</span>
             </div>
