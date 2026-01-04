@@ -93,27 +93,29 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
             
             {/* Desktop Menu */}
-            <div className="hidden md:flex items-center space-x-8">
-              <Link
-                to="/"
-                aria-current={isCouplesRoute ? 'page' : undefined}
-                className={`${navLinkBase} ${
-                  isCouplesRoute
-                    ? 'text-amari-600 bg-amari-50'
-                    : 'text-stone-600 hover:text-amari-600 hover:bg-amari-50/60'
-                }`}
-              >
-                For Couples
-              </Link>
-              <NavLink to="/vendors" className={navLinkClass}>Directory</NavLink>
-              <NavLink to="/tools" className={navLinkClass}>Tools</NavLink>
-              <NavLink to="/gallery" className={navLinkClass}>Inspiration</NavLink>
-              <NavLink to="/concierge" className={navLinkClass}>Concierge</NavLink>
-              <NavLink to="/about" className={navLinkClass}>About</NavLink>
-              <NavLink to="/about-me" className={navLinkClass}>About Me</NavLink>
-              <NavLink to="/contact" className={navLinkClass}>Contact</NavLink>
-              <NavLink to="/faq" className={navLinkClass}>FAQ</NavLink>
-              <div className="h-8 w-px bg-amari-100 mx-2"></div>
+            <div className="hidden md:flex items-center justify-between space-x-10">
+              <div className="flex items-center space-x-8">
+                <Link
+                  to="/"
+                  aria-current={isCouplesRoute ? 'page' : undefined}
+                  className={`${navLinkBase} ${
+                    isCouplesRoute
+                      ? 'text-amari-600 bg-amari-50'
+                      : 'text-stone-600 hover:text-amari-600 hover:bg-amari-50/60'
+                  }`}
+                >
+                  For Couples
+                </Link>
+                <NavLink to="/vendors" className={navLinkClass}>Directory</NavLink>
+                <NavLink to="/tools" className={navLinkClass}>Planning Tools</NavLink>
+                <NavLink to="/gallery" className={navLinkClass}>Inspiration</NavLink>
+                <NavLink to="/concierge" className={navLinkClass}>Concierge</NavLink>
+                <NavLink to="/about" className={navLinkClass}>About</NavLink>
+                <NavLink to="/community" className={navLinkClass}>Community</NavLink>
+                <NavLink to="/activities" className={navLinkClass}>Activities</NavLink>
+                <NavLink to="/history" className={navLinkClass}>Diani History</NavLink>
+                <NavLink to="/faq" className={navLinkClass}>FAQ</NavLink>
+              </div>
               <Link to="/partner" className={`bg-amari-600 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-amari-900 transition shadow-lg hover:shadow-xl flex items-center gap-2 ${location.pathname === '/partner' ? 'ring-2 ring-offset-2 ring-amari-600' : ''}`}>
                 Partner with Us
               </Link>
@@ -157,7 +159,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <NavLink to="/concierge" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Concierge</NavLink>
               <div className="pt-2 mt-2 border-t border-amari-100/70"></div>
               <NavLink to="/about" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>About Us</NavLink>
-              <NavLink to="/about-me" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>About Me</NavLink>
               <NavLink to="/community" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Community</NavLink>
               <NavLink to="/activities" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Activities</NavLink>
               <NavLink to="/history" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Diani History</NavLink>
