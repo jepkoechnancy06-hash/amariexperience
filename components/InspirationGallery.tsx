@@ -4,19 +4,19 @@ import { InspirationPost } from '../types';
 const STORAGE_KEY = 'amari_inspiration_posts_v1';
 
 const IMAGES = [
-  { src: '/whatsapp-1.jpeg', story: 'Coconuts form a committee to debate which palm is tallest. Sand approves.' },
-  { src: '/whatsapp-2.jpeg', story: 'The ocean whispers wedding vows to those who listen closely enough.' },
-  { src: '/whatsapp-3.jpeg', story: 'Sunsets in Diani paint promises in colors only lovers understand.' },
-  { src: '/whatsapp-4.jpeg', story: 'Every grain of sand holds a story waiting to be told.' },
-  { src: '/whatsapp-5.jpeg', story: 'Where the sky meets the sea, dreams take flight on golden wings.' },
-  { src: '/whatsapp-6.jpeg', story: 'Palm trees stand as witnesses to countless love stories.' },
-  { src: '/whatsapp-7.jpeg', story: 'The tide carries secrets of weddings past and futures yet to come.' },
-  { src: '/whatsapp-8.jpeg', story: 'Golden hour in Diani lasts longer than anywhere else on earth.' },
-  { src: '/whatsapp-9.jpeg', story: 'Beach paths lead not just to water, but to forever.' },
-  { src: '/whatsapp-10.jpeg', story: 'Coral reefs beneath hold more promises than any jewel box.' },
-  { src: '/whatsapp-11.jpeg', story: 'Trade winds bring stories from across the Indian Ocean.' },
-  { src: '/whatsapp-12.jpeg', story: 'Where footprints in sand become the first chapter of forever.' },
-  { src: '/whatsapp-13.jpeg', story: 'The horizon in Diani is where dreams touch reality.' },
+  { src: '/whatsapp-1.jpeg', story: 'Coconuts form a committee to debate which palm is tallest. Sand approves.', author: 'Chloe Davis & Jabari Kamau' },
+  { src: '/whatsapp-2.jpeg', story: 'The ocean whispers wedding vows to those who listen closely enough.', author: 'Amina Hassan & Carlos Rivera' },
+  { src: '/whatsapp-3.jpeg', story: 'Sunsets in Diani paint promises in colors only lovers understand.', author: 'Zara Patel & Marcus Ochieng' },
+  { src: '/whatsapp-4.jpeg', story: 'Every grain of sand holds a story waiting to be told.', author: 'Lena Thompson & David Mwangi' },
+  { src: '/whatsapp-5.jpeg', story: 'Where the sky meets the sea, dreams take flight on golden wings.', author: 'Sophie Laurent & Ali Khamis' },
+  { src: '/whatsapp-6.jpeg', story: 'Palm trees stand as witnesses to countless love stories.', author: 'Emma Wilson & Rajesh Patel' },
+  { src: '/whatsapp-7.jpeg', story: 'The tide carries secrets of weddings past and futures yet to come.', author: 'Isabella Chen & Joseph Mwaura' },
+  { src: '/whatsapp-8.jpeg', story: 'Golden hour in Diani lasts longer than anywhere else on earth.', author: 'Nina Rodriguez & Samuel Kariuki' },
+  { src: '/whatsapp-9.jpeg', story: 'Beach paths lead not just to water, but to forever.', author: 'Maya Singh & Thomas Kiprop' },
+  { src: '/whatsapp-10.jpeg', story: 'Coral reefs beneath hold more promises than any jewel box.', author: 'Olivia Brown & Hassan Ali' },
+  { src: '/whatsapp-11.jpeg', story: 'Trade winds bring stories from across the Indian Ocean.', author: 'Grace Kim & Abdulrahman Mohamed' },
+  { src: '/whatsapp-12.jpeg', story: 'Where footprints in sand become the first chapter of forever.', author: 'Sophie Martin & Michael Kamau' },
+  { src: '/whatsapp-13.jpeg', story: 'The horizon in Diani is where dreams touch reality.', author: 'Ava Johnson & David Khamis' },
 ];
 
 const InspirationGallery: React.FC = () => {
@@ -173,7 +173,8 @@ const InspirationGallery: React.FC = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-center p-4">
                   <div className="text-white text-center">
-                    <p className="text-sm font-medium leading-relaxed drop-shadow-lg">{image.story}</p>
+                    <p className="text-sm font-medium leading-relaxed drop-shadow-lg mb-2">{image.story}</p>
+                    <p className="text-xs font-light italic text-white/80">— {image.author}</p>
                   </div>
                 </div>
               </div>
