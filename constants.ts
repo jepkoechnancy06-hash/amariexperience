@@ -3,63 +3,63 @@ import { Vendor, VendorCategory, BudgetItem, Guest } from './types';
 export const MOCK_VENDORS: Vendor[] = [
   {
     id: '1',
-    name: 'The Sands at Nomad',
+    name: 'Diani Beach Palace',
     category: VendorCategory.Venue,
-    rating: 4.8,
+    rating: 4.9,
     priceRange: '$$$$',
-    description: 'Exclusive beach resort offering pristine white sands and luxury reception halls.',
+    description: 'Luxurious beachfront venue with pristine white sands and ocean views for unforgettable ceremonies.',
     imageUrl: 'https://picsum.photos/id/1040/400/300',
     location: 'Diani Beach Road'
   },
   {
     id: '2',
-    name: 'Swahili Beach Resort',
-    category: VendorCategory.Venue,
-    rating: 4.7,
-    priceRange: '$$$$',
-    description: 'Arabian-influenced architecture with cascading pools and beachfront vows.',
+    name: 'Coastal Dreams Weddings',
+    category: VendorCategory.Planner,
+    rating: 4.8,
+    priceRange: '$$$',
+    description: 'Expert destination wedding planning team specializing in Diani Coast celebrations.',
     imageUrl: 'https://picsum.photos/id/1039/400/300',
     location: 'Diani Beach'
   },
   {
     id: '3',
-    name: 'Coastal Captures',
-    category: VendorCategory.Photographer,
-    rating: 4.9,
-    priceRange: '$$$',
-    description: 'Capturing the golden hour magic of the Kenyan coast.',
+    name: 'Swahili Coastal Cuisine',
+    category: VendorCategory.Caterer,
+    rating: 4.7,
+    priceRange: '$$',
+    description: 'Authentic coastal cuisine blending traditional Swahili flavors with modern culinary excellence.',
     imageUrl: 'https://picsum.photos/id/250/400/300',
-    location: 'Ukunda'
+    location: 'Diani Coast'
   },
   {
     id: '4',
-    name: 'Spice & Clove Catering',
-    category: VendorCategory.Caterer,
-    rating: 4.6,
-    priceRange: '$$',
-    description: 'Fusion of traditional Swahili dishes and modern continental cuisine.',
+    name: 'Ocean Lens Photography',
+    category: VendorCategory.Photographer,
+    rating: 5.0,
+    priceRange: '$$$',
+    description: 'Professional photography and film services capturing the magic of destination weddings.',
     imageUrl: 'https://picsum.photos/id/493/400/300',
-    location: 'Mombasa/Diani'
+    location: 'Diani Beach'
   },
   {
     id: '5',
-    name: 'Elegant Events Kenya',
-    category: VendorCategory.Planner,
-    rating: 5.0,
-    priceRange: '$$$',
-    description: 'Full-service wedding planning from logistics to decor.',
+    name: 'Diani Guest Transfers',
+    category: VendorCategory.Transport,
+    rating: 4.6,
+    priceRange: '$$',
+    description: 'Reliable transport services and guest experiences throughout the Diani Coast.',
     imageUrl: 'https://picsum.photos/id/435/400/300',
-    location: 'Diani'
+    location: 'Ukunda Airstrip'
   },
   {
     id: '6',
-    name: 'Ocean Air Safaris',
-    category: VendorCategory.Transport,
-    rating: 4.5,
-    priceRange: '$$',
-    description: 'Private charters and guest shuttles from Ukunda Airstrip.',
+    name: 'Paradise Beach Resort',
+    category: VendorCategory.Venue,
+    rating: 4.8,
+    priceRange: '$$$$',
+    description: 'Exclusive beachfront resort with tropical gardens and private beach access.',
     imageUrl: 'https://picsum.photos/id/212/400/300',
-    location: 'Ukunda Airstrip'
+    location: 'Diani Beach'
   }
 ];
 
