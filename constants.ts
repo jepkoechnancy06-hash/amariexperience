@@ -48,7 +48,7 @@ export const MOCK_VENDORS: Vendor[] = [
     rating: 4.6,
     priceRange: '$$',
     description: 'Reliable transport services and guest experiences throughout the Diani Coast.',
-    imageUrl: 'https://picsum.photos/id/435/400/300',
+    imageUrl: '/DianiGuestTravels.jpeg',
     location: 'Ukunda Airstrip'
   },
   {
