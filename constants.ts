@@ -58,7 +58,7 @@ export const MOCK_VENDORS: Vendor[] = [
     rating: 4.8,
     priceRange: '$$$$',
     description: 'Exclusive beachfront resort with tropical gardens and private beach access.',
-    imageUrl: '/whatsapp-10.jpeg',
+    imageUrl: '/beachdianiresort.jpeg',
     location: 'Diani Beach'
   }
 ];
