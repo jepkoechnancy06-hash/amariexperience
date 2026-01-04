@@ -18,7 +18,7 @@ export const MOCK_VENDORS: Vendor[] = [
     rating: 4.8,
     priceRange: '$$$',
     description: 'Expert destination wedding planning team specializing in Diani Coast celebrations.',
-    imageUrl: '/swahiliresort.jpeg',
+    imageUrl: '/coastalweddingdreams.jpeg',
     location: 'Diani Beach'
   },
   {
