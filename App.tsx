@@ -53,7 +53,7 @@ const CouplesLanding = () => (
               Find Vendors
             </Link>
             <Link to="/concierge" className="bg-amari-500/90 backdrop-blur-md text-white px-8 py-4 rounded-full font-bold hover:bg-amari-600 hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-2">
-              Concierge Service <ArrowRight size={18} />
+              Amari Concierge <span className="text-xs">(Private Launch Phase)</span> <ArrowRight size={18} />
             </Link>
           </div>
         </div>
@@ -237,7 +237,7 @@ const ConciergePage = () => (
             </p>
             
             <button className="bg-amari-300 text-amari-900 px-10 py-4 rounded-xl font-bold hover:bg-white hover:text-amari-600 transition shadow-lg text-lg">
-              Inquire for Pricing
+              Partner with Amari
             </button>
         </div>
         
