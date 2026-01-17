@@ -117,7 +117,10 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
                 <NavLink to="/activities" className={navLinkClass}>Activities</NavLink>
                 <NavLink to="/history" className={navLinkClass}>Diani History</NavLink>
                 <div className="relative">
-                  <div className="flex items-center gap-2 text-stone-400 hover:text-stone-600 px-4 py-3 rounded-xl text-sm font-medium transition-colors">
+                  <button
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    className="flex items-center gap-2 text-stone-400 hover:text-stone-600 px-4 py-3 rounded-xl text-sm font-medium transition-colors"
+                  >
                     <User size={18} />
                     {isAuthenticated ? (
                       <>
