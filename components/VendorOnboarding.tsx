@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { VendorCategory } from '../types';
 import { submitApplication } from '../services/vendorService';
-import { testConnection, initializeDatabase } from '../lib/db';
 import { CheckCircle, Store, MapPin, Phone, Mail, ArrowRight, Upload, Info, Globe, Target, Eye, Waves } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
