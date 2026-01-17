@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { VendorCategory } from '../types';
 import { submitApplication } from '../services/vendorService';
+import { initializeDatabase } from '../lib/db';
 import { CheckCircle, Store, MapPin, Phone, Mail, ArrowRight, Upload, Info, Globe, Target, Eye, Waves } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -27,6 +28,17 @@ const VendorOnboarding: React.FC = () => {
     phone: '',
     portfolioPhotos: [] as File[]
   });
+
+  useEffect(() => {
+    // Initialize database on component mount
+    initializeDatabase().then(success => {
+      if (success) {
+        console.log('Database initialized successfully');
+      } else {
+        console.error('Failed to initialize database');
+      }
+    });
+  }, []);
 
   useEffect(() => {
     // Load OpenStreetMap script
