@@ -186,29 +186,94 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
         {isMobileMenuOpen && (
           <div id="mobile-menu" className="md:hidden bg-white border-t border-amari-100 shadow-xl absolute w-full">
             <div className="px-4 pt-4 pb-6 space-y-2">
-              <Link to="/partner" className="block w-full text-center bg-amari-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-amari-900 mb-6 shadow-md">
-                Partner with Us
-              </Link>
-              <Link
-                to="/"
-                aria-current={isCouplesRoute ? 'page' : undefined}
-                className={`block px-4 py-3 rounded-xl font-medium transition ${
-                  isCouplesRoute
-                    ? 'bg-amari-50 text-amari-600'
-                    : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'
-                }`}
-              >
-                For Couples
-              </Link>
-              <NavLink to="/vendors" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Directory</NavLink>
-              <NavLink to="/tools" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Planning Tools</NavLink>
-              <NavLink to="/gallery" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Inspiration Board</NavLink>
-              <NavLink to="/concierge" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Concierge</NavLink>
-              <div className="pt-2 mt-2 border-t border-amari-100/70"></div>
-              <NavLink to="/about" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>About Us</NavLink>
-              <NavLink to="/community" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Community</NavLink>
-              <NavLink to="/activities" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Activities</NavLink>
-              <NavLink to="/history" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Diani History</NavLink>
+              {/* Authentication Section */}
+              <div className="mb-6">
+                {isAuthenticated ? (
+                  <div className="bg-amari-50 rounded-xl p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-amari-600 rounded-full flex items-center justify-center">
+                        <User size={20} className="text-white" />
+                      </div>
+                      <div>
+                        <div className="font-medium text-amari-900">Welcome, {user.firstName}!</div>
+                        <div className="text-sm text-stone-600">{user.email}</div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Link
+                        to="/dashboard"
+                        className="block w-full text-left px-4 py-2 text-stone-700 hover:bg-amari-100 rounded-lg transition-colors"
+                      >
+                        <div className="font-medium">Dashboard</div>
+                        <div className="text-sm text-stone-600">Manage your wedding planning tools</div>
+                      </Link>
+                      <Link
+                        to="/profile"
+                        className="block w-full text-left px-4 py-2 text-stone-700 hover:bg-amari-100 rounded-lg transition-colors"
+                      >
+                        <div className="font-medium">Profile</div>
+                        <div className="text-sm text-stone-600">View and manage your profile</div>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          const logoutEvent = new CustomEvent('logout');
+                          window.dispatchEvent(logoutEvent);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <div className="font-medium">Logout</div>
+                        <div className="text-sm text-red-500">Sign out of your account</div>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-stone-50 rounded-xl p-4">
+                    <div className="text-center mb-4">
+                      <div className="w-16 h-16 bg-stone-200 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <User size={32} className="text-stone-400" />
+                      </div>
+                      <div className="font-medium text-stone-900">Sign In Required</div>
+                      <div className="text-sm text-stone-600">Access your dashboard and profile</div>
+                    </div>
+                    <Link
+                      to="/login"
+                      className="block w-full bg-amari-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-amari-700 transition-colors text-center"
+                    >
+                      Sign In / Register
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Navigation Links */}
+              <div className="border-t border-amari-100 pt-4">
+                <Link to="/partner" className="block w-full text-center bg-amari-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-amari-900 mb-4 shadow-md">
+                  Partner with Us
+                </Link>
+                <Link
+                  to="/"
+                  aria-current={isCouplesRoute ? 'page' : undefined}
+                  className={`block px-4 py-3 rounded-xl font-medium transition ${
+                    isCouplesRoute
+                      ? 'bg-amari-50 text-amari-600'
+                      : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'
+                  }`}
+                >
+                  For Couples
+                </Link>
+                <NavLink to="/vendors" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Directory</NavLink>
+                <NavLink to="/tools" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Planning Tools</NavLink>
+                <NavLink to="/gallery" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Inspiration Board</NavLink>
+                <NavLink to="/concierge" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Concierge</NavLink>
+                <div className="pt-2 mt-2 border-t border-amari-100/70"></div>
+                <NavLink to="/about" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>About Us</NavLink>
+                <NavLink to="/community" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Community</NavLink>
+                <NavLink to="/activities" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Activities</NavLink>
+                <NavLink to="/history" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Diani History</NavLink>
+                <Link to="/admin" className="block px-4 py-3 rounded-xl font-medium text-stone-400 hover:text-stone-600 transition-colors">
+                  Admin
+                </Link>
+              </div>
             </div>
           </div>
         )}
