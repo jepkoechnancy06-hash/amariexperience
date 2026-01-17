@@ -1,6 +1,6 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Layout from './components/Layout';
+import Layout from './components/LayoutNew';
 import VendorDirectory from './components/VendorDirectory';
 import VendorProfile from './components/VendorProfile';
 import PlanningTools from './components/PlanningTools';

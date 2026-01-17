@@ -8,10 +8,11 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
 
   const isCouplesRoute = location.pathname === '/' || location.pathname === '/couples';
 
@@ -88,7 +89,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </div>
                 <div>
                   <h1 className="text-2xl font-serif font-bold text-amari-500 tracking-wide">AMARI</h1>
-                    <p className="text-[10px] text-amari-500 uppercase tracking-[0.2em] -mt-1 font-medium group-hover:text-amari-600 transition-colors">Experience</p>
+                  <p className="text-[10px] text-amari-500 uppercase tracking-[0.2em] -mt-1 font-medium group-hover:text-amari-600 transition-colors">Experience</p>
                 </div>
               </Link>
             </div>
@@ -115,7 +116,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <NavLink to="/community" className={navLinkClass}>Community</NavLink>
                 <NavLink to="/activities" className={navLinkClass}>Activities</NavLink>
                 <NavLink to="/history" className={navLinkClass}>Diani History</NavLink>
-                <NavLink to="/faq" className={navLinkClass}>FAQ</NavLink>
                 <div className="relative">
                   <button
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -158,6 +158,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   </button>
                 </div>
               </div>
+              <Link to="/admin" className="text-stone-400 hover:text-stone-600 text-xs font-medium transition-colors">
+                Admin
+              </Link>
               <Link to="/partner" className={`bg-amari-600 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-amari-900 transition shadow-lg hover:shadow-xl flex items-center gap-2 ${location.pathname === '/partner' ? 'ring-2 ring-offset-2 ring-amari-600' : ''}`}>
                 Partner with Us
               </Link>
@@ -204,7 +207,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <NavLink to="/community" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Community</NavLink>
               <NavLink to="/activities" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Activities</NavLink>
               <NavLink to="/history" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Diani History</NavLink>
-              <NavLink to="/faq" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>FAQ</NavLink>
             </div>
           </div>
         )}
@@ -240,7 +242,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                <span className="text-white text-xl font-serif tracking-wide">AMARI</span>
             </div>
             <p className="text-sm leading-relaxed text-amari-100/70 font-light">
-              We bring the magic of the Diani coastline to your special day. Simplifying destination weddings with local expertise and curated style.
+              We bring the magic of Diani coastline to your special day. Simplifying destination weddings with local expertise and curated style.
             </p>
           </div>
           <div>
@@ -252,7 +254,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <li><Link to="/gallery" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Inspiration Board</Link></li>
               <li><Link to="/community" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Community Hub</Link></li>
               <li><Link to="/activities" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Activities</Link></li>
-              <li><Link to="/history" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Diani History</Link></li>
             </ul>
           </div>
           <div>
@@ -262,7 +263,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <li><Link to="/about" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">About Us</Link></li>
               <li><Link to="/community" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Community</Link></li>
               <li><Link to="/contact" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Contact Us</Link></li>
-              <li><Link to="/login" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">login</Link></li>
             </ul>
           </div>
           <div>
@@ -284,4 +284,4 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   );
 };
 
-export default Layout;
+export default LayoutNew;
