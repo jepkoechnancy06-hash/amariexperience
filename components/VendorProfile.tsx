@@ -5,7 +5,7 @@ import { MapPin, Star, MessageSquare, ArrowLeft, Heart, Mail, Phone, Globe, Cale
 
 const VendorProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [activeTab, setActiveTab] = useState<'about' | 'portfolio' | 'reviews' | 'contact'>('about');
+  const [activeTab, setActiveTab] = useState<'portfolio' | 'about' | 'contact'>('portfolio');
   
   const vendor = MOCK_VENDORS.find(v => v.id === id);
   
@@ -210,9 +210,8 @@ const VendorProfile: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex space-x-8">
             {[
-              { id: 'about', label: 'About', icon: <Star size={16} /> },
               { id: 'portfolio', label: 'Portfolio', icon: <Camera size={16} /> },
-              { id: 'reviews', label: 'Reviews', icon: <MessageSquare size={16} /> },
+              { id: 'about', label: 'About', icon: <Star size={16} /> },
               { id: 'contact', label: 'Contact', icon: <Mail size={16} /> }
             ].map((tab) => (
               <button
@@ -264,7 +263,6 @@ const VendorProfile: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
                 <div className="space-y-4">
                   <h3 className="font-bold text-amari-900 mb-3">Awards & Recognition</h3>
                   <div className="space-y-2">
