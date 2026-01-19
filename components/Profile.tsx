@@ -105,7 +105,7 @@ const Profile: React.FC = () => {
           {user.userType === 'vendor' && (
             <div className="mt-8 pt-8 border-t border-amari-100">
               <h2 className="text-xl font-bold text-amari-900 mb-6">Vendor Dashboard</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
@@ -135,22 +135,6 @@ const Profile: React.FC = () => {
                     className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors"
                   >
                     Edit Profile →
-                  </Link>
-                </div>
-                
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-                      <User size={20} className="text-white" />
-                    </div>
-                    <h3 className="font-semibold text-green-900">Client Reviews</h3>
-                  </div>
-                  <p className="text-sm text-green-700 mb-3">View and respond to client feedback</p>
-                  <Link
-                    to="/reviews"
-                    className="inline-flex items-center gap-2 text-green-600 hover:text-green-800 font-medium text-sm transition-colors"
-                  >
-                    View Reviews →
                   </Link>
                 </div>
                 
