@@ -7,6 +7,10 @@ const Login: React.FC = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    firstName: '',
+    lastName: '',
+    phone: '',
+    userType: 'couple'
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
@@ -17,6 +21,22 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Basic validation for registration
+    if (!isLogin) {
+      if (!formData.firstName.trim()) {
+        alert('First name is required');
+        return;
+      }
+      if (!formData.lastName.trim()) {
+        alert('Last name is required');
+        return;
+      }
+      if (formData.password.length < 8) {
+        alert('Password must be at least 8 characters long');
+        return;
+      }
+    }
+    
     if (isLogin) {
       await login({
         email: formData.email,
@@ -26,10 +46,10 @@ const Login: React.FC = () => {
       await register({
         email: formData.email,
         password: formData.password,
-        firstName: formData.firstName || '',
-        lastName: formData.lastName || '',
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         phone: formData.phone,
-        userType: 'couple',
+        userType: formData.userType,
       });
     }
     
@@ -98,7 +118,7 @@ const Login: React.FC = () => {
                     <input
                       type="text"
                       name="firstName"
-                      value={formData.firstName || ''}
+                      value={formData.firstName}
                       onChange={handleChange}
                       required={!isLogin}
                       className="w-full pl-10 pr-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-amari-500 focus:border-amari-500 transition-all"
@@ -113,7 +133,7 @@ const Login: React.FC = () => {
                   <input
                     type="text"
                     name="lastName"
-                    value={formData.lastName || ''}
+                    value={formData.lastName}
                     onChange={handleChange}
                     required={!isLogin}
                       className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-amari-500 focus:border-amari-500 transition-all"
@@ -149,11 +169,29 @@ const Login: React.FC = () => {
                 <input
                   type="tel"
                   name="phone"
-                  value={formData.phone || ''}
+                  value={formData.phone}
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-amari-500 focus:border-amari-500 transition-all"
                   placeholder="+254 712 345 678"
                 />
+              </div>
+            )}
+
+            {!isLogin && (
+              <div>
+                <label className="block text-sm font-medium text-stone-700 mb-2">
+                  Account Type
+                </label>
+                <select
+                  name="userType"
+                  value={formData.userType}
+                  onChange={handleChange}
+                  required={!isLogin}
+                  className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-amari-500 focus:border-amari-500 transition-all"
+                >
+                  <option value="couple">Couple</option>
+                  <option value="vendor">Vendor</option>
+                </select>
               </div>
             )}
 
