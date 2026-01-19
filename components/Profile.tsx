@@ -104,19 +104,70 @@ const Profile: React.FC = () => {
           {/* Vendor Specific Section */}
           {user.userType === 'vendor' && (
             <div className="mt-8 pt-8 border-t border-amari-100">
-              <h2 className="text-xl font-bold text-amari-900 mb-6">Vendor Information</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-amari-50 rounded-xl p-6">
-                  <h3 className="font-semibold text-amari-900 mb-2">Business Details</h3>
-                  <p className="text-sm text-stone-600">Manage your business profile and services</p>
+              <h2 className="text-xl font-bold text-amari-900 mb-6">Vendor Dashboard</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                      <User size={20} className="text-white" />
+                    </div>
+                    <h3 className="font-semibold text-purple-900">Portfolio Gallery</h3>
+                  </div>
+                  <p className="text-sm text-purple-700 mb-3">Showcase your best work and services</p>
+                  <Link
+                    to="/gallery"
+                    className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-800 font-medium text-sm transition-colors"
+                  >
+                    Manage Gallery →
+                  </Link>
                 </div>
-                <div className="bg-stone-50 rounded-xl p-6">
-                  <h3 className="font-semibold text-stone-900 mb-2">Client Reviews</h3>
-                  <p className="text-sm text-stone-600">View and respond to client feedback</p>
+                
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                      <Settings size={20} className="text-white" />
+                    </div>
+                    <h3 className="font-semibold text-blue-900">About Business</h3>
+                  </div>
+                  <p className="text-sm text-blue-700 mb-3">Update your business profile and services</p>
+                  <Link
+                    to="/profile"
+                    className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors"
+                  >
+                    Edit Profile →
+                  </Link>
                 </div>
-                <div className="bg-blue-50 rounded-xl p-6">
-                  <h3 className="font-semibold text-blue-900 mb-2">Analytics</h3>
-                  <p className="text-sm text-blue-600">Track your business performance</p>
+                
+                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                      <User size={20} className="text-white" />
+                    </div>
+                    <h3 className="font-semibold text-green-900">Client Reviews</h3>
+                  </div>
+                  <p className="text-sm text-green-700 mb-3">View and respond to client feedback</p>
+                  <Link
+                    to="/reviews"
+                    className="inline-flex items-center gap-2 text-green-600 hover:text-green-800 font-medium text-sm transition-colors"
+                  >
+                    View Reviews →
+                  </Link>
+                </div>
+                
+                <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
+                      <User size={20} className="text-white" />
+                    </div>
+                    <h3 className="font-semibold text-orange-900">Contact Info</h3>
+                  </div>
+                  <p className="text-sm text-orange-700 mb-3">Manage your contact details and availability</p>
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center gap-2 text-orange-600 hover:text-orange-800 font-medium text-sm transition-colors"
+                  >
+                    Update Contact →
+                  </Link>
                 </div>
               </div>
             </div>
