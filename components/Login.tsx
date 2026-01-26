@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
@@ -14,9 +14,27 @@ const Login: React.FC = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+  const [didSubmit, setDidSubmit] = useState(false);
   
-  const { login, register, isLoading, error } = useAuth();
+  const { login, register, isLoading, error, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!didSubmit) return;
+    if (!isAuthenticated || !user) return;
+
+    if (user.userType === 'vendor') {
+      navigate('/partner');
+      return;
+    }
+
+    if (user.userType === 'admin') {
+      navigate('/admin');
+      return;
+    }
+
+    navigate('/dashboard');
+  }, [didSubmit, isAuthenticated, navigate, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,11 +70,8 @@ const Login: React.FC = () => {
         userType: formData.userType,
       });
     }
-    
-    // Redirect on successful auth
-    setTimeout(() => {
-      navigate('/');
-    }, 1000);
+
+    setDidSubmit(true);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

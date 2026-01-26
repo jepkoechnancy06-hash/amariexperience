@@ -78,17 +78,52 @@ export const getApplications = async (): Promise<VendorApplication[]> => {
       businessName: row.business_name,
       vendorType: row.vendor_type,
       location: row.location,
-      businessRegistration: null, // Would be file object in real implementation
+      businessRegistration: row.business_registration_url || null,
       contactPersonName: row.contact_person_name,
       email: row.email,
       phone: row.phone,
-      portfolioPhotos: Array.isArray(row.portfolio_photos) ? row.portfolio_photos : [],
+      portfolioPhotos: Array.isArray(row.portfolio_photos)
+        ? row.portfolio_photos
+        : (typeof row.portfolio_photos === 'string' ? (JSON.parse(row.portfolio_photos) || []) : []),
       submittedAt: new Date(row.submitted_at).getTime(),
       status: row.status
     }));
   } catch (error) {
     console.error('Failed to get applications:', error);
     throw new Error('Failed to retrieve vendor applications');
+  }
+};
+
+export const getLatestApplicationByUserId = async (userId: string): Promise<VendorApplication | null> => {
+  try {
+    const result = await executeQuery(`
+      SELECT * FROM vendor_applications
+      WHERE user_id = $1
+      ORDER BY submitted_at DESC
+      LIMIT 1
+    `, [userId]);
+
+    const row = Array.isArray(result) && result.length > 0 ? result[0] : null;
+    if (!row) return null;
+
+    return {
+      id: row.id,
+      businessName: row.business_name,
+      vendorType: row.vendor_type,
+      location: row.location,
+      businessRegistration: row.business_registration_url || null,
+      contactPersonName: row.contact_person_name,
+      email: row.email,
+      phone: row.phone,
+      portfolioPhotos: Array.isArray(row.portfolio_photos)
+        ? row.portfolio_photos
+        : (typeof row.portfolio_photos === 'string' ? (JSON.parse(row.portfolio_photos) || []) : []),
+      submittedAt: new Date(row.submitted_at).getTime(),
+      status: row.status
+    };
+  } catch (error) {
+    console.error('Failed to get latest application:', error);
+    return null;
   }
 };
 

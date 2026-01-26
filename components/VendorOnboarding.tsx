@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { VendorCategory } from '../types';
-import { submitApplication } from '../services/vendorService';
+import { submitApplication, getLatestApplicationByUserId } from '../services/vendorService';
 import { initializeDatabase } from '../lib/db';
 import { CheckCircle, Store, MapPin, Phone, Mail, ArrowRight, Upload, Info, Globe, Target, Eye, Waves } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -17,6 +16,7 @@ const VendorOnboarding: React.FC = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const [submitted, setSubmitted] = useState(false);
+  const [existingStatus, setExistingStatus] = useState<string | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number; address: string } | null>(null);
   const [mapCenter] = useState({ lat: -4.2767, lng: 39.5935 }); // Diani Beach coordinates
   const mapRef = useRef<HTMLDivElement>(null);
@@ -61,6 +61,16 @@ const VendorOnboarding: React.FC = () => {
         phone: user.phone || prev.phone,
         contactPersonName: `${user.firstName} ${user.lastName}`.trim() || prev.contactPersonName
       }));
+
+      getLatestApplicationByUserId(user.id)
+        .then((app) => {
+          if (!app) return;
+          setExistingStatus(app.status);
+          setSubmitted(true);
+        })
+        .catch(() => {
+          // ignore
+        });
     }
   }, [isAuthenticated, user, navigate]);
 
@@ -164,6 +174,9 @@ const VendorOnboarding: React.FC = () => {
           <p className="text-stone-600 mb-10 leading-relaxed">
             Our concierge team will review your application and reach out to {formData.email} within 24-48 hours.
           </p>
+          {existingStatus && (
+            <p className="text-sm text-stone-500 mb-8">Current status: {existingStatus}</p>
+          )}
           <div className="space-y-4">
             <Link to="/couples" className="block w-full bg-white text-stone-600 border border-amari-200 px-6 py-4 rounded-xl font-bold hover:bg-amari-50 transition">
               Visit Couple's Site
