@@ -44,11 +44,11 @@ export interface VendorApplication {
   businessName: string;
   vendorType: string;
   location: string;
-  businessRegistration: File | null;
+  businessRegistration: File | string | null;
   contactPersonName: string;
   email: string;
   phone: string;
-  portfolioPhotos: File[];
+  portfolioPhotos: Array<File | string>;
   submittedAt: number;
   status: 'Pending' | 'Approved' | 'Rejected';
 }

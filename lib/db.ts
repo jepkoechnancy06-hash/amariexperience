@@ -1,6 +1,7 @@
 // Database connection configuration
-const NEON_URL = 'https://ep-misty-bush-ah51gttt-pooler.c-3.us-east-1.aws.neon.tech';
-const NEON_TOKEN = 'npg_COWH0y3qtwUa';
+const env = (import.meta as any).env || {};
+const NEON_URL = env.VITE_NEON_DB_URL || 'https://ep-misty-bush-ah51gttt-pooler.c-3.us-east-1.aws.neon.tech';
+const NEON_TOKEN = env.VITE_NEON_DB_TOKEN || 'npg_COWH0y3qtwUa';
 
 // Real Neon database connection using fetch API
 export const executeQuery = async (query: string, params: any[] = []) => {
@@ -29,6 +30,11 @@ export const executeQuery = async (query: string, params: any[] = []) => {
     
     const result = await response.json();
     console.log('Database query result:', result);
+
+    if (result && typeof result === 'object' && 'rows' in result && Array.isArray((result as any).rows)) {
+      return (result as any).rows;
+    }
+
     return result;
   } catch (error) {
     console.error('Database query failed:', error);
@@ -49,16 +55,17 @@ const executeQueryFallback = async (query: string, params: any[] = []) => {
   if (query.includes('INSERT INTO vendor_applications')) {
     const newApplication = {
       id: params[0],
-      business_name: params[1],
-      vendor_type: params[2],
-      location: params[3],
-      business_registration_url: params[4],
-      contact_person_name: params[5],
-      email: params[6],
-      phone: params[7],
-      portfolio_photos: params[8],
-      submitted_at: params[9],
-      status: params[10]
+      user_id: params[1],
+      business_name: params[2],
+      vendor_type: params[3],
+      location: params[4],
+      business_registration_url: params[5],
+      contact_person_name: params[6],
+      email: params[7],
+      phone: params[8],
+      portfolio_photos: params[9],
+      submitted_at: params[10],
+      status: params[11]
     };
     mockApplications.push(newApplication);
     return newApplication;
@@ -101,10 +108,13 @@ export const testConnection = async () => {
 // Initialize database tables
 export const initializeDatabase = async () => {
   try {
+    await executeQuery('CREATE EXTENSION IF NOT EXISTS pgcrypto;');
+
     // Create vendor_applications table
     await executeQuery(`
       CREATE TABLE IF NOT EXISTS vendor_applications (
-        id VARCHAR(255) PRIMARY KEY,
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID,
         business_name VARCHAR(255) NOT NULL,
         vendor_type VARCHAR(255) NOT NULL,
         location VARCHAR(255) NOT NULL,
@@ -115,14 +125,19 @@ export const initializeDatabase = async () => {
         portfolio_photos TEXT[],
         submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         status VARCHAR(50) DEFAULT 'Pending',
+        approved_at TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
+    await executeQuery('ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS user_id UUID;');
+    await executeQuery('ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS approved_at TIMESTAMP;');
+
     // Create vendors table for approved vendors
     await executeQuery(`
       CREATE TABLE IF NOT EXISTS vendors (
-        id VARCHAR(255) PRIMARY KEY,
+        id UUID PRIMARY KEY,
+        user_id UUID,
         name VARCHAR(255) NOT NULL,
         category VARCHAR(255) NOT NULL,
         rating DECIMAL(2,1) DEFAULT 0.0,
@@ -136,6 +151,8 @@ export const initializeDatabase = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+    await executeQuery('ALTER TABLE vendors ADD COLUMN IF NOT EXISTS user_id UUID;');
 
     console.log('Database tables initialized successfully');
     return true;

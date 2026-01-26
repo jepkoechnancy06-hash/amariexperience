@@ -1,15 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MOCK_VENDORS } from '../constants';
-import { VendorCategory } from '../types';
+import { getApprovedVendors } from '../services/vendorService';
 import { MapPin, Star, MessageSquare, Heart } from 'lucide-react';
 
 const VendorDirectory: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<VendorCategory | 'All'>('All');
+  const [selectedCategory, setSelectedCategory] = useState<string | 'All'>('All');
+  const [vendors, setVendors] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredVendors = selectedCategory === 'All' 
-    ? MOCK_VENDORS 
-    : MOCK_VENDORS.filter(v => v.category === selectedCategory);
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    getApprovedVendors()
+      .then((data) => {
+        if (mounted) setVendors(data || []);
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    (vendors || []).forEach((v) => {
+      if (v?.category) set.add(v.category);
+    });
+    return Array.from(set);
+  }, [vendors]);
+
+  const filteredVendors = selectedCategory === 'All'
+    ? vendors
+    : (vendors || []).filter((v) => v.category === selectedCategory);
 
   return (
     <div className="py-20 px-4 max-w-7xl mx-auto">
@@ -45,7 +69,7 @@ const VendorDirectory: React.FC = () => {
         >
           All
         </button>
-        {Object.values(VendorCategory).map(cat => (
+        {categories.map(cat => (
           <button 
             key={cat}
             onClick={() => setSelectedCategory(cat)}
@@ -59,6 +83,12 @@ const VendorDirectory: React.FC = () => {
 
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        {loading && (
+          <div className="col-span-full text-center text-stone-500">Loading vendors...</div>
+        )}
+        {!loading && filteredVendors.length === 0 && (
+          <div className="col-span-full text-center text-stone-500">No approved vendors yet.</div>
+        )}
         {filteredVendors.map(vendor => (
           <div key={vendor.id} className="bg-white rounded-3xl shadow-sm hover:shadow-xl transition duration-500 overflow-hidden group border border-amari-100/50 flex flex-col h-full">
             <div className="relative h-64 overflow-hidden">
@@ -66,9 +96,9 @@ const VendorDirectory: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               
               <div className="absolute top-4 left-4">
-                 <button className="bg-white/95 p-2 rounded-full text-stone-400 hover:text-amari-terracotta transition shadow-sm">
-                    <Heart size={16} />
-                 </button>
+                <button className="bg-white/95 p-2 rounded-full text-stone-400 hover:text-amari-terracotta transition shadow-sm">
+                  <Heart size={16} />
+                </button>
               </div>
             </div>
             <div className="p-8 flex-grow flex flex-col">

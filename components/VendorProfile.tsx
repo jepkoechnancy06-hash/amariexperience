@@ -1,13 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MOCK_VENDORS } from '../constants';
+import { getApprovedVendorById } from '../services/vendorService';
 import { MapPin, Star, MessageSquare, ArrowLeft, Heart, Mail, Phone, Globe, Calendar, Users, Award, Check, Clock, DollarSign, Camera, Music, Utensils, Flower, Car, FileText, Sparkles } from 'lucide-react';
 
 const VendorProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState<'portfolio' | 'about' | 'contact'>('portfolio');
-  
-  const vendor = MOCK_VENDORS.find(v => v.id === id);
+  const [vendor, setVendor] = useState<any | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    if (!id) return;
+
+    setLoading(true);
+    getApprovedVendorById(id)
+      .then((v) => {
+        if (mounted) setVendor(v);
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [id]);
   
   // Enhanced vendor data with detailed content
   const vendorDetails = vendor ? {
@@ -100,6 +118,16 @@ const VendorProfile: React.FC = () => {
     return icons[category] || <Star size={20} />;
   }
   
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-amari-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-amari-900 mb-4">Loading Vendor...</h1>
+        </div>
+      </div>
+    );
+  }
+
   if (!vendor || !vendorDetails) {
     return (
       <div className="min-h-screen bg-amari-50 flex items-center justify-center">

@@ -1,10 +1,13 @@
-import { VendorApplication, VendorCategory } from '../types';
+import { VendorApplication } from '../types';
 import { executeQuery } from '../lib/db';
 
 // Submit vendor application to database
-export const submitApplication = async (app: Omit<VendorApplication, 'id' | 'submittedAt' | 'status'>): Promise<VendorApplication> => {
+export const submitApplication = async (
+  app: Omit<VendorApplication, 'id' | 'submittedAt' | 'status'>,
+  userId?: string
+): Promise<VendorApplication> => {
   try {
-    const id = Date.now().toString();
+    const id = crypto.randomUUID();
     const submittedAt = new Date().toISOString();
     
     // Handle file uploads (convert to URLs or base64 for storage)
@@ -12,14 +15,16 @@ export const submitApplication = async (app: Omit<VendorApplication, 'id' | 'sub
     if (app.businessRegistration) {
       // In a real app, you'd upload to a storage service
       // For now, we'll store the file name
-      businessRegistrationUrl = app.businessRegistration.name;
+      businessRegistrationUrl = typeof app.businessRegistration === 'string'
+        ? app.businessRegistration
+        : app.businessRegistration.name;
     }
 
-    let portfolioPhotos: string[] = [];
-    if (app.portfolioPhotos && app.portfolioPhotos.length > 0) {
-      // Convert file objects to URLs or base64
-      portfolioPhotos = app.portfolioPhotos.map(file => file.name);
-    }
+    const portfolioPhotos: string[] = Array.isArray(app.portfolioPhotos)
+      ? (app.portfolioPhotos as any[])
+          .map((p) => (typeof p === 'string' ? p : p?.name))
+          .filter(Boolean)
+      : [];
 
     const newApp: VendorApplication = {
       ...app,
@@ -31,14 +36,15 @@ export const submitApplication = async (app: Omit<VendorApplication, 'id' | 'sub
     // Insert into database
     await executeQuery(`
       INSERT INTO vendor_applications (
-        id, business_name, vendor_type, location, business_registration_url,
-        contact_person_name, email, phone, portfolio_photos, 
+        id, user_id, business_name, vendor_type, location, business_registration_url,
+        contact_person_name, email, phone, portfolio_photos,
         submitted_at, status
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
       )
     `, [
       id,
+      userId || null,
       app.businessName,
       app.vendorType,
       app.location,
@@ -46,7 +52,7 @@ export const submitApplication = async (app: Omit<VendorApplication, 'id' | 'sub
       app.contactPersonName,
       app.email,
       app.phone,
-      JSON.stringify(portfolioPhotos),
+      portfolioPhotos,
       submittedAt,
       'Pending'
     ]);
@@ -67,16 +73,16 @@ export const getApplications = async (): Promise<VendorApplication[]> => {
       ORDER BY submitted_at DESC
     `);
     
-    return result.map((row: any) => ({
+    return (result || []).map((row: any) => ({
       id: row.id,
       businessName: row.business_name,
-      category: row.vendor_type as VendorCategory,
+      vendorType: row.vendor_type,
       location: row.location,
       businessRegistration: null, // Would be file object in real implementation
       contactPersonName: row.contact_person_name,
       email: row.email,
       phone: row.phone,
-      portfolioPhotos: row.portfolio_photos ? JSON.parse(row.portfolio_photos) : [],
+      portfolioPhotos: Array.isArray(row.portfolio_photos) ? row.portfolio_photos : [],
       submittedAt: new Date(row.submitted_at).getTime(),
       status: row.status
     }));
@@ -94,6 +100,43 @@ export const updateApplicationStatus = async (id: string, status: 'Approved' | '
       SET status = $1, approved_at = $2
       WHERE id = $3
     `, [status, status === 'Approved' ? new Date().toISOString() : null, id]);
+
+    if (status === 'Approved') {
+      const apps = await executeQuery('SELECT * FROM vendor_applications WHERE id = $1', [id]);
+      const app = Array.isArray(apps) && apps.length > 0 ? apps[0] : null;
+      if (app) {
+        await executeQuery(`
+          INSERT INTO vendors (
+            id, user_id, name, category, rating, price_range, description, image_url,
+            location, contact_email, contact_phone, approved_at
+          ) VALUES (
+            $1, $2, $3, $4, $5, $6, $7, $8,
+            $9, $10, $11, $12
+          )
+          ON CONFLICT (id) DO UPDATE SET
+            user_id = EXCLUDED.user_id,
+            name = EXCLUDED.name,
+            category = EXCLUDED.category,
+            location = EXCLUDED.location,
+            contact_email = EXCLUDED.contact_email,
+            contact_phone = EXCLUDED.contact_phone,
+            approved_at = EXCLUDED.approved_at
+        `, [
+          app.id,
+          app.user_id || null,
+          app.business_name,
+          app.vendor_type,
+          0.0,
+          null,
+          null,
+          null,
+          app.location,
+          app.email,
+          app.phone,
+          new Date().toISOString()
+        ]);
+      }
+    }
     
     console.log(`Application ${id} status updated to:`, status);
   } catch (error) {
@@ -111,18 +154,45 @@ export const getApprovedVendors = async () => {
       ORDER BY approved_at DESC
     `);
     
-    return result.map((row: any) => ({
+    return (result || []).map((row: any) => ({
       id: row.id,
       name: row.name,
       category: row.category,
       rating: parseFloat(row.rating),
       priceRange: row.price_range || '$$$',
-      description: row.description,
-      imageUrl: row.image_url,
+      description: row.description || '',
+      imageUrl: row.image_url || '/beach.jpeg',
       location: row.location
     }));
   } catch (error) {
     console.error('Failed to get approved vendors:', error);
     return [];
+  }
+};
+
+export const getApprovedVendorById = async (id: string) => {
+  try {
+    const result = await executeQuery(`
+      SELECT * FROM vendors
+      WHERE id = $1 AND approved_at IS NOT NULL
+      LIMIT 1
+    `, [id]);
+
+    const row = Array.isArray(result) && result.length > 0 ? result[0] : null;
+    if (!row) return null;
+
+    return {
+      id: row.id,
+      name: row.name,
+      category: row.category,
+      rating: parseFloat(row.rating),
+      priceRange: row.price_range || '$$$',
+      description: row.description || '',
+      imageUrl: row.image_url || '/beach.jpeg',
+      location: row.location
+    };
+  } catch (error) {
+    console.error('Failed to get approved vendor:', error);
+    return null;
   }
 };

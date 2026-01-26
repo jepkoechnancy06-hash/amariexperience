@@ -3,7 +3,8 @@ import { VendorCategory } from '../types';
 import { submitApplication } from '../services/vendorService';
 import { initializeDatabase } from '../lib/db';
 import { CheckCircle, Store, MapPin, Phone, Mail, ArrowRight, Upload, Info, Globe, Target, Eye, Waves } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 // Declare Leaflet on window object
 declare global {
@@ -13,6 +14,8 @@ declare global {
 }
 
 const VendorOnboarding: React.FC = () => {
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
   const [submitted, setSubmitted] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number; address: string } | null>(null);
   const [mapCenter] = useState({ lat: -4.2767, lng: 39.5935 }); // Diani Beach coordinates
@@ -39,6 +42,27 @@ const VendorOnboarding: React.FC = () => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
+    if (user?.userType && user.userType !== 'vendor') {
+      navigate('/dashboard');
+      return;
+    }
+
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        email: user.email || prev.email,
+        phone: user.phone || prev.phone,
+        contactPersonName: `${user.firstName} ${user.lastName}`.trim() || prev.contactPersonName
+      }));
+    }
+  }, [isAuthenticated, user, navigate]);
 
   useEffect(() => {
     // Load OpenStreetMap script
@@ -119,7 +143,7 @@ const VendorOnboarding: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await submitApplication(formData);
+      await submitApplication(formData, user?.id);
       setSubmitted(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
