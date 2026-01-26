@@ -1,7 +1,6 @@
 // Database connection configuration
 const env = (import.meta as any).env || {};
-const NEON_URL = env.VITE_NEON_DB_URL || 'https://ep-misty-bush-ah51gttt-pooler.c-3.us-east-1.aws.neon.tech';
-const NEON_TOKEN = env.VITE_NEON_DB_TOKEN || 'npg_COWH0y3qtwUa';
+const API_URL = env.VITE_API_URL || '/api/db/execute';
 
 // Real Neon database connection using fetch API
 export const executeQuery = async (query: string, params: any[] = []) => {
@@ -9,13 +8,13 @@ export const executeQuery = async (query: string, params: any[] = []) => {
     console.log('Executing database query:', query);
     console.log('With params:', params);
     
-    const response = await fetch(`${NEON_URL}/sql`, {
+    const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${NEON_TOKEN}`,
         'Accept': 'application/json'
       },
+      credentials: 'include',
       body: JSON.stringify({ query, params })
     });
     
