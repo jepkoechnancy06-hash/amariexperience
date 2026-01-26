@@ -267,51 +267,23 @@ export const testConnection = async () => {
 // Initialize database tables
 export const initializeDatabase = async () => {
   try {
-    await executeQuery('CREATE EXTENSION IF NOT EXISTS pgcrypto;');
+    const env = (import.meta as any).env || {};
+    const initUrl = env.VITE_DB_INIT_URL || '/api/db/init';
 
-    // Create vendor_applications table
-    await executeQuery(`
-      CREATE TABLE IF NOT EXISTS vendor_applications (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        user_id UUID,
-        business_name VARCHAR(255) NOT NULL,
-        vendor_type VARCHAR(255) NOT NULL,
-        location VARCHAR(255) NOT NULL,
-        business_registration_url TEXT,
-        contact_person_name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        phone VARCHAR(50) NOT NULL,
-        portfolio_photos TEXT[],
-        submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        status VARCHAR(50) DEFAULT 'Pending',
-        approved_at TIMESTAMP,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
+    const response = await fetch(initUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      credentials: 'include'
+    });
 
-    await executeQuery('ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS user_id UUID;');
-    await executeQuery('ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS approved_at TIMESTAMP;');
-
-    // Create vendors table for approved vendors
-    await executeQuery(`
-      CREATE TABLE IF NOT EXISTS vendors (
-        id UUID PRIMARY KEY,
-        user_id UUID,
-        name VARCHAR(255) NOT NULL,
-        category VARCHAR(255) NOT NULL,
-        rating DECIMAL(2,1) DEFAULT 0.0,
-        price_range VARCHAR(10),
-        description TEXT,
-        image_url VARCHAR(500),
-        location VARCHAR(255) NOT NULL,
-        contact_email VARCHAR(255),
-        contact_phone VARCHAR(50),
-        approved_at TIMESTAMP,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    await executeQuery('ALTER TABLE vendors ADD COLUMN IF NOT EXISTS user_id UUID;');
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Database init failed:', errorText);
+      return false;
+    }
 
     console.log('Database tables initialized successfully');
     return true;
