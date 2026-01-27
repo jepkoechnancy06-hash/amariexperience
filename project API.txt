@@ -1,0 +1,6 @@
+
+Project API
+database url
+https://diqwvdrcjmjszcfdlseq.supabase.co
+Publishable API Key
+sb_publishable_XxxjwkVkUoXi4qrOubRPog_gdB1DpXU
