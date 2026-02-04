@@ -1,7 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import bcrypt from 'bcryptjs';
-import { getSql } from '../_lib/db';
-import { setSessionCookie } from '../_lib/auth';
+import {
+  getSupabaseAuthBaseUrl,
+  getSupabaseAuthHeaders,
+  mapSupabaseUserToAppUser,
+  setSupabaseSessionCookies
+} from '../_lib/supabaseAuth';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -27,58 +30,44 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const sql = getSql();
-    await sql`CREATE EXTENSION IF NOT EXISTS pgcrypto;`;
+    const emailRedirectTo = process.env.SUPABASE_EMAIL_REDIRECT_TO;
 
-    await sql`
-      CREATE TABLE IF NOT EXISTS users (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        email VARCHAR(255) UNIQUE NOT NULL,
-        first_name VARCHAR(100) NOT NULL,
-        last_name VARCHAR(100) NOT NULL,
-        phone VARCHAR(20),
-        user_type VARCHAR(20) NOT NULL DEFAULT 'couple',
-        profile_image TEXT,
-        email_verified BOOLEAN DEFAULT FALSE,
-        is_active BOOLEAN DEFAULT TRUE,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-        last_login TIMESTAMP WITH TIME ZONE,
-        password_hash VARCHAR(255) NOT NULL
-      );
-    `;
+    const response = await fetch(`${getSupabaseAuthBaseUrl()}/signup`, {
+      method: 'POST',
+      headers: getSupabaseAuthHeaders(),
+      body: JSON.stringify({
+        email,
+        password,
+        data: {
+          firstName,
+          lastName,
+          phone: phone || null,
+          userType
+        },
+        ...(emailRedirectTo ? { emailRedirectTo } : {})
+      })
+    });
 
-    const existing = await sql`SELECT id FROM users WHERE email = ${email} LIMIT 1;`;
-    if (existing.length > 0) {
-      res.status(409).json({ error: 'Email already exists' });
+    const payload = await response.json().catch(() => null);
+    if (!response.ok) {
+      res.status(response.status).json({ error: payload?.msg || payload?.error_description || payload?.error || 'Registration failed' });
       return;
     }
 
-    const passwordHash = await bcrypt.hash(password, 10);
+    const sbUser = payload?.user;
+    const session = payload?.session;
 
-    const inserted = await sql`
-      INSERT INTO users (email, first_name, last_name, phone, user_type, password_hash)
-      VALUES (${email}, ${firstName}, ${lastName}, ${phone || null}, ${userType}, ${passwordHash})
-      RETURNING id, email, first_name, last_name, phone, user_type, created_at, email_verified,
-                is_active, profile_image, last_login;
-    `;
+    if (session?.access_token && session?.refresh_token) {
+      setSupabaseSessionCookies(res, session.access_token, session.refresh_token);
+    }
 
-    const user = inserted[0];
-    setSessionCookie(res, { sub: user.id, email: user.email, userType: user.user_type });
+    const appUser = sbUser ? mapSupabaseUserToAppUser(sbUser) : null;
 
+    // If email confirmation is enabled in Supabase, session will likely be null.
+    // Supabase will send the confirmation email automatically.
     res.status(201).json({
-      user: {
-        id: user.id,
-        email: user.email,
-        firstName: user.first_name,
-        lastName: user.last_name,
-        phone: user.phone,
-        userType: user.user_type,
-        profileImage: user.profile_image,
-        createdAt: user.created_at,
-        lastLogin: user.last_login,
-        isActive: user.is_active,
-        emailVerified: user.email_verified
-      }
+      user: appUser,
+      needsEmailVerification: !session
     });
   } catch (e: any) {
     res.status(500).json({ error: e?.message || 'Registration failed' });

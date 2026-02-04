@@ -109,12 +109,9 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
                   For Couples
                 </Link>
                 <NavLink to="/vendors" className={navLinkClass}>Directory</NavLink>
-                <NavLink to="/tools" className={navLinkClass}>Planning Tools</NavLink>
                 <NavLink to="/gallery" className={navLinkClass}>Inspiration</NavLink>
-                <NavLink to="/concierge" className={navLinkClass}>Concierge</NavLink>
                 <NavLink to="/about" className={navLinkClass}>About</NavLink>
                 <NavLink to="/community" className={navLinkClass}>Community</NavLink>
-                <NavLink to="/activities" className={navLinkClass}>Activities</NavLink>
                 <NavLink to="/history" className={navLinkClass}>Diani History</NavLink>
                 <div className="relative">
                   <button
@@ -258,13 +255,10 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
                   For Couples
                 </Link>
                 <NavLink to="/vendors" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Directory</NavLink>
-                <NavLink to="/tools" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Planning Tools</NavLink>
                 <NavLink to="/gallery" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Inspiration Board</NavLink>
-                <NavLink to="/concierge" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Concierge</NavLink>
                 <div className="pt-2 mt-2 border-t border-amari-100/70"></div>
                 <NavLink to="/about" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>About Us</NavLink>
                 <NavLink to="/community" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Community</NavLink>
-                <NavLink to="/activities" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Activities</NavLink>
                 <NavLink to="/history" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Diani History</NavLink>
                 <Link to="/admin" className="block px-4 py-3 rounded-xl font-medium text-stone-400 hover:text-stone-600 transition-colors">
                   Admin
