@@ -9,6 +9,7 @@ export const submitApplication = async (
   try {
     const id = crypto.randomUUID();
     const submittedAt = new Date().toISOString();
+    const termsAcceptedAt = app.termsAccepted ? new Date().toISOString() : null;
 
     const verificationDocumentUrl = app.verificationDocument
       ? (typeof app.verificationDocument === 'string' ? app.verificationDocument : app.verificationDocument.name)
@@ -60,6 +61,7 @@ export const submitApplication = async (
         verification_document_type,
         verification_document_url,
         terms_accepted,
+        terms_accepted_at,
         submitted_at,
         status
       ) VALUES (
@@ -91,7 +93,8 @@ export const submitApplication = async (
         $27,
         $28,
         $29,
-        $30
+        $30,
+        $31
       )
     `, [
       id,
@@ -121,6 +124,7 @@ export const submitApplication = async (
       app.verificationDocumentType || null,
       verificationDocumentUrl,
       !!app.termsAccepted,
+      termsAcceptedAt,
       submittedAt,
       'Pending'
     ]);
@@ -210,6 +214,7 @@ export const getApplications = async (): Promise<VendorApplication[]> => {
       verificationDocumentType: row.verification_document_type || '',
       verificationDocument: row.verification_document_url || null,
       termsAccepted: !!row.terms_accepted,
+      termsAcceptedAt: row.terms_accepted_at ? new Date(row.terms_accepted_at).getTime() : null,
 
       verificationDocumentUploaded: typeof row.verification_document_uploaded === 'boolean'
         ? row.verification_document_uploaded
@@ -274,6 +279,7 @@ export const getLatestApplicationByUserId = async (userId: string): Promise<Vend
       verificationDocumentType: row.verification_document_type || '',
       verificationDocument: row.verification_document_url || null,
       termsAccepted: !!row.terms_accepted,
+      termsAcceptedAt: row.terms_accepted_at ? new Date(row.terms_accepted_at).getTime() : null,
 
       verificationDocumentUploaded: typeof row.verification_document_uploaded === 'boolean'
         ? row.verification_document_uploaded

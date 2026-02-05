@@ -105,6 +105,7 @@ export interface VendorApplication {
   verificationDocument: File | string | null;
 
   termsAccepted: boolean;
+  termsAcceptedAt?: number | null;
 
   verificationDocumentUploaded?: boolean;
   verifiedBy?: string;

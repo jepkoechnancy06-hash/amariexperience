@@ -62,6 +62,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS verification_document_type VARCHAR(255);`;
     await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS verification_document_url TEXT;`;
     await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS terms_accepted BOOLEAN DEFAULT false;`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS terms_accepted_at TIMESTAMP WITH TIME ZONE;`;
 
     await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS verification_document_uploaded BOOLEAN DEFAULT false;`;
     await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS verified_by VARCHAR(255);`;

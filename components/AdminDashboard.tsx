@@ -337,6 +337,16 @@ const AdminDashboard: React.FC = () => {
                         <p className="text-sm font-medium text-stone-900">{new Date(selectedApp.submittedAt).toLocaleDateString()}</p>
                       </div>
                       <div>
+                        <p className="text-xs text-stone-400 mb-1">Terms accepted</p>
+                        <p className="text-sm font-medium text-stone-900">
+                          {selectedApp.termsAccepted
+                            ? (selectedApp.termsAcceptedAt
+                                ? `Yes — ${new Date(selectedApp.termsAcceptedAt).toLocaleString()}`
+                                : 'Yes')
+                            : 'No'}
+                        </p>
+                      </div>
+                      <div>
                         <p className="text-xs text-stone-400 mb-1">Status</p>
                         <span className={`text-xs font-bold px-2 py-1 rounded-full ${getStatusColor(selectedApp.status)}`}>
                           {selectedApp.status}
