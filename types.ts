@@ -39,16 +39,78 @@ export interface ChatMessage {
   timestamp: number;
 }
 
+export type WeddingVendorCategory =
+  | 'Venues'
+  | 'Planning & Coordination'
+  | 'Tents, Structures & Event Infrastructure'
+  | 'Décor, Styling & Rentals'
+  | 'Catering & Bar Services'
+  | 'Cakes & Desserts'
+  | 'Photography, Videography & Content'
+  | 'Beauty & Grooming'
+  | 'Fashion & Attire'
+  | 'Entertainment & Sound'
+  | 'Transport & Travel'
+  | 'Accommodation & Guest Services'
+  | 'Experiences & Activities'
+  | 'Stationery, Signage & Personalisation'
+  | 'Lighting, AV & Special Effects'
+  | 'Gifts, Favors & Extras'
+  | 'Legal & Ceremonial Services'
+  | 'Security, Safety & Operations'
+  | 'Cleanup & Post-Event Services'
+  | 'Tech & Digital Services'
+  | 'Miscellaneous Services';
+
+export type PricingModel = 'flat_rate' | 'per_person' | 'per_hour' | 'package_based' | 'custom';
+
+export type YesNo = 'Yes' | 'No';
+
+export type VendorVerificationDocumentType =
+  | 'Business registration / certificate of incorporation'
+  | 'Valid trade license or permit'
+  | 'Professional license'
+  | 'VAT or tax registration document'
+  | 'Proof of previous wedding service';
+
 export interface VendorApplication {
   id: string;
   businessName: string;
-  vendorType: string;
-  location: string;
-  businessRegistration: File | string | null;
-  contactPersonName: string;
-  email: string;
-  phone: string;
-  portfolioPhotos: Array<File | string>;
+  vendorCategory: WeddingVendorCategory | '';
+  vendorSubcategories: string[];
+  businessDescription: string;
+  primaryLocation: string;
+  areasServed: string;
+  contactPhone: string;
+  contactEmail: string;
+  website: string;
+  socialLinks: string;
+  realWorkImages: Array<File | string>;
+
+  startingPrice: string;
+  pricingModel: PricingModel | '';
+  startingPriceIncludes: string;
+  minimumBookingRequirement: string;
+
+  advanceBookingNotice: string;
+  setupTimeRequired: string;
+  breakdownTimeRequired: string;
+  outdoorExperience: YesNo | '';
+  destinationWeddingExperience: YesNo | '';
+  specialRequirements: string;
+
+  categorySpecific: Record<string, any>;
+
+  verificationDocumentType: VendorVerificationDocumentType | '';
+  verificationDocument: File | string | null;
+
+  termsAccepted: boolean;
+
+  verificationDocumentUploaded?: boolean;
+  verifiedBy?: string;
+  dateVerified?: number | null;
+  approvalStatus?: 'Pending' | 'Approved' | 'Rejected';
+  adminNotes?: string;
   submittedAt: number;
   status: 'Pending' | 'Approved' | 'Rejected';
 }

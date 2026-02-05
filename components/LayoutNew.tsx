@@ -307,6 +307,7 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
             <ul className="space-y-3 text-sm">
               <li><Link to="/couples" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">For Couples</Link></li>
               <li><Link to="/vendors" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Vendor Directory</Link></li>
+              <li><Link to="/vendor-categories" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Vendor Categories</Link></li>
               <li><Link to="/tools" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Planning Tools</Link></li>
               <li><Link to="/gallery" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Inspiration Board</Link></li>
               <li><Link to="/community" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Community Hub</Link></li>

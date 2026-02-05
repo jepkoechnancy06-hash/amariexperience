@@ -1,4 +1,91 @@
-import { Vendor, VendorCategory, BudgetItem, Guest } from './types';
+import { Vendor, VendorCategory, BudgetItem, Guest, WeddingVendorCategory } from './types';
+
+export const WEDDING_VENDOR_CATEGORIES: Array<{ category: WeddingVendorCategory; examples: string[] }> = [
+  {
+    category: 'Venues',
+    examples: ['Hotels', 'Resorts', 'Villas', 'Private Properties', 'Gardens', 'Beaches', 'Rooftops', 'Safari Lodges', 'Historic Venues']
+  },
+  {
+    category: 'Planning & Coordination',
+    examples: ['Wedding Planners', 'Destination Planners', 'Day-of Coordinators', 'Guest Logistics Coordinators']
+  },
+  {
+    category: 'Tents, Structures & Event Infrastructure',
+    examples: ['Tents', 'Marquees', 'Clear Span', 'Flooring', 'Staging', 'Rigging']
+  },
+  {
+    category: 'Décor, Styling & Rentals',
+    examples: ['Stylists', 'Floral Designers', 'Furniture Rentals', 'Linen/Tableware', 'Lighting', 'Arches & Backdrops']
+  },
+  {
+    category: 'Catering & Bar Services',
+    examples: ['Caterers', 'Private Chefs', 'Mobile Caterers', 'Bar Services', 'Mixologists']
+  },
+  {
+    category: 'Cakes & Desserts',
+    examples: ['Wedding Cakes', 'Custom Cakes', 'Dessert Tables', 'Pastry Chefs']
+  },
+  {
+    category: 'Photography, Videography & Content',
+    examples: ['Photographers', 'Videographers', 'Cinematographers', 'Drone Operators', 'Content Creators', 'Reels Creators']
+  },
+  {
+    category: 'Beauty & Grooming',
+    examples: ['Hair', 'Makeup', 'Grooming', 'Skincare', 'Nail Services']
+  },
+  {
+    category: 'Fashion & Attire',
+    examples: ['Bridal Gowns', 'Bridal Boutiques', 'Suits', 'Tailors', 'Bridesmaid Dresses', 'Traditional Attire']
+  },
+  {
+    category: 'Entertainment & Sound',
+    examples: ['DJs', 'Live Bands', 'Musicians', 'Saxophonists', 'Violinists', 'Cultural Performers', 'MCs', 'Sound System Providers']
+  },
+  {
+    category: 'Transport & Travel',
+    examples: ['Bridal Cars', 'Luxury Vehicles', 'Guest Shuttles', 'Boats/Yachts', 'Helicopters', 'Airport Transfers']
+  },
+  {
+    category: 'Accommodation & Guest Services',
+    examples: ['Hotels', 'Resorts', 'Villas', 'Guesthouses', 'Airbnb Hosts', 'Concierge Services']
+  },
+  {
+    category: 'Experiences & Activities',
+    examples: ['Tour Operators', 'Safari Operators', 'Boat Tours', 'Snorkelling/Diving', 'Spa & Wellness', 'Cultural Experiences', 'Adventure Activities']
+  },
+  {
+    category: 'Stationery, Signage & Personalisation',
+    examples: ['Invitations', 'Calligraphy', 'Signage', 'Seating Charts', 'Custom Stationery']
+  },
+  {
+    category: 'Lighting, AV & Special Effects',
+    examples: ['Event Lighting', 'Audio-Visual', 'Projection Mapping', 'Fireworks', 'Smoke/Fog Effects']
+  },
+  {
+    category: 'Gifts, Favors & Extras',
+    examples: ['Wedding Favors', 'Custom Gifts', 'Welcome Boxes', 'Hampers']
+  },
+  {
+    category: 'Legal & Ceremonial Services',
+    examples: ['Officiants', 'Civil Registrars', 'Religious Leaders', 'Marriage Legal Support', 'Vow Renewal Officiants']
+  },
+  {
+    category: 'Security, Safety & Operations',
+    examples: ['Event Security', 'Medical Standby', 'Crowd Control']
+  },
+  {
+    category: 'Cleanup & Post-Event Services',
+    examples: ['Cleanup Companies', 'Waste Management', 'Equipment Breakdown Crews']
+  },
+  {
+    category: 'Tech & Digital Services',
+    examples: ['Wedding Website Designers', 'RSVP Management', 'Live Streaming', 'Wedding App Developers']
+  },
+  {
+    category: 'Miscellaneous Services',
+    examples: ['Childcare', 'Pet Handlers', 'Accessibility Services', 'Weather Contingency Planning']
+  }
+];
 
 export const MOCK_VENDORS: Vendor[] = [
   {

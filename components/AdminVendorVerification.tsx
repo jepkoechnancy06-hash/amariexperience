@@ -1,20 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
 import { getApplications, updateApplicationStatus, updateApplicationVerification } from '../services/vendorService';
 import { VendorApplication } from '../types';
-import { Check, X, Clock, Eye, Sliders, FileText, Camera, Save } from 'lucide-react';
+import { Check, Clock, Eye, FileText, Save, Sliders, X } from 'lucide-react';
 
-const AdminDashboard: React.FC = () => {
+const AdminVendorVerification: React.FC = () => {
   const [applications, setApplications] = useState<VendorApplication[]>([]);
   const [selectedApp, setSelectedApp] = useState<VendorApplication | null>(null);
   const [loading, setLoading] = useState(false);
-  const [verificationSaving, setVerificationSaving] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const refreshData = async () => {
     setLoading(true);
     try {
       const apps = await getApplications();
       setApplications(apps);
+      if (selectedApp) {
+        const updated = apps.find((a) => a.id === selectedApp.id) || null;
+        setSelectedApp(updated);
+      }
     } catch (error) {
       console.error('Failed to fetch applications:', error);
     } finally {
@@ -24,18 +27,25 @@ const AdminDashboard: React.FC = () => {
 
   useEffect(() => {
     refreshData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleStatusUpdate = async (id: string, status: 'Approved' | 'Rejected') => {
-    try {
-      await updateApplicationStatus(id, status);
-      refreshData();
-      if (selectedApp?.id === id) {
-        setSelectedApp(prev => prev ? ({ ...prev, status }) : null);
-      }
-    } catch (error) {
-      console.error('Failed to update status:', error);
-      alert((error as any)?.message || 'Failed to update application status');
+  const stats = useMemo(() => {
+    return {
+      pending: applications.filter((a) => a.status === 'Pending').length,
+      approved: applications.filter((a) => a.status === 'Approved').length,
+      rejected: applications.filter((a) => a.status === 'Rejected').length
+    };
+  }, [applications]);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Approved':
+        return 'bg-green-50 text-green-700 border-green-100';
+      case 'Rejected':
+        return 'bg-red-50 text-red-700 border-red-100';
+      default:
+        return 'bg-yellow-50 text-yellow-700 border-yellow-100';
     }
   };
 
@@ -45,7 +55,7 @@ const AdminDashboard: React.FC = () => {
 
   const saveVerification = async () => {
     if (!selectedApp) return;
-    setVerificationSaving(true);
+    setSaving(true);
     try {
       await updateApplicationVerification(selectedApp.id, {
         verificationDocumentUploaded: !!selectedApp.verificationDocumentUploaded,
@@ -59,18 +69,18 @@ const AdminDashboard: React.FC = () => {
       console.error('Failed to save verification metadata:', error);
       alert((error as any)?.message || 'Failed to save verification metadata');
     } finally {
-      setVerificationSaving(false);
+      setSaving(false);
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Approved':
-        return 'bg-green-50 text-green-700 border-green-100';
-      case 'Rejected':
-        return 'bg-red-50 text-red-700 border-red-100';
-      default:
-        return 'bg-yellow-50 text-yellow-700 border-yellow-100';
+  const handleFinalDecision = async (status: 'Approved' | 'Rejected') => {
+    if (!selectedApp) return;
+    try {
+      await updateApplicationStatus(selectedApp.id, status);
+      await refreshData();
+    } catch (error) {
+      console.error('Failed to update status:', error);
+      alert((error as any)?.message || 'Failed to update application status');
     }
   };
 
@@ -78,33 +88,30 @@ const AdminDashboard: React.FC = () => {
     <div className="max-w-7xl mx-auto py-12 px-4 min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h2 className="text-3xl font-serif font-bold text-amari-500">Vendor Applications</h2>
-          <p className="text-stone-600">Review and manage incoming vendor applications.</p>
+          <h2 className="text-3xl font-serif font-bold text-amari-500">Vendor Verification</h2>
+          <p className="text-stone-600">Verify documents and approve/reject vendor applications.</p>
         </div>
-        <div className="flex gap-3">
-          <Link
-            to="/admin/vendor-verification"
-            className="bg-white border border-stone-200 shadow-sm px-4 py-2 rounded-lg text-sm font-bold text-stone-700 hover:bg-stone-50 transition"
-          >
-            Vendor Verification
-          </Link>
+        <div className="flex gap-3 flex-wrap">
           <div className="bg-white border border-stone-200 shadow-sm px-4 py-2 rounded-lg text-sm font-medium text-stone-600 flex items-center gap-2">
             <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-            {applications.filter(a => a.status === 'Pending').length} Pending
+            {stats.pending} Pending
           </div>
           <div className="bg-white border border-stone-200 shadow-sm px-4 py-2 rounded-lg text-sm font-medium text-stone-600 flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            {applications.filter(a => a.status === 'Approved').length} Approved
+            {stats.approved} Approved
+          </div>
+          <div className="bg-white border border-stone-200 shadow-sm px-4 py-2 rounded-lg text-sm font-medium text-stone-600 flex items-center gap-2">
+            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+            {stats.rejected} Rejected
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[700px]">
-        {/* List View */}
         <div className="lg:col-span-4 bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col">
           <div className="p-4 bg-stone-50 border-b border-stone-100 flex justify-between items-center">
             <span className="font-bold text-stone-700 text-sm uppercase tracking-wide">Applications</span>
-            <button 
+            <button
               onClick={refreshData}
               disabled={loading}
               className="text-stone-400 hover:text-stone-600 transition-colors"
@@ -118,16 +125,20 @@ const AdminDashboard: React.FC = () => {
             ) : applications.length === 0 ? (
               <div className="p-8 text-center text-stone-400 text-sm">No applications found.</div>
             ) : (
-              applications.map(app => (
-                <div 
-                  key={app.id} 
+              applications.map((app) => (
+                <div
+                  key={app.id}
                   onClick={() => setSelectedApp(app)}
                   className={`p-4 rounded-xl cursor-pointer transition-all border ${
-                    selectedApp?.id === app.id ? 'bg-amari-50 border-amari-200 shadow-sm' : 'bg-white border-transparent hover:bg-stone-50'
+                    selectedApp?.id === app.id
+                      ? 'bg-amari-50 border-amari-200 shadow-sm'
+                      : 'bg-white border-transparent hover:bg-stone-50'
                   }`}
                 >
                   <div className="flex justify-between items-start mb-1">
-                    <h4 className={`font-bold ${selectedApp?.id === app.id ? 'text-amari-900' : 'text-stone-800'}`}>{app.businessName}</h4>
+                    <h4 className={`font-bold ${selectedApp?.id === app.id ? 'text-amari-900' : 'text-stone-800'}`}>
+                      {app.businessName}
+                    </h4>
                     <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${getStatusColor(app.status)}`}>
                       {app.status}
                     </span>
@@ -142,7 +153,6 @@ const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Detail View */}
         <div className="lg:col-span-8 bg-white rounded-2xl shadow-sm border border-stone-200 p-8 overflow-y-auto">
           {selectedApp ? (
             <div className="animate-in fade-in duration-300">
@@ -150,7 +160,9 @@ const AdminDashboard: React.FC = () => {
                 <div>
                   <h3 className="text-3xl font-serif font-bold text-stone-900">{selectedApp.businessName}</h3>
                   <div className="flex flex-wrap items-center gap-3 mt-3">
-                    <span className="bg-stone-100 text-stone-600 px-3 py-1 rounded-full text-xs font-bold">{selectedApp.vendorCategory}</span>
+                    <span className="bg-stone-100 text-stone-600 px-3 py-1 rounded-full text-xs font-bold">
+                      {selectedApp.vendorCategory}
+                    </span>
                     <span className={`text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 ${getStatusColor(selectedApp.status)}`}>
                       {selectedApp.status === 'Approved' && <Check size={12} />}
                       {selectedApp.status === 'Rejected' && <X size={12} />}
@@ -158,17 +170,18 @@ const AdminDashboard: React.FC = () => {
                     </span>
                   </div>
                 </div>
+
                 <div className="flex gap-2">
                   {selectedApp.status === 'Pending' && (
                     <>
-                      <button 
-                        onClick={() => handleStatusUpdate(selectedApp.id, 'Approved')}
+                      <button
+                        onClick={() => handleFinalDecision('Approved')}
                         className="flex items-center gap-2 bg-stone-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-stone-700 transition shadow-md"
                       >
                         <Check size={16} /> Approve
                       </button>
-                      <button 
-                        onClick={() => handleStatusUpdate(selectedApp.id, 'Rejected')}
+                      <button
+                        onClick={() => handleFinalDecision('Rejected')}
                         className="flex items-center gap-2 bg-white text-red-600 border border-red-200 px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-red-50 transition"
                       >
                         <X size={16} /> Reject
@@ -180,43 +193,6 @@ const AdminDashboard: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="md:col-span-2 space-y-6">
-                  {/* Business Information */}
-                  <div>
-                    <h4 className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Business Information</h4>
-                    <div className="space-y-4">
-                      <div className="bg-stone-50 p-6 rounded-2xl border border-stone-100">
-                        <h5 className="font-bold text-stone-900 mb-2">Vendor Category</h5>
-                        <p className="text-stone-700">{selectedApp.vendorCategory}</p>
-                      </div>
-                      <div className="bg-stone-50 p-6 rounded-2xl border border-stone-100">
-                        <h5 className="font-bold text-stone-900 mb-2">Primary Location</h5>
-                        <p className="text-stone-700">{selectedApp.primaryLocation}</p>
-                      </div>
-                      <div className="bg-stone-50 p-6 rounded-2xl border border-stone-100">
-                        <h5 className="font-bold text-stone-900 mb-2">Description</h5>
-                        <p className="text-stone-700 whitespace-pre-line">{selectedApp.businessDescription || '-'}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Contact Person */}
-                  <div>
-                    <h4 className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Contact</h4>
-                    <div className="bg-stone-50 p-6 rounded-2xl border border-stone-100">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <div>
-                          <p className="text-xs text-stone-500 mb-1">Email</p>
-                          <a href={`mailto:${selectedApp.contactEmail}`} className="text-stone-700 hover:text-amari-600">{selectedApp.contactEmail}</a>
-                        </div>
-                        <div>
-                          <p className="text-xs text-stone-500 mb-1">Phone</p>
-                          <a href={`tel:${selectedApp.contactPhone}`} className="text-stone-700 hover:text-amari-600">{selectedApp.contactPhone}</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Documents */}
                   <div>
                     <h4 className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Documents</h4>
                     <div className="space-y-3">
@@ -232,28 +208,11 @@ const AdminDashboard: React.FC = () => {
                           )}
                         </div>
                       </div>
-
-                      {selectedApp.realWorkImages && selectedApp.realWorkImages.length > 0 && (
-                        <div className="bg-stone-50 p-4 rounded-xl border border-stone-100">
-                          <div className="flex items-center gap-3 mb-3">
-                            <Camera size={16} className="text-stone-400" />
-                            <p className="text-sm font-medium text-stone-900">Real work images ({selectedApp.realWorkImages.length})</p>
-                          </div>
-                          <div className="grid grid-cols-3 gap-2">
-                            {selectedApp.realWorkImages.slice(0, 6).map((photo, index) => (
-                              <div key={index} className="aspect-square bg-stone-200 rounded-lg flex items-center justify-center">
-                                <Camera size={12} className="text-stone-400" />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
 
-                  {/* Verification (Admin-only) */}
                   <div>
-                    <h4 className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Vendor Verification (Admin-only)</h4>
+                    <h4 className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Verification</h4>
                     <div className="bg-white border border-stone-100 rounded-2xl p-6 shadow-sm space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -319,10 +278,10 @@ const AdminDashboard: React.FC = () => {
                       <button
                         type="button"
                         onClick={saveVerification}
-                        disabled={verificationSaving}
+                        disabled={saving}
                         className="inline-flex items-center gap-2 bg-stone-900 text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-stone-700 transition disabled:opacity-60"
                       >
-                        <Save size={16} /> {verificationSaving ? 'Saving...' : 'Save verification'}
+                        <Save size={16} /> {saving ? 'Saving...' : 'Save verification'}
                       </button>
                     </div>
                   </div>
@@ -342,6 +301,14 @@ const AdminDashboard: React.FC = () => {
                           {selectedApp.status}
                         </span>
                       </div>
+                      <div>
+                        <p className="text-xs text-stone-400 mb-1">Contact email</p>
+                        <p className="text-sm font-medium text-stone-900 break-all">{selectedApp.contactEmail || '-'}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-stone-400 mb-1">Contact phone</p>
+                        <p className="text-sm font-medium text-stone-900">{selectedApp.contactPhone || '-'}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -352,7 +319,7 @@ const AdminDashboard: React.FC = () => {
               <div className="w-16 h-16 bg-stone-50 rounded-full flex items-center justify-center mb-4">
                 <Eye size={32} className="opacity-50" />
               </div>
-              <p className="font-medium">Select an application to view full details</p>
+              <p className="font-medium">Select an application to verify</p>
             </div>
           )}
         </div>
@@ -361,4 +328,4 @@ const AdminDashboard: React.FC = () => {
   );
 };
 
-export default AdminDashboard;
+export default AdminVendorVerification;

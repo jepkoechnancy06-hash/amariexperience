@@ -34,6 +34,41 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS user_id UUID;`;
     await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS approved_at TIMESTAMP;`;
 
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS vendor_category VARCHAR(255);`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS vendor_subcategories TEXT[];`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS business_description TEXT;`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS primary_location VARCHAR(255);`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS areas_served TEXT;`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS contact_phone VARCHAR(50);`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS contact_email VARCHAR(255);`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS website VARCHAR(500);`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS social_links TEXT;`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS real_work_images TEXT[];`;
+
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS starting_price TEXT;`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS pricing_model VARCHAR(50);`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS starting_price_includes TEXT;`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS minimum_booking_requirement TEXT;`;
+
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS advance_booking_notice TEXT;`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS setup_time_required TEXT;`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS breakdown_time_required TEXT;`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS outdoor_experience VARCHAR(10);`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS destination_wedding_experience VARCHAR(10);`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS special_requirements TEXT;`;
+
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS category_specific JSONB;`;
+
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS verification_document_type VARCHAR(255);`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS verification_document_url TEXT;`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS terms_accepted BOOLEAN DEFAULT false;`;
+
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS verification_document_uploaded BOOLEAN DEFAULT false;`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS verified_by VARCHAR(255);`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS date_verified TIMESTAMP;`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS approval_status VARCHAR(50) DEFAULT 'Pending';`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS admin_notes TEXT;`;
+
     await sql`
       CREATE TABLE IF NOT EXISTS vendors (
         id UUID PRIMARY KEY,

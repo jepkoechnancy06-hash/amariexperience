@@ -9,6 +9,9 @@ import InspirationGallery from './components/InspirationGallery';
 import GeminiPlanner from './components/GeminiPlanner';
 import VendorOnboarding from './components/VendorOnboarding';
 import AdminDashboard from './components/AdminDashboard';
+import VendorCategories from './components/VendorCategories';
+import VendorTerms from './components/VendorTerms';
+import AdminVendorVerification from './components/AdminVendorVerification';
 import Login from './components/Login';
 import UserDashboard from './components/UserDashboard';
 import AboutUs from './components/AboutUs';
@@ -283,6 +286,8 @@ const App: React.FC = () => {
             <Route path="/partner" element={<VendorOnboarding />} />
             <Route path="/vendors" element={<VendorDirectory />} />
             <Route path="/vendor/:id" element={<VendorProfile />} />
+            <Route path="/vendor-categories" element={<VendorCategories />} />
+            <Route path="/vendor-terms" element={<VendorTerms />} />
             <Route path="/tools" element={<PlanningTools />} />
             <Route path="/flights" element={<AirlineBooking />} />
             <Route path="/gallery" element={<InspirationGallery />} />
@@ -296,6 +301,7 @@ const App: React.FC = () => {
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/concierge" element={<ConciergePage />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/vendor-verification" element={<AdminVendorVerification />} />
           </Routes>
         </Layout>
       </Router>

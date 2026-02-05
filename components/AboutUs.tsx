@@ -21,7 +21,7 @@ const AboutUs: React.FC = () => {
             Amari Experience
           </h2>
           <p className="mt-6 text-amari-50 max-w-3xl mx-auto text-lg md:text-xl font-light leading-relaxed animate-in slide-in-from-bottom-6 duration-1000 delay-200">
-            We help couples (and their people) plan unforgettable celebrations in Diani — pairing local insight with curated vendors and practical tools.
+            We help couples (and their people) plan unforgettable celebrations in Diani — pairing local insight with curated vendors and practical tools. At Amari, we connect couples with trusted wedding vendors to help create unforgettable destination weddings. All vendor profiles on the platform are carefully reviewed and approved by our team to ensure authenticity and quality, so couples can explore services with confidence. While the platform showcases detailed information, pricing, and offerings from each vendor, Amari does not handle bookings or payments—all arrangements are made directly between couples and vendors. Our goal is to make wedding planning seamless, transparent, and inspiring, providing a single place to discover venues, stylists, caterers, photographers, and all the details that make a wedding truly exceptional.
           </p>
         </div>
       </div>
