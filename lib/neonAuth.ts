@@ -42,26 +42,37 @@ export interface RegisterData {
 
 class NeonAuth {
   private async request<T>(path: string, options: RequestInit = {}) {
-    const response = await fetch(`${AUTH_BASE_URL}${path}`, {
-      credentials: 'include',
-      ...options
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${AUTH_BASE_URL}${path}`, {
+        credentials: 'include',
+        ...options
+      });
+    } catch (networkError: any) {
+      console.error(`Network error calling ${path}:`, networkError);
+      return { ok: false as const, error: networkError?.message || 'Network error – please check your connection' };
+    }
 
-    const contentType = response.headers.get('content-type') || '';
-    const payload = contentType.includes('application/json')
-      ? await response.json()
-      : await response.text();
+    let payload: any;
+    try {
+      const contentType = response.headers.get('content-type') || '';
+      payload = contentType.includes('application/json')
+        ? await response.json()
+        : await response.text();
+    } catch {
+      payload = null;
+    }
 
     if (!response.ok) {
       const errMsg = typeof payload?.error === 'string'
         ? payload.error
-        : typeof payload === 'string'
+        : typeof payload === 'string' && payload.length < 200
           ? payload
           : payload?.message || response.statusText || 'Request failed';
-      return { ok: false, error: errMsg };
+      return { ok: false as const, error: errMsg };
     }
 
-    return { ok: true, data: payload as T };
+    return { ok: true as const, data: payload as T };
   }
 
   // Register new user
@@ -224,6 +235,13 @@ class NeonAuth {
   // Initialize auth state
   async initializeAuth(): Promise<User | null> {
     try {
+      // Ensure database tables exist before any auth operation
+      await fetch(`${API_BASE}/api/db/init`, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        credentials: 'include'
+      }).catch(() => {});
+
       const user = await this.verifySession();
       if (!user) {
         localStorage.removeItem('currentUser');

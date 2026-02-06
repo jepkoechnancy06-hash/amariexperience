@@ -114,6 +114,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     await sql`ALTER TABLE vendors ADD COLUMN IF NOT EXISTS user_id UUID;`;
 
+    await sql`
+      CREATE TABLE IF NOT EXISTS posts (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID,
+        title VARCHAR(500),
+        content TEXT,
+        image_url TEXT,
+        author_type VARCHAR(50),
+        author_name VARCHAR(255),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+
     res.status(200).json({ ok: true });
   } catch (e: any) {
     res.status(500).json({ error: e?.message || 'Init failed' });

@@ -3,9 +3,7 @@ import { runQuery } from '../_lib/db';
 import { getSession } from '../_lib/auth';
 
 function isQueryAllowed(query: string) {
-  const q = query.trim().toLowerCase();
-
-  if (q.includes(';')) return false;
+  const q = query.trim().replace(/;+\s*$/, '').toLowerCase();
 
   const forbidden = ['drop ', 'truncate ', 'grant ', 'revoke ', 'alter role', 'create role', 'pg_', 'information_schema'];
   if (forbidden.some((k) => q.includes(k))) return false;
