@@ -3,6 +3,7 @@ import fs from 'fs';
 import { defineConfig, loadEnv } from 'vite';
 import type { ViteDevServer } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 
 /* ───────────────────────────────────────────────────────────────
    Dev-only plugin: serves /api/* routes using the Vercel-style
@@ -91,7 +92,7 @@ export default defineConfig(({ mode }) => {
         port: 3000,
         host: '0.0.0.0',
       },
-      plugins: [react(), apiDevPlugin()],
+      plugins: [tailwindcss(), react(), apiDevPlugin()],
       define: {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)

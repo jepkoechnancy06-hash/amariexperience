@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Menu, X, Heart, Sunset, Waves, User } from 'lucide-react';
+import { Menu, X, User, ChevronDown, Sparkles, ArrowRight, Instagram, Facebook, Twitter, Mail } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import WhatsAppChat from './WhatsAppChat';
 
@@ -15,338 +15,319 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const { isAuthenticated, user, logout } = useAuth();
 
-  const isCouplesRoute = location.pathname === '/' || location.pathname === '/couples';
-
-  const navLinkBase =
-    'px-3 py-2 rounded-xl text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-amari-300 focus-visible:ring-offset-2';
-
-  const navLinkClass = useMemo(
-    () =>
-      ({ isActive }: { isActive: boolean }) =>
-        `${navLinkBase} ${
-          isActive
-            ? 'text-amari-600 bg-amari-50'
-            : 'text-stone-600 hover:text-amari-600 hover:bg-amari-50/60'
-        }`,
-    [navLinkBase]
-  );
+  const isHome = location.pathname === '/' || location.pathname === '/couples';
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
+    setIsUserMenuOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 8);
+    const onScroll = () => setIsScrolled(window.scrollY > 20);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
-    if (!isMobileMenuOpen) {
-      document.body.style.overflow = '';
-      return;
-    }
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = prev;
-    };
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
     if (!isMobileMenuOpen) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsMobileMenuOpen(false);
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsMobileMenuOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, [isMobileMenuOpen]);
 
+  const nlBase = 'relative px-1 py-2 text-[13px] font-medium tracking-wide transition-all duration-300';
+  const nlActive = `${nlBase} text-amari-500`;
+  const nlInactive = `${nlBase} text-stone-500 hover:text-amari-500`;
+  const navClass = ({ isActive }: { isActive: boolean }) => isActive ? nlActive : nlInactive;
+
   return (
-    <div className="min-h-screen flex flex-col bg-amari-50">
+    <div className="min-h-screen flex flex-col bg-stone-50">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] bg-white text-amari-900 px-4 py-2 rounded-xl shadow-lg border border-amari-100"
       >
         Skip to content
       </a>
-      {/* Navigation */}
+      {/* ─── TOP BAR ──────────────────────────────────────────────── */}
+      <div className="hidden lg:block bg-amari-900 text-amari-200/80 text-[11px] tracking-wide">
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-9">
+          <span className="flex items-center gap-1.5">
+            <Sparkles size={11} className="text-amari-gold" />
+            Kenya's Premier Destination Wedding Platform
+          </span>
+          <div className="flex items-center gap-5">
+            <Link to="/admin" className="hover:text-white transition">Admin</Link>
+            <a href="mailto:hello@amariexperience.com" className="hover:text-white transition">hello@amariexperience.com</a>
+            <a href="https://wa.me/254796535120" target="_blank" rel="noreferrer" className="hover:text-white transition">+254 796 535 120</a>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── NAVBAR ────────────────────────────────────────────────── */}
       <nav
-        className={`sticky top-0 z-50 border-b border-amari-100/50 backdrop-blur-md transition-shadow ${
-          isScrolled ? 'bg-white/90 shadow-sm' : 'bg-white/80'
+        className={`sticky top-0 z-50 transition-all duration-500 ${
+          isScrolled
+            ? 'glass shadow-lg shadow-stone-900/5 border-b border-white/40'
+            : 'bg-white/60 backdrop-blur-sm'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-24">
-            <div className="flex items-center">
-              <Link to="/" className="flex-shrink-0 flex items-center gap-3 group">
-                <div className="w-12 h-12 rounded-xl overflow-hidden transition-transform group-hover:rotate-3">
-                  <img 
-                    src="/amariexperienceslogo.jpeg" 
-                    alt="Amari Experience Logo" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-serif font-bold text-amari-500 tracking-wide">AMARI</h1>
-                  <p className="text-[10px] text-amari-500 uppercase tracking-[0.2em] -mt-1 font-medium group-hover:text-amari-600 transition-colors">Experience</p>
-                </div>
-              </Link>
-            </div>
-            
-            {/* Desktop Menu */}
-            <div className="hidden md:flex items-center justify-between space-x-10">
-              <div className="flex items-center space-x-8">
-                <Link
-                  to="/"
-                  aria-current={isCouplesRoute ? 'page' : undefined}
-                  className={`${navLinkBase} ${
-                    isCouplesRoute
-                      ? 'text-amari-600 bg-amari-50'
-                      : 'text-stone-600 hover:text-amari-600 hover:bg-amari-50/60'
-                  }`}
-                >
-                  For Couples
-                </Link>
-                <NavLink to="/vendors" className={navLinkClass}>Directory</NavLink>
-                <NavLink to="/gallery" className={navLinkClass}>Inspiration</NavLink>
-                <NavLink to="/about" className={navLinkClass}>About</NavLink>
-                <NavLink to="/community" className={navLinkClass}>Community</NavLink>
-                <NavLink to="/history" className={navLinkClass}>Diani History</NavLink>
-                <div className="relative">
-                  {isAuthenticated ? (
-                    <>
-                      <button
-                        onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                        className="flex items-center gap-2 text-stone-500 hover:text-stone-700 px-4 py-3 rounded-xl text-sm font-medium transition-colors"
-                      >
-                        <div className="w-8 h-8 rounded-full bg-amari-100 flex items-center justify-center">
-                          <User size={16} className="text-amari-600" />
-                        </div>
-                        <span className="text-stone-700">{user?.firstName}</span>
-                      </button>
-                      {isUserMenuOpen && (
-                        <>
-                          <div className="fixed inset-0 z-40" onClick={() => setIsUserMenuOpen(false)} />
-                          <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-stone-200 py-2 z-50">
-                            <Link
-                              to="/dashboard"
-                              onClick={() => setIsUserMenuOpen(false)}
-                              className="block px-4 py-2.5 text-stone-700 hover:bg-stone-50 transition-colors"
-                            >
-                              <div className="font-medium text-stone-900">Dashboard</div>
-                              <div className="text-xs text-stone-500">Manage your wedding planning</div>
-                            </Link>
-                            <Link
-                              to="/profile"
-                              onClick={() => setIsUserMenuOpen(false)}
-                              className="block px-4 py-2.5 text-stone-700 hover:bg-stone-50 transition-colors"
-                            >
-                              <div className="font-medium text-stone-900">Profile</div>
-                              <div className="text-xs text-stone-500">View and edit your profile</div>
-                            </Link>
-                            <div className="border-t border-stone-100 my-1" />
-                            <button
-                              onClick={() => { logout(); setIsUserMenuOpen(false); }}
-                              className="block w-full text-left px-4 py-2.5 text-red-600 hover:bg-red-50 transition-colors"
-                            >
-                              Logout
-                            </button>
-                          </div>
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    <Link to="/login" className="flex items-center gap-2 text-stone-500 hover:text-stone-700 px-4 py-3 rounded-xl text-sm font-medium transition-colors">
-                      <User size={18} />
-                      Login
-                    </Link>
-                  )}
-                </div>
+          <div className="flex items-center justify-between h-[72px]">
+
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
+              <div className="w-11 h-11 rounded-2xl overflow-hidden ring-2 ring-amari-100 group-hover:ring-amari-300 transition-all duration-300 group-hover:scale-105">
+                <img src="/amariexperienceslogo.jpeg" alt="Amari Experience" className="w-full h-full object-cover" />
               </div>
-              <Link to="/admin" className="text-stone-400 hover:text-stone-600 text-xs font-medium transition-colors">
-                Admin
-              </Link>
-              <Link to="/partner" className={`bg-amari-600 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-amari-900 transition shadow-lg hover:shadow-xl flex items-center gap-2 ${location.pathname === '/partner' ? 'ring-2 ring-offset-2 ring-amari-600' : ''}`}>
-                Partner with Us
-              </Link>
+              <div className="hidden sm:block">
+                <h1 className="text-xl font-serif font-bold text-amari-900 tracking-wider leading-none">AMARI</h1>
+                <p className="text-[9px] text-amari-500 uppercase tracking-[0.25em] font-bold">Experience</p>
+              </div>
+            </Link>
+
+            {/* Desktop links */}
+            <div className="hidden lg:flex items-center gap-6">
+              <Link to="/" aria-current={isHome ? 'page' : undefined} className={isHome ? nlActive : nlInactive}>Home</Link>
+              <NavLink to="/vendors" className={navClass}>Vendors</NavLink>
+              <NavLink to="/gallery" className={navClass}>Inspiration</NavLink>
+              <NavLink to="/tools" className={navClass}>Planning</NavLink>
+              <NavLink to="/concierge" className={navClass}>Concierge</NavLink>
+              <NavLink to="/about" className={navClass}>About</NavLink>
+              <NavLink to="/community" className={navClass}>Community</NavLink>
             </div>
 
-            {/* Mobile menu button */}
-            <div className="md:hidden flex items-center">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                aria-expanded={isMobileMenuOpen}
-                aria-controls="mobile-menu"
-                className="text-amari-600 hover:text-amari-500 focus:outline-none p-2 rounded-lg hover:bg-amari-50 transition"
-              >
-                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div id="mobile-menu" className="md:hidden bg-white border-t border-amari-100 shadow-xl absolute w-full">
-            <div className="px-4 pt-4 pb-6 space-y-2">
-              {/* Authentication Section */}
-              <div className="mb-6">
+            {/* Right side actions */}
+            <div className="hidden lg:flex items-center gap-3">
+              {/* User area */}
+              <div className="relative">
                 {isAuthenticated ? (
-                  <div className="bg-amari-50 rounded-xl p-4">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 bg-amari-600 rounded-full flex items-center justify-center">
-                        <User size={20} className="text-white" />
-                      </div>
-                      <div>
-                        <div className="font-medium text-amari-900">Welcome, {user.firstName}!</div>
-                        <div className="text-sm text-stone-600">{user.email}</div>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Link
-                        to="/dashboard"
-                        className="block w-full text-left px-4 py-2 text-stone-700 hover:bg-amari-100 rounded-lg transition-colors"
-                      >
-                        <div className="font-medium">Dashboard</div>
-                        <div className="text-sm text-stone-600">Manage your wedding planning tools</div>
-                      </Link>
-                      <Link
-                        to="/profile"
-                        className="block w-full text-left px-4 py-2 text-stone-700 hover:bg-amari-100 rounded-lg transition-colors"
-                      >
-                        <div className="font-medium">Profile</div>
-                        <div className="text-sm text-stone-600">View and manage your profile</div>
-                      </Link>
-                      <button
-                        onClick={() => {
-                          logout();
-                          setIsMobileMenuOpen(false);
-                        }}
-                        className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      >
-                        <div className="font-medium">Logout</div>
-                        <div className="text-sm text-red-500">Sign out of your account</div>
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="bg-stone-50 rounded-xl p-4">
-                    <div className="text-center mb-4">
-                      <div className="w-16 h-16 bg-stone-200 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <User size={32} className="text-stone-400" />
-                      </div>
-                      <div className="font-medium text-stone-900">Sign In Required</div>
-                      <div className="text-sm text-stone-600">Access your dashboard and profile</div>
-                    </div>
-                    <Link
-                      to="/login"
-                      className="block w-full bg-amari-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-amari-700 transition-colors text-center"
+                  <>
+                    <button
+                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-amari-50 transition-colors"
                     >
-                      Sign In / Register
-                    </Link>
-                  </div>
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amari-300 to-amari-500 flex items-center justify-center text-white text-xs font-bold">
+                        {user?.firstName?.charAt(0) || 'U'}
+                      </div>
+                      <ChevronDown size={14} className={`text-stone-400 transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {isUserMenuOpen && (
+                      <>
+                        <div className="fixed inset-0 z-40" onClick={() => setIsUserMenuOpen(false)} />
+                        <div className="absolute top-full right-0 mt-3 w-64 glass rounded-2xl shadow-xl border border-white/60 py-2 z-50 animate-in fade-in slide-in-from-top-4 duration-300">
+                          <div className="px-4 py-3 border-b border-stone-100">
+                            <p className="font-bold text-stone-900 text-sm">{user?.firstName} {user?.lastName}</p>
+                            <p className="text-xs text-stone-400 truncate">{user?.email}</p>
+                          </div>
+                          <Link to="/dashboard" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-stone-600 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
+                            Dashboard
+                          </Link>
+                          <Link to="/profile" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-stone-600 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
+                            Profile
+                          </Link>
+                          <div className="border-t border-stone-100 my-1" />
+                          <button onClick={() => { logout(); setIsUserMenuOpen(false); }} className="w-full text-left px-4 py-2.5 text-red-500 hover:bg-red-50 transition-colors text-sm">
+                            Sign Out
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <Link to="/login" className="flex items-center gap-2 text-stone-500 hover:text-amari-500 px-3 py-2 rounded-xl text-sm font-medium transition-colors">
+                    <User size={16} />
+                    Sign In
+                  </Link>
                 )}
               </div>
 
-              {/* Navigation Links */}
-              <div className="border-t border-amari-100 pt-4">
-                <Link to="/partner" className="block w-full text-center bg-amari-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-amari-900 mb-4 shadow-md">
-                  Partner with Us
+              <Link
+                to="/partner"
+                className="bg-amari-900 text-white px-5 py-2.5 rounded-full text-[13px] font-bold hover:bg-amari-800 transition-all duration-300 hover:shadow-lg hover:shadow-amari-900/20 hover:-translate-y-0.5 flex items-center gap-2"
+              >
+                Partner with Us
+                <ArrowRight size={14} />
+              </Link>
+            </div>
+
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu"
+              className="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-amari-50 text-amari-900 transition"
+            >
+              {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
+        </div>
+
+        {/* ─── MOBILE DRAWER ──────────────────────────────────────── */}
+        {isMobileMenuOpen && (
+          <>
+            <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={() => setIsMobileMenuOpen(false)} />
+            <div id="mobile-menu" className="fixed inset-y-0 right-0 w-[85%] max-w-sm bg-white z-50 lg:hidden shadow-2xl animate-in slide-in-from-left-2 duration-300 overflow-y-auto">
+              <div className="flex items-center justify-between p-5 border-b border-stone-100">
+                <Link to="/" className="flex items-center gap-2">
+                  <div className="w-9 h-9 rounded-xl overflow-hidden">
+                    <img src="/amariexperienceslogo.jpeg" alt="Logo" className="w-full h-full object-cover" />
+                  </div>
+                  <span className="font-serif font-bold text-amari-900 tracking-wide">AMARI</span>
                 </Link>
-                <Link
-                  to="/"
-                  aria-current={isCouplesRoute ? 'page' : undefined}
-                  className={`block px-4 py-3 rounded-xl font-medium transition ${
-                    isCouplesRoute
-                      ? 'bg-amari-50 text-amari-600'
-                      : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'
-                  }`}
-                >
-                  For Couples
-                </Link>
-                <NavLink to="/vendors" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Directory</NavLink>
-                <NavLink to="/gallery" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Inspiration Board</NavLink>
-                <div className="pt-2 mt-2 border-t border-amari-100/70"></div>
-                <NavLink to="/about" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>About Us</NavLink>
-                <NavLink to="/community" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Community</NavLink>
-                <NavLink to="/history" className={({ isActive }) => `block px-4 py-3 rounded-xl font-medium transition ${isActive ? 'bg-amari-50 text-amari-600' : 'text-stone-600 hover:bg-amari-50 hover:text-amari-600'}`}>Diani History</NavLink>
-                <Link to="/admin" className="block px-4 py-3 rounded-xl font-medium text-stone-400 hover:text-stone-600 transition-colors">
-                  Admin
-                </Link>
+                <button onClick={() => setIsMobileMenuOpen(false)} className="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center">
+                  <X size={18} className="text-stone-600" />
+                </button>
+              </div>
+
+              <div className="p-5 space-y-1">
+                {/* Auth card */}
+                {isAuthenticated ? (
+                  <div className="bg-gradient-to-br from-amari-50 to-white rounded-2xl p-4 mb-5 border border-amari-100">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amari-300 to-amari-500 flex items-center justify-center text-white font-bold">
+                        {user?.firstName?.charAt(0) || 'U'}
+                      </div>
+                      <div>
+                        <p className="font-bold text-stone-900 text-sm">{user?.firstName}</p>
+                        <p className="text-xs text-stone-400">{user?.email}</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Link to="/dashboard" className="flex-1 text-center bg-amari-900 text-white py-2 rounded-xl text-xs font-bold hover:bg-amari-800 transition">Dashboard</Link>
+                      <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="px-4 py-2 rounded-xl text-xs font-bold text-red-500 bg-red-50 hover:bg-red-100 transition">Logout</button>
+                    </div>
+                  </div>
+                ) : (
+                  <Link to="/login" className="flex items-center justify-center gap-2 bg-amari-900 text-white py-3 rounded-2xl font-bold text-sm mb-5 hover:bg-amari-800 transition">
+                    <User size={16} /> Sign In / Register
+                  </Link>
+                )}
+
+                {/* Nav links */}
+                {[
+                  ['/', 'Home'],
+                  ['/vendors', 'Vendors'],
+                  ['/gallery', 'Inspiration'],
+                  ['/tools', 'Planning Tools'],
+                  ['/concierge', 'Concierge'],
+                  ['/about', 'About Us'],
+                  ['/community', 'Community'],
+                  ['/history', 'Diani History'],
+                  ['/activities', 'Activities'],
+                  ['/contact', 'Contact'],
+                ].map(([path, label]) => (
+                  <Link
+                    key={path}
+                    to={path}
+                    className={`block px-4 py-3 rounded-xl text-sm font-medium transition ${
+                      location.pathname === path
+                        ? 'bg-amari-50 text-amari-600 font-bold'
+                        : 'text-stone-600 hover:bg-stone-50'
+                    }`}
+                  >
+                    {label}
+                  </Link>
+                ))}
+
+                <div className="pt-4 mt-4 border-t border-stone-100">
+                  <Link to="/partner" className="flex items-center justify-center gap-2 bg-amari-500 text-white py-3 rounded-2xl font-bold text-sm hover:bg-amari-600 transition shadow-lg">
+                    <Sparkles size={15} /> Partner with Us
+                  </Link>
+                </div>
+                <Link to="/admin" className="block px-4 py-2 text-stone-400 text-xs mt-2 hover:text-stone-600 transition">Admin Portal</Link>
               </div>
             </div>
-          </div>
+          </>
         )}
       </nav>
 
-      {/* Main Content */}
+      {/* ─── MAIN CONTENT ──────────────────────────────────────────── */}
       <main id="main-content" className="flex-grow">
         {children}
       </main>
 
       <WhatsAppChat />
 
-      {/* Footer */}
-      <footer
-        className="bg-amari-900 text-amari-200 py-16 border-t-[6px] border-amari-300"
-        onClickCapture={(e) => {
-          const el = e.target as HTMLElement;
-          if (el.closest('a')) {
-            window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-          }
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
-          <div className="space-y-6">
-            <div className="flex items-center gap-3">
-               <div className="w-10 h-10 rounded-xl overflow-hidden">
-                  <img 
-                    src="/amariexperienceslogo.jpeg" 
-                    alt="Amari Experience Logo" 
-                    className="w-full h-full object-cover"
-                  />
-               </div>
-               <span className="text-white text-xl font-serif tracking-wide">AMARI</span>
+      {/* ─── FOOTER ────────────────────────────────────────────────── */}
+      <footer className="relative bg-amari-950 text-white overflow-hidden">
+        {/* Decorative gradient */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-amari-500/10 to-transparent rounded-full blur-[120px] pointer-events-none" />
+
+        {/* Main footer */}
+        <div className="relative max-w-7xl mx-auto px-6 pt-20 pb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
+
+            {/* Brand column */}
+            <div className="lg:col-span-4 space-y-6">
+              <Link to="/" className="flex items-center gap-3 group">
+                <div className="w-12 h-12 rounded-2xl overflow-hidden ring-2 ring-white/10 group-hover:ring-amari-300/40 transition">
+                  <img src="/amariexperienceslogo.jpeg" alt="Amari" className="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-serif font-bold tracking-wider">AMARI</h3>
+                  <p className="text-[9px] text-amari-300 uppercase tracking-[0.25em] font-bold">Experience</p>
+                </div>
+              </Link>
+              <p className="text-sm leading-relaxed text-white/50 max-w-xs">
+                Bringing the magic of Diani's coastline to your special day. Curated vendors, smart tools, local expertise.
+              </p>
+              <div className="flex items-center gap-3">
+                <a href="#" className="w-9 h-9 rounded-full bg-white/5 hover:bg-amari-500 flex items-center justify-center transition-all duration-300 hover:scale-110"><Instagram size={16} className="text-white/60" /></a>
+                <a href="#" className="w-9 h-9 rounded-full bg-white/5 hover:bg-amari-500 flex items-center justify-center transition-all duration-300 hover:scale-110"><Facebook size={16} className="text-white/60" /></a>
+                <a href="#" className="w-9 h-9 rounded-full bg-white/5 hover:bg-amari-500 flex items-center justify-center transition-all duration-300 hover:scale-110"><Twitter size={16} className="text-white/60" /></a>
+                <a href="mailto:hello@amariexperience.com" className="w-9 h-9 rounded-full bg-white/5 hover:bg-amari-500 flex items-center justify-center transition-all duration-300 hover:scale-110"><Mail size={16} className="text-white/60" /></a>
+              </div>
             </div>
-            <p className="text-sm leading-relaxed text-amari-100/70 font-light">
-              We bring the magic of Diani coastline to your special day. Simplifying destination weddings with local expertise and curated style.
-            </p>
+
+            {/* Explore */}
+            <div className="lg:col-span-2">
+              <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-amari-300 mb-5">Explore</h4>
+              <ul className="space-y-3">
+                {[['/', 'Home'], ['/vendors', 'Vendors'], ['/gallery', 'Inspiration'], ['/tools', 'Planning'], ['/activities', 'Activities']].map(([p, l]) => (
+                  <li key={p}><Link to={p} className="text-sm text-white/50 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">{l}</Link></li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div className="lg:col-span-2">
+              <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-amari-300 mb-5">Support</h4>
+              <ul className="space-y-3">
+                {[['/concierge', 'Concierge'], ['/about', 'About Us'], ['/faq', 'FAQ'], ['/contact', 'Contact'], ['/community', 'Community']].map(([p, l]) => (
+                  <li key={p}><Link to={p} className="text-sm text-white/50 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">{l}</Link></li>
+                ))}
+              </ul>
+            </div>
+
+            {/* CTA column */}
+            <div className="lg:col-span-4">
+              <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-amari-300 mb-5">For Vendors</h4>
+              <p className="text-sm text-white/50 mb-5 leading-relaxed">
+                Join East Africa's leading wedding marketplace. Reach couples planning their dream coastal celebration.
+              </p>
+              <Link
+                to="/partner"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-amari-500 to-amari-400 text-white px-6 py-3 rounded-full text-sm font-bold hover:shadow-lg hover:shadow-amari-500/25 transition-all duration-300 hover:-translate-y-0.5"
+              >
+                <Sparkles size={15} /> Become a Partner
+              </Link>
+            </div>
           </div>
-          <div>
-            <h4 className="text-white font-serif text-lg mb-6">Explore</h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link to="/couples" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">For Couples</Link></li>
-              <li><Link to="/vendors" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Vendor Directory</Link></li>
-              <li><Link to="/vendor-categories" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Vendor Categories</Link></li>
-              <li><Link to="/tools" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Planning Tools</Link></li>
-              <li><Link to="/gallery" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Inspiration Board</Link></li>
-              <li><Link to="/community" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Community Hub</Link></li>
-              <li><Link to="/activities" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Activities</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-white font-serif text-lg mb-6">Support</h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link to="/concierge" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Concierge Services</Link></li>
-              <li><Link to="/about" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">About Us</Link></li>
-              <li><Link to="/community" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Community</Link></li>
-              <li><Link to="/contact" className="hover:text-amari-300 transition hover:translate-x-1 inline-block">Contact Us</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-white font-serif text-lg mb-6">For Business</h4>
-            <ul className="space-y-4 text-sm">
-              <li><Link to="/partner" className="inline-block bg-amari-300 text-amari-900 px-6 py-2.5 rounded-lg transition font-bold hover:bg-white hover:text-amari-600">Join as Vendor</Link></li>
-            </ul>
-          </div>
-        </div>
-        <div className="mt-16 border-t border-white/10 pt-8 text-center text-xs flex flex-col md:flex-row justify-between items-center text-amari-100/50">
-          <p>© {new Date().getFullYear()} Amari Experience. Made with ❤️ in Diani.</p>
-          <div className="flex gap-6 mt-4 md:mt-0">
-             <Link to="/privacy" className="hover:text-white transition">Privacy Policy</Link>
-             <Link to="/terms" className="hover:text-white transition">Terms of Service</Link>
+
+          {/* Bottom bar */}
+          <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-xs text-white/30">&copy; {new Date().getFullYear()} Amari Experience. Crafted with care in Diani Beach, Kenya.</p>
+            <div className="flex items-center gap-6 text-xs text-white/30">
+              <Link to="/privacy" className="hover:text-white/70 transition">Privacy</Link>
+              <Link to="/terms" className="hover:text-white/70 transition">Terms</Link>
+              <Link to="/vendor-terms" className="hover:text-white/70 transition">Vendor Terms</Link>
+            </div>
           </div>
         </div>
       </footer>

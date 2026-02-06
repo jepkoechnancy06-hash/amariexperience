@@ -27,21 +27,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
       :root {
-        /* Mirrors Tailwind theme colors (see tailwind.config above) */
-        --amari-50: #EADBD4;
+        --amari-50: #F0E6E0;
         --amari-100: #E1CDC7;
         --amari-200: #D4C1B3;
         --amari-300: #53ABA9;
         --amari-400: #5FAFB0;
         --amari-500: #04757B;
-        --amari-600: #2A5360;
-        --amari-900: #2A5360;
-        --amari-terracotta: #D4C1B3;
+        --amari-600: #1B4D56;
+        --amari-700: #163F47;
+        --amari-800: #112F35;
+        --amari-900: #0C2126;
+        --amari-950: #071518;
+        --amari-gold: #D4A853;
+        --amari-terracotta: #C4956A;
       }
 
-      html {
-        scroll-behavior: smooth;
-      }
+      html { scroll-behavior: smooth; }
+
       body {
         font-family: 'Lato', sans-serif;
         font-size: 16px;
@@ -50,44 +52,40 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
+
       h1, h2, h3, h4, h5, h6 {
         font-family: 'Playfair Display', serif;
-        letter-spacing: -0.01em;
-        line-height: 1.12;
-        color: var(--amari-500);
-      }
-      p, li {
-        line-height: 1.75;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
       }
 
-      /* Consistent readable link color (matches final mapping) */
-      a {
-        color: var(--amari-400);
-        text-decoration-thickness: 1px;
-        text-underline-offset: 2px;
-      }
-      a:hover {
-        color: var(--amari-500);
-      }
+      p, li { line-height: 1.8; }
+
       a:focus-visible {
         outline: 2px solid var(--amari-300);
         outline-offset: 3px;
         border-radius: 8px;
       }
+
       .font-script {
         font-family: 'Playfair Display', serif;
         font-style: italic;
       }
 
-      /* Utilities missing from Tailwind CDN defaults (no plugins) */
       .line-clamp-2 {
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
       }
+      .line-clamp-3 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+      }
 
-      /* Minimal "enter" animation system compatible with existing classnames */
+      /* Animation system */
       @keyframes amari-enter {
         from {
           opacity: 0;
@@ -102,35 +100,78 @@
         }
       }
 
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+      }
+
+      @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+
+      @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(83, 171, 169, 0.4); }
+        50% { box-shadow: 0 0 20px 4px rgba(83, 171, 169, 0.15); }
+      }
+
       .animate-in {
         animation-name: amari-enter;
         animation-duration: var(--amari-enter-duration, 700ms);
-        animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+        animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
         animation-fill-mode: both;
         will-change: transform, opacity, filter;
       }
+      .animate-float { animation: float 6s ease-in-out infinite; }
+      .animate-shimmer {
+        background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+        background-size: 200% 100%;
+        animation: shimmer 3s linear infinite;
+      }
+      .animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+
       .slide-in-from-bottom-4 { --amari-enter-y: 1rem; }
       .slide-in-from-bottom-6 { --amari-enter-y: 1.5rem; }
       .slide-in-from-bottom-5 { --amari-enter-y: 1.25rem; }
-      .slide-in-from-left-2 { --amari-enter-x: -0.5rem; }
-      .slide-in-from-top-4 { --amari-enter-y: -1rem; }
-      .zoom-in { --amari-enter-scale: 0.97; }
-      .fade-in { --amari-enter-x: 0; --amari-enter-y: 0; }
+      .slide-in-from-left-2  { --amari-enter-x: -0.5rem; }
+      .slide-in-from-top-4   { --amari-enter-y: -1rem; }
+      .zoom-in  { --amari-enter-scale: 0.97; }
+      .fade-in  { --amari-enter-x: 0; --amari-enter-y: 0; }
 
-      /* These "duration-xxx" and "delay-xxx" classes are used for animations in the codebase */
-      .duration-300 { --amari-enter-duration: 300ms; }
-      .duration-500 { --amari-enter-duration: 500ms; }
-      .duration-700 { --amari-enter-duration: 700ms; }
+      .duration-300  { --amari-enter-duration: 300ms; }
+      .duration-500  { --amari-enter-duration: 500ms; }
+      .duration-700  { --amari-enter-duration: 700ms; }
       .duration-1000 { --amari-enter-duration: 1000ms; }
+      .delay-75  { animation-delay: 75ms; }
       .delay-100 { animation-delay: 100ms; }
-      .delay-75 { animation-delay: 75ms; }
-      .delay-200 { animation-delay: 200ms; }
       .delay-150 { animation-delay: 150ms; }
+      .delay-200 { animation-delay: 200ms; }
       .delay-300 { animation-delay: 300ms; }
+      .delay-500 { animation-delay: 500ms; }
+
+      /* Glass morphism utility */
+      .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+      }
+      .glass-dark {
+        background: rgba(12, 33, 38, 0.85);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+      }
+
+      /* Gradient text utility */
+      .text-gradient {
+        background: linear-gradient(135deg, var(--amari-300), var(--amari-500));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
 
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
-        .animate-in {
+        .animate-in, .animate-float, .animate-shimmer, .animate-pulse-glow {
           animation: none !important;
           opacity: 1 !important;
           transform: none !important;
@@ -138,8 +179,8 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-2dn4Vg_B.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CX2KldmI.css">
+    <script type="module" crossorigin src="/assets/index-XizBlZT_.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-B_qxQ1HF.css">
   </head>
   <body class="bg-amari-50 text-amari-900 antialiased selection:bg-amari-200 selection:text-amari-900">
     <div id="root"></div>
