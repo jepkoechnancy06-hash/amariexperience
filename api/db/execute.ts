@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { runQuery } from '../_lib/db';
-import { getSession } from '../_lib/auth';
+import { runQuery } from '../_lib/db.js';
+import { getSession } from '../_lib/auth.js';
 
 function isQueryAllowed(query: string) {
   const q = query.trim().replace(/;+\s*$/, '').toLowerCase();

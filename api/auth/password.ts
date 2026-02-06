@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import bcrypt from 'bcryptjs';
-import { getSql } from '../_lib/db';
-import { getSession } from '../_lib/auth';
+import { getSql } from '../_lib/db.js';
+import { getSession } from '../_lib/auth.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {

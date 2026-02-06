@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { runQuery } from '../_lib/db';
-import { getSession } from '../_lib/auth';
+import { runQuery } from '../_lib/db.js';
+import { getSession } from '../_lib/auth.js';
 
 const USER_FIELDS = `
   id, email, first_name, last_name, phone, user_type, created_at,
