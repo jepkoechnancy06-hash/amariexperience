@@ -61,7 +61,7 @@ const VendorDirectory: React.FC = () => {
       {/* ─── HERO ──────────────────────────────────────────────── */}
       <div className="relative overflow-hidden bg-amari-900">
         <div className="absolute inset-0">
-          <img src="https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?q=80&w=2400&auto=format&fit=crop" alt="Beach wedding" className="w-full h-full object-cover opacity-30" />
+          <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=2400&auto=format" alt="Diani Beach wedding venue" className="w-full h-full object-cover opacity-30" />
           <div className="absolute inset-0 bg-gradient-to-b from-amari-900/80 to-amari-950/95" />
         </div>
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-amari-500/10 rounded-full blur-[120px] pointer-events-none" />

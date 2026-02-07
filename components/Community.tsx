@@ -8,8 +8,8 @@ const Community: React.FC = () => {
         <div className="relative overflow-hidden rounded-[2.5rem] border border-amari-100 bg-white shadow-xl mb-12">
           <div className="absolute inset-0">
             <img
-              src="https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=2400&auto=format&fit=crop"
-              alt="Coastal shoreline"
+              src="https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=2400&auto=format"
+              alt="Coastal wedding celebration"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-white/95"></div>

@@ -6,8 +6,8 @@ const FAQ: React.FC = () => {
       <div className="relative overflow-hidden rounded-[2.5rem] border border-amari-100 bg-white shadow-xl mb-12">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?q=80&w=2400&auto=format&fit=crop"
-            alt="Beach sunrise"
+            src="https://images.unsplash.com/photo-1522413452208-996ff3f3e740?w=2400&auto=format"
+            alt="Diani Beach wedding setup"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-white/95"></div>

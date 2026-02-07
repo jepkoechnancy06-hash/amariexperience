@@ -120,8 +120,8 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
                     </button>
                     {isUserMenuOpen && (
                       <>
-                        <div className="fixed inset-0 z-40" onClick={() => setIsUserMenuOpen(false)} />
-                        <div className="absolute top-full right-0 mt-3 w-64 glass rounded-2xl shadow-xl border border-white/60 py-2 z-50 animate-in fade-in slide-in-from-top-4 duration-300">
+                        <div className="fixed inset-0 z-[55]" onClick={() => setIsUserMenuOpen(false)} />
+                        <div className="absolute top-full right-0 mt-3 w-64 glass rounded-2xl shadow-xl border border-white/60 py-2 z-[60] animate-in fade-in slide-in-from-top-4 duration-300">
                           <div className="px-4 py-3 border-b border-stone-100">
                             <p className="font-bold text-stone-900 text-sm">{user?.firstName} {user?.lastName}</p>
                             <p className="text-xs text-stone-400 truncate">{user?.email}</p>
@@ -157,8 +157,8 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
                     </button>
                     {isUserMenuOpen && (
                       <>
-                        <div className="fixed inset-0 z-40" onClick={() => setIsUserMenuOpen(false)} />
-                        <div className="absolute top-full right-0 mt-3 w-56 glass rounded-2xl shadow-xl border border-white/60 py-2 z-50 animate-in fade-in slide-in-from-top-4 duration-300">
+                        <div className="fixed inset-0 z-[55]" onClick={() => setIsUserMenuOpen(false)} />
+                        <div className="absolute top-full right-0 mt-3 w-56 glass rounded-2xl shadow-xl border border-white/60 py-2 z-[60] animate-in fade-in slide-in-from-top-4 duration-300">
                           <Link to="/login" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-stone-600 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
                             <LogIn size={15} /> Sign In
                           </Link>
@@ -200,8 +200,8 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
         {/* ─── MOBILE DRAWER ──────────────────────────────────────── */}
         {isMobileMenuOpen && (
           <>
-            <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={() => setIsMobileMenuOpen(false)} />
-            <div id="mobile-menu" className="fixed inset-y-0 right-0 w-[85%] max-w-sm bg-white z-50 lg:hidden shadow-2xl animate-in fade-in duration-300 overflow-y-auto">
+            <div className="fixed inset-0 bg-black/30 z-[55] lg:hidden" onClick={() => setIsMobileMenuOpen(false)} />
+            <div id="mobile-menu" className="fixed inset-y-0 right-0 w-[85%] max-w-sm bg-white z-[60] lg:hidden shadow-2xl animate-in slide-in-from-right duration-300 overflow-y-auto">
               <div className="flex items-center justify-between p-5 border-b border-stone-100">
                 <Link to="/" className="flex items-center gap-2">
                   <div className="w-9 h-9 rounded-xl overflow-hidden">
@@ -228,19 +228,19 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Link to="/dashboard" className="flex-1 text-center bg-amari-900 text-white py-2 rounded-xl text-xs font-bold hover:bg-amari-800 transition">Dashboard</Link>
+                      <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex-1 text-center bg-amari-900 text-white py-2 rounded-xl text-xs font-bold hover:bg-amari-800 transition">Dashboard</Link>
                       {user?.userType === 'admin' && (
-                        <Link to="/admin" className="flex-1 text-center bg-amari-50 text-amari-700 py-2 rounded-xl text-xs font-bold hover:bg-amari-100 transition border border-amari-200">Admin</Link>
+                        <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} className="flex-1 text-center bg-amari-50 text-amari-700 py-2 rounded-xl text-xs font-bold hover:bg-amari-100 transition border border-amari-200">Admin</Link>
                       )}
                       <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="px-4 py-2 rounded-xl text-xs font-bold text-red-500 bg-red-50 hover:bg-red-100 transition">Logout</button>
                     </div>
                   </div>
                 ) : (
                   <div className="space-y-2 mb-5">
-                    <Link to="/login" className="flex items-center justify-center gap-2 bg-amari-900 text-white py-3 rounded-2xl font-bold text-sm hover:bg-amari-800 transition">
+                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-center gap-2 bg-amari-900 text-white py-3 rounded-2xl font-bold text-sm hover:bg-amari-800 transition">
                       <LogIn size={16} /> Sign In
                     </Link>
-                    <Link to="/login" className="flex items-center justify-center gap-2 bg-amari-50 text-amari-700 py-3 rounded-2xl font-bold text-sm hover:bg-amari-100 transition border border-amari-200">
+                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-center gap-2 bg-amari-50 text-amari-700 py-3 rounded-2xl font-bold text-sm hover:bg-amari-100 transition border border-amari-200">
                       <UserPlus size={16} /> Create Account
                     </Link>
                   </div>
@@ -262,6 +262,7 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
                   <Link
                     key={path}
                     to={path}
+                    onClick={() => setIsMobileMenuOpen(false)}
                     className={`block px-4 py-3 rounded-xl text-sm font-medium transition ${
                       location.pathname === path
                         ? 'bg-amari-50 text-amari-600 font-bold'
@@ -273,11 +274,11 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
                 ))}
 
                 <div className="pt-4 mt-4 border-t border-stone-100">
-                  <Link to="/partner" className="flex items-center justify-center gap-2 bg-amari-500 text-white py-3 rounded-2xl font-bold text-sm hover:bg-amari-600 transition shadow-lg">
+                  <Link to="/partner" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-center gap-2 bg-amari-500 text-white py-3 rounded-2xl font-bold text-sm hover:bg-amari-600 transition shadow-lg">
                     <Sparkles size={15} /> Partner with Us
                   </Link>
                 </div>
-                <Link to="/admin" className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-stone-500 hover:bg-stone-50 hover:text-stone-700 transition mt-2">
+                <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-stone-500 hover:bg-stone-50 hover:text-stone-700 transition mt-2">
                   <Shield size={15} /> Admin Portal
                 </Link>
               </div>
