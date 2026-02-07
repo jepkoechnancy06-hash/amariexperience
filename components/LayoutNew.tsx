@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X, User, ChevronDown, Sparkles, ArrowRight, Instagram, Facebook, Twitter, Mail, Shield, UserPlus, LogIn } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -15,13 +15,17 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const location = useLocation();
   const { isAuthenticated, user, logout } = useAuth();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const isHome = location.pathname === '/' || location.pathname === '/couples';
 
+  const closeMobile = useCallback(() => setIsMobileMenuOpen(false), []);
+  const closeDropdown = useCallback(() => setIsUserMenuOpen(false), []);
+
   useEffect(() => {
-    setIsMobileMenuOpen(false);
-    setIsUserMenuOpen(false);
-  }, [location.pathname]);
+    closeMobile();
+    closeDropdown();
+  }, [location.pathname, closeMobile, closeDropdown]);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 20);
@@ -36,22 +40,52 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
-    if (!isMobileMenuOpen) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsMobileMenuOpen(false); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { closeMobile(); closeDropdown(); }
+    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [isMobileMenuOpen]);
+  }, [closeMobile, closeDropdown]);
+
+  // Click-outside for desktop dropdown
+  useEffect(() => {
+    if (!isUserMenuOpen) return;
+    const onClick = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        closeDropdown();
+      }
+    };
+    document.addEventListener('mousedown', onClick);
+    document.addEventListener('touchstart', onClick as any);
+    return () => {
+      document.removeEventListener('mousedown', onClick);
+      document.removeEventListener('touchstart', onClick as any);
+    };
+  }, [isUserMenuOpen, closeDropdown]);
 
   const nlBase = 'relative px-1 py-2 text-[13px] font-medium tracking-wide transition-all duration-300';
   const nlActive = `${nlBase} text-amari-500`;
   const nlInactive = `${nlBase} text-stone-500 hover:text-amari-500`;
   const navClass = ({ isActive }: { isActive: boolean }) => isActive ? nlActive : nlInactive;
 
+  const MOBILE_LINKS: [string, string][] = [
+    ['/', 'Home'],
+    ['/vendors', 'Vendors'],
+    ['/gallery', 'Inspiration'],
+    ['/tools', 'Planning Tools'],
+    ['/concierge', 'Concierge'],
+    ['/about', 'About Us'],
+    ['/community', 'Community'],
+    ['/history', 'Diani History'],
+    ['/activities', 'Activities'],
+    ['/contact', 'Contact'],
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-stone-50 overflow-x-hidden">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] bg-white text-amari-900 px-4 py-2 rounded-xl shadow-lg border border-amari-100"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[70] bg-white text-amari-900 px-4 py-2 rounded-xl shadow-lg border border-amari-100"
       >
         Skip to content
       </a>
@@ -75,15 +109,15 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
         className={`sticky top-0 z-50 transition-all duration-500 ${
           isScrolled
             ? 'glass shadow-lg shadow-stone-900/5 border-b border-white/40'
-            : 'bg-white/60 backdrop-blur-sm'
+            : 'bg-white/80 backdrop-blur-sm'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-[72px]">
+          <div className="flex items-center justify-between h-[64px] sm:h-[72px]">
 
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
-              <div className="w-11 h-11 rounded-2xl overflow-hidden ring-2 ring-amari-100 group-hover:ring-amari-300 transition-all duration-300 group-hover:scale-105">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl overflow-hidden ring-2 ring-amari-100 group-hover:ring-amari-300 transition-all duration-300">
                 <img src="/amariexperienceslogo.jpeg" alt="Amari Experience" className="w-full h-full object-cover" />
               </div>
               <div className="hidden sm:block">
@@ -104,14 +138,16 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
             </div>
 
             {/* Right side actions */}
-            <div className="hidden lg:flex items-center gap-3">
-              {/* User area */}
-              <div className="relative">
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* User dropdown – visible all sizes */}
+              <div className="relative" ref={dropdownRef}>
                 {isAuthenticated ? (
                   <>
                     <button
-                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                      className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-amari-50 transition-colors"
+                      onClick={() => setIsUserMenuOpen(v => !v)}
+                      className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-2 rounded-xl hover:bg-amari-50 transition-colors"
+                      aria-haspopup="true"
+                      aria-expanded={isUserMenuOpen}
                     >
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amari-300 to-amari-500 flex items-center justify-center text-white text-xs font-bold">
                         {user?.firstName?.charAt(0) || 'U'}
@@ -119,58 +155,54 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
                       <ChevronDown size={14} className={`text-stone-400 transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                     </button>
                     {isUserMenuOpen && (
-                      <>
-                        <div className="fixed inset-0 z-[55]" onClick={() => setIsUserMenuOpen(false)} />
-                        <div className="absolute top-full right-0 mt-3 w-64 glass rounded-2xl shadow-xl border border-white/60 py-2 z-[60] animate-in fade-in slide-in-from-top-4 duration-300">
-                          <div className="px-4 py-3 border-b border-stone-100">
-                            <p className="font-bold text-stone-900 text-sm">{user?.firstName} {user?.lastName}</p>
-                            <p className="text-xs text-stone-400 truncate">{user?.email}</p>
-                          </div>
-                          <Link to="/dashboard" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-stone-600 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
-                            Dashboard
-                          </Link>
-                          <Link to="/profile" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-stone-600 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
-                            Profile
-                          </Link>
-                          {user?.userType === 'admin' && (
-                            <Link to="/admin" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-stone-600 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
-                              <Shield size={15} /> Admin Portal
-                            </Link>
-                          )}
-                          <div className="border-t border-stone-100 my-1" />
-                          <button onClick={() => { logout(); setIsUserMenuOpen(false); }} className="w-full text-left px-4 py-2.5 text-red-500 hover:bg-red-50 transition-colors text-sm">
-                            Sign Out
-                          </button>
+                      <div className="absolute top-full right-0 mt-2 w-60 sm:w-64 bg-white rounded-2xl shadow-2xl border border-stone-200 py-2 z-[60] animate-dropdown">
+                        <div className="px-4 py-3 border-b border-stone-100">
+                          <p className="font-bold text-stone-900 text-sm">{user?.firstName} {user?.lastName}</p>
+                          <p className="text-xs text-stone-400 truncate">{user?.email}</p>
                         </div>
-                      </>
+                        <Link to="/dashboard" onClick={closeDropdown} className="flex items-center gap-3 px-4 py-2.5 text-stone-600 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
+                          Dashboard
+                        </Link>
+                        <Link to="/profile" onClick={closeDropdown} className="flex items-center gap-3 px-4 py-2.5 text-stone-600 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
+                          Profile
+                        </Link>
+                        {user?.userType === 'admin' && (
+                          <Link to="/admin" onClick={closeDropdown} className="flex items-center gap-3 px-4 py-2.5 text-stone-600 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
+                            <Shield size={15} /> Admin Portal
+                          </Link>
+                        )}
+                        <div className="border-t border-stone-100 my-1" />
+                        <button onClick={() => { logout(); closeDropdown(); }} className="w-full text-left px-4 py-2.5 text-red-500 hover:bg-red-50 transition-colors text-sm">
+                          Sign Out
+                        </button>
+                      </div>
                     )}
                   </>
                 ) : (
                   <>
                     <button
-                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                      className="flex items-center gap-2 text-stone-500 hover:text-amari-500 px-3 py-2 rounded-xl text-sm font-medium transition-colors"
+                      onClick={() => setIsUserMenuOpen(v => !v)}
+                      className="flex items-center gap-1.5 text-stone-500 hover:text-amari-500 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium transition-colors"
+                      aria-haspopup="true"
+                      aria-expanded={isUserMenuOpen}
                     >
-                      <User size={16} />
-                      Account
+                      <User size={18} />
+                      <span className="hidden sm:inline">Account</span>
                       <ChevronDown size={14} className={`text-stone-400 transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                     </button>
                     {isUserMenuOpen && (
-                      <>
-                        <div className="fixed inset-0 z-[55]" onClick={() => setIsUserMenuOpen(false)} />
-                        <div className="absolute top-full right-0 mt-3 w-56 glass rounded-2xl shadow-xl border border-white/60 py-2 z-[60] animate-in fade-in slide-in-from-top-4 duration-300">
-                          <Link to="/login" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-stone-600 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
-                            <LogIn size={15} /> Sign In
-                          </Link>
-                          <Link to="/login" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-stone-600 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
-                            <UserPlus size={15} /> Create Account
-                          </Link>
-                          <div className="border-t border-stone-100 my-1" />
-                          <Link to="/admin" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-stone-500 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
-                            <Shield size={15} /> Admin Portal
-                          </Link>
-                        </div>
-                      </>
+                      <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-stone-200 py-2 z-[60] animate-dropdown">
+                        <Link to="/login" onClick={closeDropdown} className="flex items-center gap-3 px-4 py-2.5 text-stone-600 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
+                          <LogIn size={15} /> Sign In
+                        </Link>
+                        <Link to="/login" onClick={closeDropdown} className="flex items-center gap-3 px-4 py-2.5 text-stone-600 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
+                          <UserPlus size={15} /> Create Account
+                        </Link>
+                        <div className="border-t border-stone-100 my-1" />
+                        <Link to="/admin" onClick={closeDropdown} className="flex items-center gap-3 px-4 py-2.5 text-stone-500 hover:bg-amari-50 hover:text-amari-600 transition-colors text-sm">
+                          <Shield size={15} /> Admin Portal
+                        </Link>
+                      </div>
                     )}
                   </>
                 )}
@@ -178,114 +210,116 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
 
               <Link
                 to="/partner"
-                className="bg-amari-900 text-white px-5 py-2.5 rounded-full text-[13px] font-bold hover:bg-amari-800 transition-all duration-300 hover:shadow-lg hover:shadow-amari-900/20 hover:-translate-y-0.5 flex items-center gap-2"
+                className="hidden lg:flex bg-amari-900 text-white px-5 py-2.5 rounded-full text-[13px] font-bold hover:bg-amari-800 transition-all duration-300 hover:shadow-lg hover:shadow-amari-900/20 hover:-translate-y-0.5 items-center gap-2"
               >
                 Partner with Us
                 <ArrowRight size={14} />
               </Link>
-            </div>
 
-            {/* Mobile hamburger */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-expanded={isMobileMenuOpen}
-              aria-controls="mobile-menu"
-              className="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-amari-50 text-amari-900 transition"
-            >
-              {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
+              {/* Mobile hamburger */}
+              <button
+                onClick={() => setIsMobileMenuOpen(v => !v)}
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="mobile-menu"
+                className="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-amari-50 text-amari-900 transition active:scale-95"
+              >
+                {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+              </button>
+            </div>
           </div>
         </div>
+      </nav>
 
-        {/* ─── MOBILE DRAWER ──────────────────────────────────────── */}
-        {isMobileMenuOpen && (
-          <>
-            <div className="fixed inset-0 bg-black/30 z-[55] lg:hidden" onClick={() => setIsMobileMenuOpen(false)} />
-            <div id="mobile-menu" className="fixed inset-y-0 right-0 w-[85%] max-w-sm bg-white z-[60] lg:hidden shadow-2xl animate-in slide-in-from-right duration-300 overflow-y-auto">
-              <div className="flex items-center justify-between p-5 border-b border-stone-100">
-                <Link to="/" className="flex items-center gap-2">
-                  <div className="w-9 h-9 rounded-xl overflow-hidden">
-                    <img src="/amariexperienceslogo.jpeg" alt="Logo" className="w-full h-full object-cover" />
-                  </div>
-                  <span className="font-serif font-bold text-amari-900 tracking-wide">AMARI</span>
-                </Link>
-                <button onClick={() => setIsMobileMenuOpen(false)} className="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center">
-                  <X size={18} className="text-stone-600" />
-                </button>
-              </div>
+      {/* ─── MOBILE DRAWER ──────────────────────────────────────── */}
+      {isMobileMenuOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/40 z-[55] lg:hidden animate-fade-in"
+            onClick={closeMobile}
+            onTouchEnd={(e) => { e.preventDefault(); closeMobile(); }}
+          />
+          <div
+            id="mobile-menu"
+            className="fixed inset-y-0 right-0 w-[82%] max-w-xs bg-white z-[60] lg:hidden shadow-2xl animate-slide-in-right overflow-y-auto overscroll-contain"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="flex items-center justify-between p-4 border-b border-stone-100">
+              <Link to="/" onClick={closeMobile} className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-xl overflow-hidden">
+                  <img src="/amariexperienceslogo.jpeg" alt="Logo" className="w-full h-full object-cover" />
+                </div>
+                <span className="font-serif font-bold text-amari-900 tracking-wide">AMARI</span>
+              </Link>
+              <button
+                onClick={closeMobile}
+                className="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center active:scale-95 transition"
+                aria-label="Close menu"
+              >
+                <X size={18} className="text-stone-600" />
+              </button>
+            </div>
 
-              <div className="p-5 space-y-1">
-                {/* Auth card */}
-                {isAuthenticated ? (
-                  <div className="bg-gradient-to-br from-amari-50 to-white rounded-2xl p-4 mb-5 border border-amari-100">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amari-300 to-amari-500 flex items-center justify-center text-white font-bold">
-                        {user?.firstName?.charAt(0) || 'U'}
-                      </div>
-                      <div>
-                        <p className="font-bold text-stone-900 text-sm">{user?.firstName}</p>
-                        <p className="text-xs text-stone-400">{user?.email}</p>
-                      </div>
+            <div className="p-4 space-y-1">
+              {/* Auth card */}
+              {isAuthenticated ? (
+                <div className="bg-gradient-to-br from-amari-50 to-white rounded-2xl p-4 mb-4 border border-amari-100">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amari-300 to-amari-500 flex items-center justify-center text-white font-bold">
+                      {user?.firstName?.charAt(0) || 'U'}
                     </div>
-                    <div className="flex gap-2">
-                      <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex-1 text-center bg-amari-900 text-white py-2 rounded-xl text-xs font-bold hover:bg-amari-800 transition">Dashboard</Link>
-                      {user?.userType === 'admin' && (
-                        <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} className="flex-1 text-center bg-amari-50 text-amari-700 py-2 rounded-xl text-xs font-bold hover:bg-amari-100 transition border border-amari-200">Admin</Link>
-                      )}
-                      <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="px-4 py-2 rounded-xl text-xs font-bold text-red-500 bg-red-50 hover:bg-red-100 transition">Logout</button>
+                    <div className="min-w-0">
+                      <p className="font-bold text-stone-900 text-sm truncate">{user?.firstName}</p>
+                      <p className="text-xs text-stone-400 truncate">{user?.email}</p>
                     </div>
                   </div>
-                ) : (
-                  <div className="space-y-2 mb-5">
-                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-center gap-2 bg-amari-900 text-white py-3 rounded-2xl font-bold text-sm hover:bg-amari-800 transition">
-                      <LogIn size={16} /> Sign In
-                    </Link>
-                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-center gap-2 bg-amari-50 text-amari-700 py-3 rounded-2xl font-bold text-sm hover:bg-amari-100 transition border border-amari-200">
-                      <UserPlus size={16} /> Create Account
-                    </Link>
+                  <div className="flex gap-2">
+                    <Link to="/dashboard" onClick={closeMobile} className="flex-1 text-center bg-amari-900 text-white py-2.5 rounded-xl text-xs font-bold active:bg-amari-800 transition">Dashboard</Link>
+                    {user?.userType === 'admin' && (
+                      <Link to="/admin" onClick={closeMobile} className="flex-1 text-center bg-amari-50 text-amari-700 py-2.5 rounded-xl text-xs font-bold active:bg-amari-100 transition border border-amari-200">Admin</Link>
+                    )}
+                    <button onClick={() => { logout(); closeMobile(); }} className="px-3 py-2.5 rounded-xl text-xs font-bold text-red-500 bg-red-50 active:bg-red-100 transition">Logout</button>
                   </div>
-                )}
-
-                {/* Nav links */}
-                {[
-                  ['/', 'Home'],
-                  ['/vendors', 'Vendors'],
-                  ['/gallery', 'Inspiration'],
-                  ['/tools', 'Planning Tools'],
-                  ['/concierge', 'Concierge'],
-                  ['/about', 'About Us'],
-                  ['/community', 'Community'],
-                  ['/history', 'Diani History'],
-                  ['/activities', 'Activities'],
-                  ['/contact', 'Contact'],
-                ].map(([path, label]) => (
-                  <Link
-                    key={path}
-                    to={path}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`block px-4 py-3 rounded-xl text-sm font-medium transition ${
-                      location.pathname === path
-                        ? 'bg-amari-50 text-amari-600 font-bold'
-                        : 'text-stone-600 hover:bg-stone-50'
-                    }`}
-                  >
-                    {label}
+                </div>
+              ) : (
+                <div className="space-y-2 mb-4">
+                  <Link to="/login" onClick={closeMobile} className="flex items-center justify-center gap-2 bg-amari-900 text-white py-3 rounded-2xl font-bold text-sm active:bg-amari-800 transition">
+                    <LogIn size={16} /> Sign In
                   </Link>
-                ))}
-
-                <div className="pt-4 mt-4 border-t border-stone-100">
-                  <Link to="/partner" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-center gap-2 bg-amari-500 text-white py-3 rounded-2xl font-bold text-sm hover:bg-amari-600 transition shadow-lg">
-                    <Sparkles size={15} /> Partner with Us
+                  <Link to="/login" onClick={closeMobile} className="flex items-center justify-center gap-2 bg-amari-50 text-amari-700 py-3 rounded-2xl font-bold text-sm active:bg-amari-100 transition border border-amari-200">
+                    <UserPlus size={16} /> Create Account
                   </Link>
                 </div>
-                <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-stone-500 hover:bg-stone-50 hover:text-stone-700 transition mt-2">
+              )}
+
+              {/* Nav links */}
+              {MOBILE_LINKS.map(([path, label]) => (
+                <Link
+                  key={path}
+                  to={path}
+                  onClick={closeMobile}
+                  className={`block px-4 py-3 rounded-xl text-sm font-medium transition active:scale-[0.98] ${
+                    location.pathname === path
+                      ? 'bg-amari-50 text-amari-600 font-bold'
+                      : 'text-stone-600 hover:bg-stone-50 active:bg-stone-100'
+                  }`}
+                >
+                  {label}
+                </Link>
+              ))}
+
+              <div className="pt-4 mt-3 border-t border-stone-100 space-y-2">
+                <Link to="/partner" onClick={closeMobile} className="flex items-center justify-center gap-2 bg-amari-500 text-white py-3 rounded-2xl font-bold text-sm active:bg-amari-600 transition shadow-lg">
+                  <Sparkles size={15} /> Partner with Us
+                </Link>
+                <Link to="/admin" onClick={closeMobile} className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-stone-500 hover:bg-stone-50 active:bg-stone-100 transition">
                   <Shield size={15} /> Admin Portal
                 </Link>
               </div>
             </div>
-          </>
-        )}
-      </nav>
+          </div>
+        </>
+      )}
 
       {/* ─── MAIN CONTENT ──────────────────────────────────────────── */}
       <main id="main-content" className="flex-grow">
