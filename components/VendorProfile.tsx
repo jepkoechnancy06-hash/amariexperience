@@ -369,7 +369,7 @@ const VendorProfile: React.FC = () => {
             </>
           )}
 
-          <div className="max-w-5xl max-h-[85vh] px-4" onClick={(e) => e.stopPropagation()}>
+          <div className="max-w-3xl max-h-[85vh] px-4" onClick={(e) => e.stopPropagation()}>
             <img
               src={gallery[lightboxIdx]}
               alt={`${vendor.name} photo ${lightboxIdx + 1}`}
@@ -383,7 +383,7 @@ const VendorProfile: React.FC = () => {
       {/* ─── VENUE HEADER ───────────────────────────────────────── */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
 
-        <div className="bg-white rounded-2xl -mt-10 relative z-10 p-6 sm:p-8 shadow-lg border border-stone-100">
+        <div className="bg-white rounded-2xl mt-6 relative z-10 p-6 sm:p-8 shadow-lg border border-stone-100">
           <div className="flex items-start justify-between gap-4">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-amari-500 mb-1 block">{vendor.category}</span>
