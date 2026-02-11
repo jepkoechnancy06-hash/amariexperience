@@ -4,6 +4,14 @@ import { executeQuery } from '../lib/db';
 const env = (import.meta as any).env || {};
 const API_BASE = env.VITE_API_BASE || '';
 
+const readFileAsDataURL = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.onload = () => resolve(String(reader.result || ''));
+    reader.readAsDataURL(file);
+  });
+
 // Submit vendor application to database via public API endpoint
 export const submitApplication = async (
   app: Omit<VendorApplication, 'id' | 'submittedAt' | 'status'>,
@@ -14,13 +22,20 @@ export const submitApplication = async (
     const submittedAt = new Date().toISOString();
 
     const verificationDocumentUrl = app.verificationDocument
-      ? (typeof app.verificationDocument === 'string' ? app.verificationDocument : app.verificationDocument.name)
+      ? (typeof app.verificationDocument === 'string'
+          ? app.verificationDocument
+          : await readFileAsDataURL(app.verificationDocument))
       : null;
 
     const realWorkImages: string[] = Array.isArray(app.realWorkImages)
-      ? (app.realWorkImages as any[])
-          .map((p) => (typeof p === 'string' ? p : p?.name))
-          .filter(Boolean)
+      ? (await Promise.all(
+          (app.realWorkImages as any[]).map(async (p) => {
+            if (!p) return null;
+            if (typeof p === 'string') return p;
+            if (p instanceof File) return await readFileAsDataURL(p);
+            return null;
+          })
+        )).filter(Boolean) as string[]
       : [];
 
     const vendorSubcategories: string[] = Array.isArray(app.vendorSubcategories)

@@ -8,6 +8,7 @@ const AdminVendorVerification: React.FC = () => {
   const [selectedApp, setSelectedApp] = useState<VendorApplication | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showDocPreview, setShowDocPreview] = useState(false);
 
   const refreshData = async () => {
     setLoading(true);
@@ -202,9 +203,25 @@ const AdminVendorVerification: React.FC = () => {
                           <p className="text-sm font-medium text-stone-900">Verification document</p>
                           <p className="text-xs text-stone-500">{selectedApp.verificationDocumentType || '-'}</p>
                           {selectedApp.verificationDocument ? (
-                            <p className="text-xs text-stone-500 mt-1 break-all">{String(selectedApp.verificationDocument)}</p>
+                            <div className="mt-2 flex flex-wrap items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => setShowDocPreview(true)}
+                                className="inline-flex items-center gap-1.5 bg-white border border-stone-200 text-stone-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-stone-100 transition"
+                              >
+                                <Eye size={14} /> View
+                              </button>
+                              <a
+                                href={String(selectedApp.verificationDocument)}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1.5 bg-white border border-stone-200 text-stone-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-stone-100 transition"
+                              >
+                                <FileText size={14} /> Open in new tab
+                              </a>
+                            </div>
                           ) : (
-                            <p className="text-xs text-stone-500 mt-1">No file reference stored</p>
+                            <p className="text-xs text-stone-500 mt-1">No document stored</p>
                           )}
                         </div>
                       </div>
@@ -330,6 +347,66 @@ const AdminVendorVerification: React.FC = () => {
                 <Eye size={32} className="opacity-50" />
               </div>
               <p className="font-medium">Select an application to verify</p>
+            </div>
+          )}
+
+          {selectedApp?.verificationDocument && showDocPreview && (
+            <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-stone-100">
+                  <div>
+                    <p className="text-sm font-bold text-stone-900">Verification document</p>
+                    <p className="text-xs text-stone-500">{selectedApp.verificationDocumentType || '-'}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowDocPreview(false)}
+                    className="p-2 rounded-lg hover:bg-stone-100 transition text-stone-600"
+                    aria-label="Close"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <div className="p-4 bg-stone-50">
+                  {(() => {
+                    const src = String(selectedApp.verificationDocument);
+                    const mime = src.startsWith('data:') ? src.slice(5, src.indexOf(';')) : '';
+                    const isPdf = mime === 'application/pdf' || src.toLowerCase().endsWith('.pdf');
+                    const isImage = mime.startsWith('image/') || /\.(png|jpg|jpeg|gif|webp)$/i.test(src);
+
+                    if (isImage) {
+                      return (
+                        <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+                          <img src={src} alt="Verification document" className="w-full max-h-[70vh] object-contain bg-white" />
+                        </div>
+                      );
+                    }
+
+                    if (isPdf) {
+                      return (
+                        <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+                          <iframe title="Verification PDF" src={src} className="w-full h-[70vh]" />
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div className="bg-white rounded-xl border border-stone-200 p-4">
+                        <p className="text-sm text-stone-700 mb-3">Preview is unavailable for this document type.</p>
+                        <a
+                          href={src}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 bg-stone-900 text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-stone-700 transition"
+                        >
+                          <FileText size={16} /> Open document
+                        </a>
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
             </div>
           )}
         </div>

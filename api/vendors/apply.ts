@@ -26,10 +26,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       : [];
 
     const realWorkImages: string[] = Array.isArray(body.realWorkImages)
-      ? body.realWorkImages.map((p: any) => (typeof p === 'string' ? p : p?.name)).filter(Boolean)
+      ? body.realWorkImages
+          .map((p: any) => (typeof p === 'string' ? p : null))
+          .filter(Boolean)
       : [];
 
-    const verificationDocumentUrl = body.verificationDocumentUrl || null;
+    const verificationDocumentUrl = typeof body.verificationDocumentUrl === 'string'
+      ? body.verificationDocumentUrl
+      : null;
 
     await sql`
       INSERT INTO vendor_applications (

@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 
 const REVIEWS_KEY = 'amari_vendor_reviews_v1';
+const WISHLIST_KEY = 'amari_wishlist_v1';
+const WISHLIST_DATA_KEY = 'amari_wishlist_data_v1';
 
 // ── Gallery images (fallbacks for demo) ────────────────────────────
 const GALLERY_FALLBACKS = [
@@ -173,6 +175,59 @@ const VendorProfile: React.FC = () => {
     return () => { mounted = false; };
   }, [id]);
 
+  useEffect(() => {
+    if (!id) return;
+    try {
+      const raw = localStorage.getItem(WISHLIST_KEY);
+      if (!raw) { setSaved(false); return; }
+      const ids = new Set<string>(JSON.parse(raw));
+      setSaved(ids.has(id));
+    } catch {
+      setSaved(false);
+    }
+  }, [id]);
+
+  const toggleSaved = () => {
+    if (!id) return;
+
+    try {
+      const raw = localStorage.getItem(WISHLIST_KEY);
+      const ids = new Set<string>(raw ? JSON.parse(raw) : []);
+      const nextSaved = !ids.has(id);
+      if (nextSaved) ids.add(id); else ids.delete(id);
+      localStorage.setItem(WISHLIST_KEY, JSON.stringify([...ids]));
+      setSaved(nextSaved);
+    } catch {
+      setSaved((p) => !p);
+    }
+
+    if (vendor) {
+      try {
+        const rawData = localStorage.getItem(WISHLIST_DATA_KEY);
+        const all = rawData ? JSON.parse(rawData) : [];
+        const arr = Array.isArray(all) ? all : [];
+        const idx = arr.findIndex((v: any) => v?.id === id);
+        const isNowSaved = (() => {
+          try {
+            const raw = localStorage.getItem(WISHLIST_KEY);
+            const ids = new Set<string>(raw ? JSON.parse(raw) : []);
+            return ids.has(id);
+          } catch {
+            return false;
+          }
+        })();
+
+        if (isNowSaved) {
+          if (idx === -1) arr.push(vendor);
+        } else {
+          if (idx !== -1) arr.splice(idx, 1);
+        }
+
+        localStorage.setItem(WISHLIST_DATA_KEY, JSON.stringify(arr));
+      } catch {}
+    }
+  };
+
   // Load user-submitted reviews from localStorage
   useEffect(() => {
     try {
@@ -282,7 +337,7 @@ const VendorProfile: React.FC = () => {
           <button onClick={handleShare} className="glass rounded-full p-2.5 hover:scale-105 transition-all">
             <Share2 size={15} className="text-stone-700" />
           </button>
-          <button onClick={() => setSaved(!saved)} className="glass rounded-full p-2.5 hover:scale-105 transition-all">
+          <button onClick={toggleSaved} className="glass rounded-full p-2.5 hover:scale-105 transition-all">
             <Heart size={15} className={saved ? 'text-red-500 fill-red-500' : 'text-stone-700'} />
           </button>
         </div>
@@ -717,7 +772,7 @@ const VendorProfile: React.FC = () => {
           </div>
           <div className="flex gap-2 flex-shrink-0">
             <button
-              onClick={() => setSaved(!saved)}
+              onClick={toggleSaved}
               className="flex items-center gap-1.5 bg-white border border-stone-200 text-stone-700 px-4 py-2.5 rounded-full text-sm font-bold hover:border-amari-200 transition"
             >
               <Heart size={14} className={saved ? 'text-red-500 fill-red-500' : 'text-stone-400'} />

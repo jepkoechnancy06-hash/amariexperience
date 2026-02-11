@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { INITIAL_BUDGET, INITIAL_GUESTS } from '../constants';
 import { BudgetItem, Guest, ItineraryItem } from '../types';
-import { Plus, Trash2, PieChart as PieIcon, Users, Calendar, MapPin, Edit3, Check, X, DollarSign, UserCheck, UserX, Clock, Target, Palette } from 'lucide-react';
+import { Plus, Trash2, PieChart as PieIcon, Users, Calendar, MapPin, Edit3, Check, X, DollarSign, UserCheck, UserX, Clock, Target } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const ITINERARY_STORAGE_KEY = 'amari_guest_itinerary_v1';
 const BUDGET_STORAGE_KEY = 'amari_budget_v1';
@@ -10,6 +11,8 @@ const TOTAL_BUDGET_KEY = 'amari_total_budget_v1';
 const GUESTS_STORAGE_KEY = 'amari_guests_v1';
 const CURRENCY_STORAGE_KEY = 'amari_currency_v1';
 const CHART_COLORS_KEY = 'amari_chart_colors_v1';
+const WISHLIST_KEY = 'amari_wishlist_v1';
+const WISHLIST_DATA_KEY = 'amari_wishlist_data_v1';
 const USD_TO_KSH = 129;
 
 const COLORS = [
@@ -19,7 +22,81 @@ const COLORS = [
 const RSVP_OPTIONS: Array<Guest['rsvpStatus']> = ['Pending', 'Confirmed', 'Declined'];
 
 const PlanningTools: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'budget' | 'guests' | 'timeline' | 'itinerary'>('budget');
+  const [activeTab, setActiveTab] = useState<'saved' | 'budget' | 'guests' | 'timeline' | 'itinerary'>('saved');
+
+  const [savedIds, setSavedIds] = useState<Set<string>>(() => {
+    try {
+      const raw = localStorage.getItem(WISHLIST_KEY);
+      if (raw) return new Set(JSON.parse(raw));
+    } catch {}
+    return new Set();
+  });
+
+  const [savedVendors, setSavedVendors] = useState<any[]>(() => {
+    try {
+      const raw = localStorage.getItem(WISHLIST_DATA_KEY);
+      if (raw) {
+        const all = JSON.parse(raw);
+        if (Array.isArray(all)) return all;
+      }
+    } catch {}
+    return [];
+  });
+
+  const refreshSavedFromStorage = () => {
+    try {
+      const idsRaw = localStorage.getItem(WISHLIST_KEY);
+      setSavedIds(idsRaw ? new Set(JSON.parse(idsRaw)) : new Set());
+    } catch {
+      setSavedIds(new Set());
+    }
+
+    try {
+      const dataRaw = localStorage.getItem(WISHLIST_DATA_KEY);
+      const all = dataRaw ? JSON.parse(dataRaw) : [];
+      setSavedVendors(Array.isArray(all) ? all : []);
+    } catch {
+      setSavedVendors([]);
+    }
+  };
+
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (!e.key || (e.key !== WISHLIST_KEY && e.key !== WISHLIST_DATA_KEY)) return;
+      try {
+        if (e.key === WISHLIST_KEY) {
+          const raw = localStorage.getItem(WISHLIST_KEY);
+          setSavedIds(raw ? new Set(JSON.parse(raw)) : new Set());
+        }
+        if (e.key === WISHLIST_DATA_KEY) {
+          const raw = localStorage.getItem(WISHLIST_DATA_KEY);
+          const all = raw ? JSON.parse(raw) : [];
+          setSavedVendors(Array.isArray(all) ? all : []);
+        }
+      } catch {}
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
+  useEffect(() => {
+    if (activeTab !== 'saved') return;
+    refreshSavedFromStorage();
+  }, [activeTab]);
+
+  useEffect(() => {
+    const onFocus = () => {
+      if (activeTab !== 'saved') return;
+      refreshSavedFromStorage();
+    };
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, [activeTab]);
+
+  const savedItems = useMemo(() => {
+    const ids = savedIds;
+    return (savedVendors || []).filter((v) => ids.has(v?.id));
+  }, [savedIds, savedVendors]);
 
   // Budget state – persisted
   const [budgetItems, setBudgetItems] = useState<BudgetItem[]>(() => {
@@ -163,6 +240,7 @@ const PlanningTools: React.FC = () => {
   const removeItineraryItem = (id: string) => setItineraryItems(prev => prev.filter(i => i.id !== id));
 
   const tabs = [
+    { id: 'saved', label: 'Saved Venues', icon: MapPin },
     { id: 'budget', label: 'Budget Planner', icon: PieIcon },
     { id: 'guests', label: 'Guest List', icon: Users },
     { id: 'timeline', label: 'Timeline', icon: Calendar },
@@ -221,6 +299,86 @@ const PlanningTools: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl min-h-[400px] p-4 sm:p-8 md:p-10 border border-amari-100">
+
+        {/* ─── SAVED (BASKET) ───────────────────────────── */}
+        {activeTab === 'saved' && (
+          <div>
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+              <div>
+                <h3 className="text-xl sm:text-2xl font-serif font-bold text-amari-900 mb-1">Your Planning Basket</h3>
+                <p className="text-stone-500 text-sm">Heart venues and vendors from the directory to collect them here.</p>
+              </div>
+              <div className="flex gap-2">
+                <Link
+                  to="/vendors"
+                  className="bg-amari-900 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-amari-800 transition"
+                >
+                  Browse Vendors
+                </Link>
+                <Link
+                  to="/wishlist"
+                  className="bg-white border border-stone-200 text-stone-700 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-stone-50 transition"
+                >
+                  Full Wishlist
+                </Link>
+              </div>
+            </div>
+
+            {savedItems.length === 0 ? (
+              <div className="text-center py-14 sm:py-20">
+                <div className="w-16 h-16 bg-amari-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <MapPin className="text-amari-300" size={28} />
+                </div>
+                <p className="text-stone-700 font-bold mb-2">No saved venues yet</p>
+                <p className="text-stone-400 text-sm mb-6 max-w-md mx-auto">
+                  Go to the vendor directory and tap the heart icon to add venues/vendors to your basket.
+                </p>
+                <Link
+                  to="/vendors"
+                  className="inline-flex items-center justify-center bg-amari-500 text-white px-6 py-3 rounded-full text-sm font-bold hover:bg-amari-600 transition shadow-md"
+                >
+                  Explore Vendors
+                </Link>
+              </div>
+            ) : (
+              <div>
+                <p className="text-amari-500 text-sm font-bold mb-4">{savedItems.length} saved</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {savedItems.map((vendor) => (
+                    <Link
+                      key={vendor.id}
+                      to={`/vendor/${vendor.id}`}
+                      className="group bg-white rounded-2xl border border-stone-200/60 overflow-hidden hover:border-amari-200 hover:shadow-lg transition-all duration-300"
+                    >
+                      <div className="relative h-44 overflow-hidden bg-stone-100">
+                        <img
+                          src={vendor.imageUrl}
+                          alt={vendor.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                        <div className="absolute bottom-3 left-3">
+                          <span className="glass-dark text-white/90 text-[10px] font-bold uppercase tracking-[0.15em] rounded-full px-3 py-1">
+                            {vendor.category}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <p className="text-sm font-bold text-stone-900 mb-1 line-clamp-1">{vendor.name}</p>
+                        <p className="text-xs text-stone-400 line-clamp-1">{vendor.location}</p>
+                        {vendor.description ? (
+                          <p className="mt-2 text-sm text-stone-500 leading-relaxed line-clamp-2">{vendor.description}</p>
+                        ) : (
+                          <div className="mt-2 h-10" />
+                        )}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* ─── BUDGET ─────────────────────────────────── */}
         {activeTab === 'budget' && (
