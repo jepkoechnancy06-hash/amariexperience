@@ -223,12 +223,6 @@ const CouplesLanding = () => {
           <blockquote className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-amari-900 italic leading-snug mb-8">
             "Like the drum that calls the people home, our love calls two families into one rythm. May our union be steady like the earth beneath our feet, patient like the seasons, and generous like the land that feeds us all."
           </blockquote>
-          <div className="flex items-center justify-center gap-3">
-            <div className="text-left">
-              <p className="text-sm font-bold text-stone-900">Fiona</p>
-              <p className="text-xs text-stone-400">Nairobi, Feb 2026</p>
-            </div>
-          </div>
         </div>
       </section>
     </>
