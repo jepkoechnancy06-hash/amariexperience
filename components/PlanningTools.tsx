@@ -15,6 +15,16 @@ const WISHLIST_KEY = 'amari_wishlist_v1';
 const WISHLIST_DATA_KEY = 'amari_wishlist_data_v1';
 const USD_TO_KSH = 129;
 
+const BUDGET_COLOR_PALETTE = [
+  '#5E5E5E',
+  '#71838A',
+  '#96A7AE',
+  '#C7D3D7',
+  '#E6D4BD',
+  '#F1D2BC',
+  '#E9B29C',
+];
+
 const COLORS = [
   '#8b6f47', '#b8956a', '#6b5436', '#d4b896', '#a3845c', '#e8d5bc',
 ];
@@ -126,6 +136,23 @@ const PlanningTools: React.FC = () => {
   const updateChartColor = (id: string, color: string) => {
     setChartColors(prev => ({ ...prev, [id]: color }));
   };
+
+  const ColorSwatchPicker: React.FC<{ id: string; current: string; size?: 'sm' | 'md' }> = ({ id, current, size = 'sm' }) => (
+    <div className="inline-flex items-center gap-1.5">
+      {BUDGET_COLOR_PALETTE.map((c) => (
+        <button
+          key={c}
+          type="button"
+          aria-label={`Set color ${c}`}
+          onClick={() => updateChartColor(id, c)}
+          className={`rounded-full border transition ${
+            size === 'md' ? 'w-5 h-5' : 'w-4 h-4'
+          } ${c === current ? 'border-stone-700 ring-2 ring-amari-300' : 'border-stone-200 hover:border-stone-400'}`}
+          style={{ background: c }}
+        />
+      ))}
+    </div>
+  );
 
   // Guest state – persisted
   const [guests, setGuests] = useState<Guest[]>(() => {
@@ -508,13 +535,11 @@ const PlanningTools: React.FC = () => {
                             <>
                               <td className="px-3 sm:px-5 py-2">
                                 <div className="flex items-center gap-2">
-                                  <label className="relative flex-shrink-0 cursor-pointer">
-                                    <span className="block w-5 h-5 rounded-full border border-stone-200" style={{ background: getColor(budgetItems.indexOf(item), item.id) }} />
-                                    <input type="color" value={getColor(budgetItems.indexOf(item), item.id)} onChange={e => updateChartColor(item.id, e.target.value)} className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
-                                  </label>
+                                  <ColorSwatchPicker id={item.id} current={getColor(budgetItems.indexOf(item), item.id)} size="md" />
                                   <input value={editBudget.category} onChange={e => setEditBudget(p => ({ ...p, category: e.target.value }))} className="w-full bg-amari-50 border border-amari-200 rounded-lg px-2 py-1.5 text-xs outline-none focus:ring-1 focus:ring-amari-400" />
                                 </div>
                               </td>
+
                               <td className="px-3 sm:px-5 py-2">
                                 <input type="number" value={editBudget.estimated} onChange={e => setEditBudget(p => ({ ...p, estimated: Number(e.target.value) || 0 }))} className="w-full bg-amari-50 border border-amari-200 rounded-lg px-2 py-1.5 text-xs text-right outline-none focus:ring-1 focus:ring-amari-400" />
                               </td>
@@ -532,13 +557,11 @@ const PlanningTools: React.FC = () => {
                             <>
                               <td className="px-3 sm:px-5 py-3 font-medium text-stone-700 text-xs sm:text-sm">
                                 <div className="flex items-center gap-2">
-                                  <label className="relative flex-shrink-0 cursor-pointer group" title="Change chart color">
-                                    <span className="block w-4 h-4 rounded-full border border-stone-200 group-hover:scale-110 transition" style={{ background: getColor(budgetItems.indexOf(item), item.id) }} />
-                                    <input type="color" value={getColor(budgetItems.indexOf(item), item.id)} onChange={e => updateChartColor(item.id, e.target.value)} className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
-                                  </label>
+                                  <ColorSwatchPicker id={item.id} current={getColor(budgetItems.indexOf(item), item.id)} />
                                   {item.category}
                                 </div>
                               </td>
+
                               <td className="px-3 sm:px-5 py-3 text-right text-stone-500 text-xs sm:text-sm">{fmt(item.estimated)}</td>
                               <td className="px-3 sm:px-5 py-3 text-right font-medium text-amari-600 text-xs sm:text-sm">{fmt(item.actual)}</td>
                               <td className="px-2 py-3">

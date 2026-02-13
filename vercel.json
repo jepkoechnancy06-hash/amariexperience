@@ -23,6 +23,7 @@
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/share/vendor/:id", "destination": "/api/share/vendor?id=:id" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }

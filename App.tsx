@@ -69,7 +69,7 @@ const CouplesLanding = () => {
 
             <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-white leading-[1.05] mb-6 animate-in slide-in-from-bottom-6 duration-1000 delay-100">
               Your Dream <br />
-              <span className="text-gradient italic">Coastal Wedding</span><br />
+              <span className="text-gradient font-amari-script font-normal">Coastal Wedding</span><br />
               Starts Here
             </h1>
 
@@ -263,7 +263,7 @@ const ConciergePage = () => (
         <div>
             <span className="text-amari-300 font-bold tracking-[0.3em] text-xs uppercase mb-4 block">Premium Service</span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold mb-6 sm:mb-8 leading-tight">
-              Amari <span className="text-amari-300 italic">Concierge</span>
+              Amari <span className="text-amari-300 font-amari-script font-normal">Concierge</span>
             </h2>
             <p className="text-amari-100/80 text-base sm:text-lg mb-8 sm:mb-10 leading-relaxed">
               Let us handle the details while you enjoy the journey. Our concierge service offers end-to-end planning assistance, exclusive vendor rates, and on-site coordination for a stress-free experience.

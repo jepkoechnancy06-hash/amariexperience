@@ -28,6 +28,8 @@ const VendorOnboarding: React.FC = () => {
     vendorCategory: '' as any,
     vendorSubcategories: '' as string,
     businessDescription: '',
+    vendorStory: '',
+    otherServices: '',
     primaryLocation: '',
     areasServed: '',
     contactPhone: '',
@@ -521,6 +523,8 @@ const VendorOnboarding: React.FC = () => {
           .map((s) => s.trim())
           .filter(Boolean),
         businessDescription: formData.businessDescription,
+        vendorStory: formData.vendorStory,
+        otherServices: formData.otherServices,
         primaryLocation: formData.primaryLocation,
         areasServed: formData.areasServed,
         contactPhone: formData.contactPhone,
@@ -756,6 +760,28 @@ const VendorOnboarding: React.FC = () => {
                   onChange={handleChange}
                   className="w-full bg-amari-50 border-0 rounded-xl px-4 py-4 text-amari-900 ring-1 ring-inset ring-amari-200 focus:ring-2 focus:ring-amari-500 transition-all placeholder:text-amari-300 focus:bg-white min-h-[110px]"
                   placeholder="Short, factual, non-promotional summary of what you do."
+                />
+              </div>
+
+              <div className="space-y-2 group">
+                <label className="text-sm font-bold text-amari-900 group-focus-within:text-amari-600 transition-colors">Your story</label>
+                <textarea
+                  name="vendorStory"
+                  value={formData.vendorStory}
+                  onChange={handleChange}
+                  className="w-full bg-amari-50 border-0 rounded-xl px-4 py-4 text-amari-900 ring-1 ring-inset ring-amari-200 focus:ring-2 focus:ring-amari-500 transition-all placeholder:text-amari-300 focus:bg-white min-h-[110px]"
+                  placeholder="Share your journey, what makes your work special, and why couples love working with you."
+                />
+              </div>
+
+              <div className="space-y-2 group">
+                <label className="text-sm font-bold text-amari-900 group-focus-within:text-amari-600 transition-colors">Other services</label>
+                <textarea
+                  name="otherServices"
+                  value={formData.otherServices}
+                  onChange={handleChange}
+                  className="w-full bg-amari-50 border-0 rounded-xl px-4 py-4 text-amari-900 ring-1 ring-inset ring-amari-200 focus:ring-2 focus:ring-amari-500 transition-all placeholder:text-amari-300 focus:bg-white min-h-[110px]"
+                  placeholder="List any additional services you offer (e.g. rentals, add-ons, packages, travel, coordination)."
                 />
               </div>
 

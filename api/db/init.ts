@@ -88,6 +88,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS destination_wedding_experience VARCHAR(10);`;
     await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS special_requirements TEXT;`;
 
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS vendor_story TEXT;`;
+    await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS other_services TEXT;`;
+
     await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS category_specific JSONB;`;
 
     await sql`ALTER TABLE vendor_applications ADD COLUMN IF NOT EXISTS verification_document_type VARCHAR(255);`;
@@ -122,6 +125,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     await sql`ALTER TABLE vendors ADD COLUMN IF NOT EXISTS user_id UUID;`;
     await sql`ALTER TABLE vendors ADD COLUMN IF NOT EXISTS website VARCHAR(500);`;
     await sql`ALTER TABLE vendors ADD COLUMN IF NOT EXISTS social_links TEXT;`;
+
+    await sql`ALTER TABLE vendors ADD COLUMN IF NOT EXISTS vendor_story TEXT;`;
+    await sql`ALTER TABLE vendors ADD COLUMN IF NOT EXISTS other_services TEXT;`;
 
     await sql`
       CREATE TABLE IF NOT EXISTS posts (

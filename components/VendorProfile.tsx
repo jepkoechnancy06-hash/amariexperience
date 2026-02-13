@@ -534,6 +534,24 @@ const VendorProfile: React.FC = () => {
           </div>
         </div>
 
+        {(vendor?.vendorStory || vendor?.otherServices) && (
+          <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {vendor?.vendorStory && (
+              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-stone-100 shadow-sm">
+                <h2 className="text-lg font-bold text-stone-900 mb-4">Your Story</h2>
+                <p className="text-stone-500 text-sm leading-[1.9] whitespace-pre-line">{vendor.vendorStory}</p>
+              </div>
+            )}
+
+            {vendor?.otherServices && (
+              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-stone-100 shadow-sm">
+                <h2 className="text-lg font-bold text-stone-900 mb-4">Other Services</h2>
+                <p className="text-stone-500 text-sm leading-[1.9] whitespace-pre-line">{vendor.otherServices}</p>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* ─── MAP ────────────────────────────────────────────────── */}
         <div className="mt-6 bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm">
           <div className="p-5 pb-3">

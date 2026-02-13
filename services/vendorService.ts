@@ -64,6 +64,8 @@ export const submitApplication = async (
         vendorCategory: app.vendorCategory || null,
         vendorSubcategories,
         businessDescription: app.businessDescription || null,
+        vendorStory: app.vendorStory || null,
+        otherServices: app.otherServices || null,
         primaryLocation: app.primaryLocation || null,
         areasServed: app.areasServed || null,
         contactPhone: app.contactPhone || null,
@@ -152,6 +154,8 @@ export const getApplications = async (): Promise<VendorApplication[]> => {
         ? row.vendor_subcategories
         : (typeof row.vendor_subcategories === 'string' ? (JSON.parse(row.vendor_subcategories) || []) : []),
       businessDescription: row.business_description || '',
+      vendorStory: row.vendor_story || '',
+      otherServices: row.other_services || '',
       primaryLocation: row.primary_location || '',
       areasServed: row.areas_served || '',
       contactPhone: row.contact_phone || row.phone || '',
@@ -217,6 +221,8 @@ export const getLatestApplicationByUserId = async (userId: string): Promise<Vend
         ? row.vendor_subcategories
         : (typeof row.vendor_subcategories === 'string' ? (JSON.parse(row.vendor_subcategories) || []) : []),
       businessDescription: row.business_description || '',
+      vendorStory: row.vendor_story || '',
+      otherServices: row.other_services || '',
       primaryLocation: row.primary_location || '',
       areasServed: row.areas_served || '',
       contactPhone: row.contact_phone || row.phone || '',
@@ -304,10 +310,10 @@ export const updateApplicationStatus = async (id: string, status: 'Approved' | '
         await executeQuery(`
           INSERT INTO vendors (
             id, user_id, name, category, rating, price_range, description, image_url,
-            location, contact_email, contact_phone, website, social_links, approved_at
+            location, contact_email, contact_phone, website, social_links, vendor_story, other_services, approved_at
           ) VALUES (
             $1, $2, $3, $4, $5, $6, $7, $8,
-            $9, $10, $11, $12, $13, $14
+            $9, $10, $11, $12, $13, $14, $15, $16
           )
           ON CONFLICT (id) DO UPDATE SET
             user_id = EXCLUDED.user_id,
@@ -321,6 +327,8 @@ export const updateApplicationStatus = async (id: string, status: 'Approved' | '
             contact_phone = EXCLUDED.contact_phone,
             website = EXCLUDED.website,
             social_links = EXCLUDED.social_links,
+            vendor_story = EXCLUDED.vendor_story,
+            other_services = EXCLUDED.other_services,
             approved_at = EXCLUDED.approved_at
         `, [
           app.id,
@@ -336,6 +344,8 @@ export const updateApplicationStatus = async (id: string, status: 'Approved' | '
           app.contact_phone || app.phone,
           app.website || null,
           socialLinks,
+          app.vendor_story || null,
+          app.other_services || null,
           new Date().toISOString()
         ]);
       }

@@ -1,8 +1,7 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React from 'react';
 
 const WHATSAPP_NUMBER_E164 = '254796535120';
 const DEFAULT_MESSAGE = 'Hi Amari! I would like help planning a destination wedding in Kenya.';
-const WA_POS_KEY = 'amari_wa_btn_pos';
 
 const WhatsAppIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg
@@ -20,78 +19,20 @@ const WhatsAppIcon: React.FC<{ className?: string }> = ({ className }) => (
 const WhatsAppChat: React.FC = () => {
   const href = `https://wa.me/${WHATSAPP_NUMBER_E164}?text=${encodeURIComponent(DEFAULT_MESSAGE)}`;
 
-  const [pos, setPos] = useState<{ x: number; y: number }>(() => {
-    try {
-      const saved = localStorage.getItem(WA_POS_KEY);
-      if (saved) return JSON.parse(saved);
-    } catch {}
-    return { x: 24, y: window.innerHeight - 72 };
-  });
-
-  const dragging = useRef(false);
-  const hasMoved = useRef(false);
-  const offset = useRef({ x: 0, y: 0 });
-  const elRef = useRef<HTMLDivElement>(null);
-
-  const clamp = useCallback((x: number, y: number) => {
-    const w = elRef.current?.offsetWidth || 56;
-    const h = elRef.current?.offsetHeight || 48;
-    return {
-      x: Math.max(0, Math.min(window.innerWidth - w, x)),
-      y: Math.max(0, Math.min(window.innerHeight - h, y)),
-    };
-  }, []);
-
-  const onPointerDown = useCallback((e: React.PointerEvent) => {
-    dragging.current = true;
-    hasMoved.current = false;
-    offset.current = { x: e.clientX - pos.x, y: e.clientY - pos.y };
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-    e.preventDefault();
-  }, [pos]);
-
-  const onPointerMove = useCallback((e: React.PointerEvent) => {
-    if (!dragging.current) return;
-    hasMoved.current = true;
-    const next = clamp(e.clientX - offset.current.x, e.clientY - offset.current.y);
-    setPos(next);
-  }, [clamp]);
-
-  const onPointerUp = useCallback((e: React.PointerEvent) => {
-    if (!dragging.current) return;
-    dragging.current = false;
-    const final = clamp(e.clientX - offset.current.x, e.clientY - offset.current.y);
-    setPos(final);
-    try { localStorage.setItem(WA_POS_KEY, JSON.stringify(final)); } catch {}
-    if (!hasMoved.current) {
-      window.open(href, '_blank', 'noreferrer');
-    }
-  }, [clamp, href]);
-
-  useEffect(() => {
-    const onResize = () => setPos(p => clamp(p.x, p.y));
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, [clamp]);
-
   return (
-    <div
-      ref={elRef}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      role="button"
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
       aria-label="Chat with us on WhatsApp"
       tabIndex={0}
-      onKeyDown={(e) => { if (e.key === 'Enter') window.open(href, '_blank', 'noreferrer'); }}
-      className="fixed z-40 inline-flex items-center gap-2 sm:gap-3 rounded-full bg-amari-500/90 backdrop-blur-md text-white px-3 sm:px-5 py-3 shadow-xl hover:bg-amari-600 transition-colors cursor-grab active:cursor-grabbing select-none touch-none"
-      style={{ left: pos.x, top: pos.y }}
+      className="fixed z-40 bottom-6 left-6 inline-flex items-center gap-2 sm:gap-3 rounded-full bg-amari-500/90 backdrop-blur-md text-white px-3 sm:px-5 py-3 shadow-xl hover:bg-amari-600 transition-colors select-none"
     >
       <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/15 pointer-events-none">
         <WhatsAppIcon className="w-5 h-5" />
       </span>
       <span className="font-bold hidden sm:inline pointer-events-none">Chat with us</span>
-    </div>
+    </a>
   );
 };
 

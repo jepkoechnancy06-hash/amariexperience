@@ -30,6 +30,14 @@
   --font-sans: 'Lato', Inter, sans-serif;
 }
 
+.font-amari-script {
+  font-family: 'Great Vibes', cursive;
+}
+
+.font-amari-brush {
+  font-family: 'Permanent Marker', cursive;
+}
+
 /* ─── Glass morphism utilities ───────────────────────── */
 .glass {
   background: rgba(255, 255, 255, 0.72);

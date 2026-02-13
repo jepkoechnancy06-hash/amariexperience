@@ -31,6 +31,8 @@ export interface Vendor {
   description: string;
   imageUrl: string;
   location: string;
+  vendorStory?: string;
+  otherServices?: string;
 }
 
 export interface BudgetItem {
@@ -94,6 +96,8 @@ export interface VendorApplication {
   vendorCategory: WeddingVendorCategory | '';
   vendorSubcategories: string[];
   businessDescription: string;
+  vendorStory: string;
+  otherServices: string;
   primaryLocation: string;
   areasServed: string;
   contactPhone: string;
