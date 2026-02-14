@@ -103,6 +103,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       );
     `;
 
+    // Link uploaded files to this application
+    const allFileUrls = [...realWorkImages];
+    if (verificationDocumentUrl) allFileUrls.push(verificationDocumentUrl);
+    for (const url of allFileUrls) {
+      // Extract file ID from /api/files?id=<uuid>
+      const match = url.match(/[?&]id=([a-f0-9-]+)/i);
+      if (match) {
+        try {
+          await sql`UPDATE vendor_files SET application_id = ${id} WHERE id = ${match[1]};`;
+        } catch (linkErr: any) {
+          console.warn('Failed to link file to application:', linkErr?.message);
+        }
+      }
+    }
+
     res.status(201).json({
       ok: true,
       application: {

@@ -17,6 +17,8 @@ const VendorOnboarding: React.FC = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState('');
   const [existingStatus, setExistingStatus] = useState<string | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number; address: string } | null>(null);
   const [mapCenter] = useState({ lat: -4.2767, lng: 39.5935 }); // Diani Beach coordinates
@@ -514,6 +516,9 @@ const VendorOnboarding: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
+    setUploadStatus('Uploading files...');
     try {
       const payload = {
         businessName: formData.businessName,
@@ -560,12 +565,16 @@ const VendorOnboarding: React.FC = () => {
         termsAccepted: !!formData.termsAccepted
       };
 
+      setUploadStatus('Submitting application...');
       await submitApplication(payload as any, user?.id);
       setSubmitted(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error('Failed to submit application:', error);
       alert('Failed to submit application. Please try again.');
+    } finally {
+      setSubmitting(false);
+      setUploadStatus('');
     }
   };
 
@@ -1156,7 +1165,7 @@ const VendorOnboarding: React.FC = () => {
                     type="file"
                     name="verificationDocument"
                     onChange={handleFileChange}
-                    accept=".pdf,.jpg,.jpeg,.png"
+                    accept=".pdf"
                     className="w-full bg-amari-50 border-0 rounded-xl px-4 py-4 text-amari-900 ring-1 ring-inset ring-amari-200 focus:ring-2 focus:ring-amari-500 transition-all file:mr-4 file:rounded-xl file:border-0 file:bg-amari-300 file:px-4 file:py-2 file:font-bold file:text-amari-900 hover:file:bg-amari-200 focus:bg-white"
                   />
                 </div>
@@ -1167,7 +1176,7 @@ const VendorOnboarding: React.FC = () => {
                 )}
                 <div className="flex gap-2 text-xs text-amari-400 items-center mt-1">
                   <Info size={14} />
-                  <span>Accepted formats: PDF, JPG, PNG. Max file size: 5MB</span>
+                  <span>Accepted format: PDF only. Max file size: 5MB</span>
                 </div>
               </div>
             </div>
@@ -1197,12 +1206,19 @@ const VendorOnboarding: React.FC = () => {
             </div>
 
             <div className="pt-10">
+              {uploadStatus && (
+                <div className="mb-4 flex items-center gap-3 bg-amari-50 border border-amari-200 rounded-xl px-4 py-3">
+                  <div className="w-5 h-5 border-2 border-amari-400 border-t-transparent rounded-full animate-spin flex-shrink-0" />
+                  <p className="text-sm font-medium text-amari-700">{uploadStatus}</p>
+                </div>
+              )}
               <button 
-                type="submit" 
-                className="group relative w-full bg-amari-600 text-white text-lg font-bold py-5 rounded-2xl hover:bg-amari-900 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 active:scale-95 duration-300"
+                type="submit"
+                disabled={submitting}
+                className={`group relative w-full text-white text-lg font-bold py-5 rounded-2xl transition-all shadow-xl duration-300 ${submitting ? 'bg-stone-400 cursor-not-allowed' : 'bg-amari-600 hover:bg-amari-900 hover:shadow-2xl hover:-translate-y-1 active:scale-95'}`}
               >
-                Submit Application
-                <ArrowRight className="absolute right-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0" size={20} />
+                {submitting ? 'Uploading & Submitting...' : 'Submit Application'}
+                {!submitting && <ArrowRight className="absolute right-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0" size={20} />}
               </button>
             </div>
 

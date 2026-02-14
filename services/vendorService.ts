@@ -12,6 +12,82 @@ const readFileAsDataURL = (file: File): Promise<string> =>
     reader.readAsDataURL(file);
   });
 
+// Compress an image file client-side using canvas (max 1200px, JPEG 80%)
+const compressImage = (file: File, maxDim = 1200, quality = 0.8): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Failed to read image'));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('Failed to decode image'));
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          const ratio = Math.min(maxDim / width, maxDim / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+
+// Upload a single file to /api/vendors/upload and return the serving URL
+const uploadFile = async (
+  file: File | string,
+  fileCategory: 'verification_document' | 'real_work_image'
+): Promise<string> => {
+  // If already a URL (e.g. from a previous upload), pass through
+  if (typeof file === 'string') {
+    if (file.startsWith('/api/files') || file.startsWith('http')) return file;
+    // Already a data URL — upload it
+    const resp = await fetch(`${API_BASE}/api/vendors/upload`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ fileCategory, fileData: file })
+    });
+    if (!resp.ok) throw new Error('File upload failed');
+    const data = await resp.json();
+    return data.file?.url || file;
+  }
+
+  // Convert File object to data URL (compress images first)
+  let dataUrl: string;
+  if (file.type.startsWith('image/') && fileCategory === 'real_work_image') {
+    dataUrl = await compressImage(file);
+  } else {
+    dataUrl = await readFileAsDataURL(file);
+  }
+
+  const resp = await fetch(`${API_BASE}/api/vendors/upload`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({
+      fileCategory,
+      fileName: file.name,
+      mimeType: file.type,
+      fileData: dataUrl
+    })
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({ error: 'Upload failed' }));
+    throw new Error(err.error || 'File upload failed');
+  }
+
+  const data = await resp.json();
+  return data.file?.url || dataUrl;
+};
+
 // Submit vendor application to database via public API endpoint
 export const submitApplication = async (
   app: Omit<VendorApplication, 'id' | 'submittedAt' | 'status'>,
@@ -21,22 +97,25 @@ export const submitApplication = async (
     const id = crypto.randomUUID();
     const submittedAt = new Date().toISOString();
 
-    const verificationDocumentUrl = app.verificationDocument
-      ? (typeof app.verificationDocument === 'string'
-          ? app.verificationDocument
-          : await readFileAsDataURL(app.verificationDocument))
-      : null;
+    // Upload verification document
+    let verificationDocumentUrl: string | null = null;
+    if (app.verificationDocument) {
+      verificationDocumentUrl = await uploadFile(app.verificationDocument, 'verification_document');
+    }
 
-    const realWorkImages: string[] = Array.isArray(app.realWorkImages)
-      ? (await Promise.all(
-          (app.realWorkImages as any[]).map(async (p) => {
-            if (!p) return null;
-            if (typeof p === 'string') return p;
-            if (p instanceof File) return await readFileAsDataURL(p);
-            return null;
-          })
-        )).filter(Boolean) as string[]
-      : [];
+    // Upload real work images individually (compressed)
+    const realWorkImages: string[] = [];
+    if (Array.isArray(app.realWorkImages)) {
+      for (const img of app.realWorkImages) {
+        if (!img) continue;
+        try {
+          const url = await uploadFile(img, 'real_work_image');
+          realWorkImages.push(url);
+        } catch (e) {
+          console.warn('Failed to upload real work image, skipping:', e);
+        }
+      }
+    }
 
     const vendorSubcategories: string[] = Array.isArray(app.vendorSubcategories)
       ? (app.vendorSubcategories as any[]).map((s) => String(s)).filter(Boolean)
@@ -50,6 +129,7 @@ export const submitApplication = async (
     };
 
     // POST to the dedicated public vendor application endpoint
+    // Now sends lightweight URL references instead of raw base64 blobs
     const response = await fetch(`${API_BASE}/api/vendors/apply`, {
       method: 'POST',
       headers: {

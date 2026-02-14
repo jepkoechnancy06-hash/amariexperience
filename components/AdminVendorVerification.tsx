@@ -412,10 +412,12 @@ const AdminVendorVerification: React.FC = () => {
                   {(() => {
                     const src = String(selectedApp.verificationDocument);
                     const mime = src.startsWith('data:') ? src.slice(5, src.indexOf(';')) : '';
-                    const isPdf = mime === 'application/pdf' || src.toLowerCase().endsWith('.pdf');
+                    const isApiFile = src.startsWith('/api/files');
+                    const docType = (selectedApp.verificationDocumentType || '').toLowerCase();
+                    const isPdf = mime === 'application/pdf' || src.toLowerCase().endsWith('.pdf') || isApiFile || docType.includes('pdf');
                     const isImage = mime.startsWith('image/') || /\.(png|jpg|jpeg|gif|webp)$/i.test(src);
 
-                    if (isImage) {
+                    if (isImage && !isPdf) {
                       return (
                         <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
                           <img src={src} alt="Verification document" className="w-full max-h-[70vh] object-contain bg-white" />
@@ -423,7 +425,7 @@ const AdminVendorVerification: React.FC = () => {
                       );
                     }
 
-                    if (isPdf) {
+                    if (isPdf || isApiFile) {
                       return (
                         <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
                           <iframe title="Verification PDF" src={src} className="w-full h-[70vh]" />

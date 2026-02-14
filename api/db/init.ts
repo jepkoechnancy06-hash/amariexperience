@@ -130,6 +130,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     await sql`ALTER TABLE vendors ADD COLUMN IF NOT EXISTS other_services TEXT;`;
 
     await sql`
+      CREATE TABLE IF NOT EXISTS vendor_files (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        application_id UUID,
+        file_category VARCHAR(50) NOT NULL,
+        original_name VARCHAR(255),
+        mime_type VARCHAR(100),
+        file_size INTEGER,
+        file_data TEXT NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      );
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_vendor_files_app ON vendor_files(application_id);`;
+
+    await sql`
       CREATE TABLE IF NOT EXISTS posts (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         user_id UUID,
