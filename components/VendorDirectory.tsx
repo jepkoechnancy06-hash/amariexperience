@@ -193,10 +193,11 @@ const VendorDirectory: React.FC = () => {
                     View Profile <ArrowRight size={13} />
                   </Link>
                   <a
-                    href={`https://wa.me/254796535120?text=${encodeURIComponent(`Hi! I'm interested in ${vendor.name} for my wedding. Could you help me connect?`)}`}
+                    href={`https://wa.me/${(vendor.contactPhone || '254796535120').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hi! I'm interested in ${vendor.name} for my wedding. Could you tell me more about your services?`)}`}
                     target="_blank"
                     rel="noreferrer"
                     className="flex items-center justify-center w-11 bg-stone-50 text-amari-600 rounded-xl hover:bg-amari-50 border border-stone-200 transition"
+                    title={vendor.contactPhone ? `WhatsApp ${vendor.name}` : 'WhatsApp Amari'}
                   >
                     <MessageSquare size={16} />
                   </a>

@@ -17,6 +17,13 @@ const AdminDashboard: React.FC = () => {
   const [approvedVendors, setApprovedVendors] = useState<any[]>([]);
   const [vendorsLoading, setVendorsLoading] = useState(false);
   const [removingVendorId, setRemovingVendorId] = useState<string | null>(null);
+
+  const getImageSrc = (photo: unknown): string => {
+    if (!photo) return '';
+    if (typeof photo === 'string') return photo;
+    if (photo instanceof File) return URL.createObjectURL(photo);
+    return '';
+  };
   const [galleryComments, setGalleryComments] = useState<GalleryComment[]>([]);
   const [vendorReviews, setVendorReviews] = useState<VendorReview[]>([]);
 
@@ -466,9 +473,27 @@ const AdminDashboard: React.FC = () => {
                           </div>
                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                             {selectedApp.realWorkImages.slice(0, 6).map((photo, index) => (
-                              <div key={index} className="aspect-square bg-stone-200 rounded-lg flex items-center justify-center">
-                                <Camera size={12} className="text-stone-400" />
-                              </div>
+                              <a
+                                key={index}
+                                href={getImageSrc(photo)}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="aspect-square bg-stone-200 rounded-lg overflow-hidden border border-stone-200 hover:shadow-sm transition"
+                                aria-label={`Open real work image ${index + 1} in new tab`}
+                              >
+                                {getImageSrc(photo) ? (
+                                  <img
+                                    src={getImageSrc(photo)}
+                                    alt={`Real work ${index + 1}`}
+                                    className="w-full h-full object-cover"
+                                    loading="lazy"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center">
+                                    <Camera size={12} className="text-stone-400" />
+                                  </div>
+                                )}
+                              </a>
                             ))}
                           </div>
                         </div>

@@ -2,15 +2,44 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import crypto from 'crypto';
 import { getSql } from '../_lib/db.js';
 
+// Simple in-memory rate limiter (per serverless instance)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const RATE_LIMIT_MAX = 5; // max 5 requests per window per IP
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_LIMIT_MAX;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
     return;
   }
 
+  // Rate limit by IP
+  const clientIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || (req as any).socket?.remoteAddress || 'unknown';
+  if (isRateLimited(clientIp)) {
+    res.status(429).json({ error: 'Too many requests. Please try again later.' });
+    return;
+  }
+
   const { email } = (req.body || {}) as any;
   if (!email || typeof email !== 'string') {
     res.status(400).json({ error: 'Email is required' });
+    return;
+  }
+
+  // Basic email format check
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+    res.status(400).json({ error: 'Invalid email format' });
     return;
   }
 
@@ -51,8 +80,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Hash the token before storing (never store raw tokens)
     const tokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
 
-    // Delete any existing tokens for this user
-    await sql`DELETE FROM password_resets WHERE user_id = ${user.id};`;
+    // Delete any existing tokens for this user and clean up expired tokens globally
+    await sql`DELETE FROM password_resets WHERE user_id = ${user.id} OR expires_at < NOW();`;
 
     // Insert new token
     await sql`
@@ -75,12 +104,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // TODO: Send resetUrl via email service (SendGrid, Resend, etc.)
     // await sendResetEmail(user.email, user.first_name, resetUrl);
 
+    // Return a consistent message regardless of whether the email exists.
+    // In dev mode, include the token so the flow works without an email service.
+    const isProd = process.env.NODE_ENV === 'production';
     res.status(200).json({
       ok: true,
       message: 'If that email exists, a password reset link has been sent.',
-      // DEV ONLY: include token so the frontend flow works without email service
-      // Remove this line before going live with email delivery
-      ...(process.env.NODE_ENV !== 'production' ? { resetToken } : {})
+      ...(isProd ? {} : { resetToken })
     });
   } catch (e: any) {
     console.error('Forgot password error:', e?.message);

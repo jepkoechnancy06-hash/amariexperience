@@ -1,7 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { getApplications, updateApplicationStatus, updateApplicationVerification } from '../services/vendorService';
 import { VendorApplication } from '../types';
-import { Check, Clock, Eye, FileText, Save, Sliders, X } from 'lucide-react';
+import { Check, Clock, Eye, FileText, Save, Sliders, X, Camera } from 'lucide-react';
+
+const getImageSrc = (photo: unknown): string => {
+  if (!photo) return '';
+  if (typeof photo === 'string') return photo;
+  if (photo instanceof File) return URL.createObjectURL(photo);
+  return '';
+};
 
 const AdminVendorVerification: React.FC = () => {
   const [applications, setApplications] = useState<VendorApplication[]>([]);
@@ -226,6 +233,39 @@ const AdminVendorVerification: React.FC = () => {
                         </div>
                       </div>
                     </div>
+
+                      {selectedApp.realWorkImages && selectedApp.realWorkImages.length > 0 && (
+                        <div className="bg-stone-50 p-4 rounded-xl border border-stone-100">
+                          <div className="flex items-center gap-3 mb-3">
+                            <Camera size={16} className="text-stone-400" />
+                            <p className="text-sm font-medium text-stone-900">Real work images ({selectedApp.realWorkImages.length})</p>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            {selectedApp.realWorkImages.slice(0, 6).map((photo, index) => (
+                              <a
+                                key={index}
+                                href={getImageSrc(photo)}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="aspect-square bg-stone-200 rounded-lg overflow-hidden border border-stone-200 hover:shadow-sm transition"
+                              >
+                                {getImageSrc(photo) ? (
+                                  <img
+                                    src={getImageSrc(photo)}
+                                    alt={`Real work ${index + 1}`}
+                                    className="w-full h-full object-cover"
+                                    loading="lazy"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center">
+                                    <Camera size={12} className="text-stone-400" />
+                                  </div>
+                                )}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                   </div>
 
                   <div>
