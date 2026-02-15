@@ -3,18 +3,32 @@ import { runQuery } from '../_lib/db.js';
 import { getSession } from '../_lib/auth.js';
 
 function isQueryAllowed(query: string) {
-  const q = query.trim().replace(/;+\s*$/, '').toLowerCase();
+  // Strip comments and normalize whitespace
+  const stripped = query
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')  // block comments
+    .replace(/--[^\n]*/g, ' ')            // line comments
+    .replace(/\s+/g, ' ')                 // collapse whitespace
+    .trim()
+    .replace(/;+\s*$/, '')
+    .toLowerCase();
 
   // Block destructive DDL and system catalog access
   const forbidden = ['drop ', 'truncate ', 'grant ', 'revoke ', 'alter role', 'create role', 'pg_', 'information_schema', 'create table', 'alter table'];
-  if (forbidden.some((k) => q.includes(k))) return false;
+  if (forbidden.some((k) => stripped.includes(k))) return false;
 
-  // Block access to sensitive tables — prevent reading password hashes, sessions, reset tokens
-  const sensitivePatterns = ['password_hash', 'password_resets', 'from sessions', 'into sessions', 'from users'];
-  if (sensitivePatterns.some((k) => q.includes(k))) return false;
+  // Block any reference to sensitive tables (covers FROM, JOIN, INTO, UPDATE, subqueries)
+  const sensitiveTableWords = ['users', 'sessions', 'password_resets', 'vendor_files'];
+  for (const table of sensitiveTableWords) {
+    // Match the table name as a whole word (not as a substring of another word)
+    const re = new RegExp(`\\b${table}\\b`);
+    if (re.test(stripped)) return false;
+  }
 
-  // Only allow standard CRUD
-  return q.startsWith('select') || q.startsWith('insert') || q.startsWith('update') || q.startsWith('delete');
+  // Block any attempt to read password hashes
+  if (stripped.includes('password_hash')) return false;
+
+  // Only allow standard CRUD that starts with a known keyword
+  return stripped.startsWith('select') || stripped.startsWith('insert') || stripped.startsWith('update') || stripped.startsWith('delete');
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

@@ -273,15 +273,20 @@ class NeonAuth {
     }
   }
 
+  private dbInitDone = false;
+
   // Initialize auth state
   async initializeAuth(): Promise<User | null> {
     try {
-      // Ensure database tables exist before any auth operation
-      await fetch(`${API_BASE}/api/db/init`, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        credentials: 'include'
-      }).catch(() => {});
+      // Ensure database tables exist — only once per app lifecycle
+      if (!this.dbInitDone) {
+        this.dbInitDone = true;
+        await fetch(`${API_BASE}/api/db/init`, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          credentials: 'include'
+        }).catch(() => {});
+      }
 
       const user = await this.verifySession();
       if (!user) {

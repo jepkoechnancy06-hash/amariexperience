@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSql } from '../_lib/db.js';
+import { getSession } from '../_lib/auth.js';
 
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4 MB
 
@@ -7,6 +8,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     if (req.method !== 'POST') {
       res.status(405).json({ error: 'Method not allowed' });
+      return;
+    }
+
+    const session = getSession(req);
+    if (!session) {
+      res.status(401).json({ error: 'Not authenticated' });
       return;
     }
 
@@ -26,6 +33,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Validate base64 data URL format
     if (typeof fileData !== 'string' || !fileData.startsWith('data:')) {
       res.status(400).json({ error: 'fileData must be a base64 data URL' });
+      return;
+    }
+
+    // Validate MIME type — only allow images and PDFs
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
+    const detectedMime = fileData.substring(5, fileData.indexOf(';'));
+    if (mimeType && !allowedMimes.includes(mimeType)) {
+      res.status(400).json({ error: 'File type not allowed. Only images (JPEG, PNG, GIF, WebP) and PDFs are accepted.' });
+      return;
+    }
+    if (detectedMime && !allowedMimes.includes(detectedMime)) {
+      res.status(400).json({ error: 'File type not allowed based on data URL content.' });
       return;
     }
 

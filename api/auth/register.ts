@@ -3,10 +3,32 @@ import bcrypt from 'bcryptjs';
 import { getSql } from '../_lib/db.js';
 import { setSessionCookie } from '../_lib/auth.js';
 
+// Rate limiting for registration
+const regAttempts = new Map<string, { count: number; resetAt: number }>();
+const REG_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+const REG_MAX_ATTEMPTS = 5; // max 5 registrations per hour per IP
+
+function isRegRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = regAttempts.get(ip);
+  if (!entry || now > entry.resetAt) {
+    regAttempts.set(ip, { count: 1, resetAt: now + REG_WINDOW_MS });
+    return false;
+  }
+  entry.count++;
+  return entry.count > REG_MAX_ATTEMPTS;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
  try {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  const clientIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || 'unknown';
+  if (isRegRateLimited(clientIp)) {
+    res.status(429).json({ error: 'Too many registration attempts. Please try again later.' });
     return;
   }
 
@@ -30,8 +52,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const sql = getSql();
 
+    const normalizedEmail = email.trim().toLowerCase();
+
     // Check for existing user
-    const existing = await sql`SELECT id FROM users WHERE email = ${email} LIMIT 1;`;
+    const existing = await sql`SELECT id FROM users WHERE email = ${normalizedEmail} LIMIT 1;`;
     if (existing.length > 0) {
       res.status(409).json({ error: 'An account with this email already exists' });
       return;
@@ -41,7 +65,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const rows = await sql`
       INSERT INTO users (email, first_name, last_name, phone, user_type, password_hash, email_verified, is_active)
-      VALUES (${email}, ${firstName}, ${lastName}, ${phone || null}, ${userType}, ${passwordHash}, false, true)
+      VALUES (${normalizedEmail}, ${firstName.trim()}, ${lastName.trim()}, ${phone || null}, ${userType}, ${passwordHash}, false, true)
       RETURNING id, email, first_name, last_name, phone, user_type, profile_image, email_verified, is_active, created_at;
     `;
 

@@ -1,10 +1,17 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSql } from '../_lib/db.js';
+import { getSession } from '../_lib/auth.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
  try {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  const session = getSession(req);
+  if (!session) {
+    res.status(401).json({ error: 'Not authenticated' });
     return;
   }
 
@@ -20,6 +27,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const id = body.id || crypto.randomUUID();
     const submittedAt = body.submittedAt || new Date().toISOString();
+    // Use userId from session, not from request body (prevent spoofing)
+    const userId = session.sub;
 
     const vendorSubcategories: string[] = Array.isArray(body.vendorSubcategories)
       ? body.vendorSubcategories.map((s: any) => String(s)).filter(Boolean)
@@ -69,7 +78,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         submitted_at,
         status
       ) VALUES (
-        ${id}, ${body.userId || null},
+        ${id}, ${userId},
         ${body.businessName},
         ${body.vendorCategory || null},
         ${vendorSubcategories},

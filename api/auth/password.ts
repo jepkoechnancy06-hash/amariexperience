@@ -4,6 +4,7 @@ import { getSql } from '../_lib/db.js';
 import { getSession } from '../_lib/auth.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+ try {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
     return;
@@ -52,4 +53,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.error('Password change error:', e?.message);
     res.status(500).json({ error: 'Failed to change password. Please try again.' });
   }
+ } catch (fatal: any) {
+    console.error('Password fatal:', fatal?.message);
+    res.status(500).json({ error: 'Internal server error' });
+ }
 }

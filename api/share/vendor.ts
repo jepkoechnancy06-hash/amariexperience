@@ -29,6 +29,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
+    // Validate UUID format to prevent injection
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(vendorId)) {
+      res.status(400).send('Invalid vendor id');
+      return;
+    }
+
     const baseUrl = getBaseUrl(req);
     const shareUrl = `${baseUrl}/share/vendor/${encodeURIComponent(vendorId)}`;
     const redirectUrl = `${baseUrl}/#/vendor/${encodeURIComponent(vendorId)}`;

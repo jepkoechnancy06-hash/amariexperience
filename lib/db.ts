@@ -5,8 +5,6 @@ const API_URL = env.VITE_API_URL || '/api/db/execute';
 // Real Neon database connection using fetch API
 export const executeQuery = async (query: string, params: any[] = []) => {
   try {
-    console.log('Executing database query:', query);
-    console.log('With params:', params);
     
     const response = await fetch(API_URL, {
       method: 'POST',
@@ -18,8 +16,6 @@ export const executeQuery = async (query: string, params: any[] = []) => {
       body: JSON.stringify({ query, params })
     });
     
-    console.log('Database response status:', response.status);
-    console.log('Database response headers:', Object.fromEntries(response.headers.entries()));
     
     if (!response.ok) {
       const errorText = await response.text();
@@ -28,7 +24,6 @@ export const executeQuery = async (query: string, params: any[] = []) => {
     }
     
     const result = await response.json();
-    console.log('Database query result:', result);
 
     if (result && typeof result === 'object' && 'rows' in result && Array.isArray((result as any).rows)) {
       return (result as any).rows;
@@ -38,7 +33,6 @@ export const executeQuery = async (query: string, params: any[] = []) => {
   } catch (error) {
     console.error('Database query failed:', error);
     // Fallback to mock storage for development
-    console.log('Falling back to mock storage');
     return await executeQueryFallback(query, params);
   }
 };
@@ -50,7 +44,6 @@ let mockUsers: any[] = [];
 let mockSessions: any[] = [];
 
 const executeQueryFallback = async (query: string, params: any[] = []) => {
-  console.log('Using fallback mock database for:', query);
 
   const normalizedQuery = query.replace(/\s+/g, ' ').trim().toLowerCase();
 
