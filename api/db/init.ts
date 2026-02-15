@@ -156,6 +156,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       );
     `;
 
+    await sql`
+      CREATE TABLE IF NOT EXISTS site_images (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        page VARCHAR(50) NOT NULL,
+        slot VARCHAR(100) NOT NULL,
+        image_url TEXT NOT NULL,
+        alt_text VARCHAR(500),
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(page, slot)
+      );
+    `;
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS inspiration_posts (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        image_url TEXT NOT NULL,
+        title VARCHAR(500),
+        story TEXT,
+        author VARCHAR(255),
+        tag VARCHAR(100),
+        sort_order INT DEFAULT 0,
+        is_active BOOLEAN DEFAULT true,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+
     res.status(200).json({ ok: true });
   } catch (e: any) {
     console.error('DB init error:', e?.message);

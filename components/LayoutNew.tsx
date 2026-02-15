@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X, User, ChevronDown, Sparkles, ArrowRight, Instagram, Facebook, Twitter, Mail, Shield, UserPlus, LogIn } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import WhatsAppChat from './WhatsAppChat';
-import GeminiPlanner from './GeminiPlanner';
+const GeminiPlanner = lazy(() => import('./GeminiPlanner'));
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -327,7 +327,7 @@ const LayoutNew: React.FC<LayoutProps> = ({ children }) => {
       </main>
 
       <WhatsAppChat />
-      <GeminiPlanner />
+      <Suspense fallback={null}><GeminiPlanner /></Suspense>
 
       {/* ─── FOOTER ────────────────────────────────────────────────── */}
       <footer className="relative bg-amari-950 text-white overflow-hidden">

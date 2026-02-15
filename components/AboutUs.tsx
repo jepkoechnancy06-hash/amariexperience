@@ -1,13 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { getSiteImage } from '../services/siteImageService';
+
+const ABOUT_HERO_DEFAULT = 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=2400&auto=format';
+const FOUNDER_PHOTO_DEFAULT = '/fionaprofilepic.jpeg';
 
 const AboutUs: React.FC = () => {
+  const [heroImg, setHeroImg] = useState(ABOUT_HERO_DEFAULT);
+  const [founderImg, setFounderImg] = useState(FOUNDER_PHOTO_DEFAULT);
+
+  useEffect(() => {
+    let mounted = true;
+    getSiteImage('about', 'hero', ABOUT_HERO_DEFAULT).then((url) => { if (mounted) setHeroImg(url); });
+    getSiteImage('about', 'founder', FOUNDER_PHOTO_DEFAULT).then((url) => { if (mounted) setFounderImg(url); });
+    return () => { mounted = false; };
+  }, []);
+
   return (
     <div className="max-w-6xl mx-auto py-16 px-4">
       {/* Hero Section */}
       <div className="relative overflow-hidden rounded-[2.5rem] border border-amari-100 bg-white shadow-xl mb-12">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=2400&auto=format"
+            src={heroImg}
             alt="Diani Beach wedding ceremony"
             className="w-full h-full object-cover"
           />
@@ -86,7 +100,7 @@ const AboutUs: React.FC = () => {
               <div className="relative">
                 <div className="absolute inset-0 bg-amari-200 rounded-2xl transform rotate-3"></div>
                 <img
-                  src="/fionaprofilepic.jpeg"
+                  src={founderImg}
                   alt="Fiona"
                   className="relative w-full rounded-2xl shadow-lg object-cover aspect-[3/4]"
                 />

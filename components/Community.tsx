@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import InspirationGallery from './InspirationGallery';
+import { getSiteImage } from '../services/siteImageService';
+
+const COMMUNITY_HERO_DEFAULT = 'https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=2400&auto=format';
 
 const Community: React.FC = () => {
+  const [heroImg, setHeroImg] = useState(COMMUNITY_HERO_DEFAULT);
+
+  useEffect(() => {
+    let mounted = true;
+    getSiteImage('community', 'hero', COMMUNITY_HERO_DEFAULT).then((url) => { if (mounted) setHeroImg(url); });
+    return () => { mounted = false; };
+  }, []);
+
   return (
     <>
       <div className="max-w-6xl mx-auto py-16 px-4">
         <div className="relative overflow-hidden rounded-[2.5rem] border border-amari-100 bg-white shadow-xl mb-12">
           <div className="absolute inset-0">
             <img
-              src="https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=2400&auto=format"
+              src={heroImg}
               alt="Coastal wedding celebration"
               className="w-full h-full object-cover"
             />

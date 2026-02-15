@@ -158,6 +158,12 @@ const AdminDashboard: React.FC = () => {
           >
             Vendor Verification
           </Link>
+          <Link
+            to="/admin/site-media"
+            className="bg-white border border-stone-200 shadow-sm px-4 py-2 rounded-lg text-sm font-bold text-stone-700 hover:bg-stone-50 transition flex items-center gap-2"
+          >
+            <Camera size={14} /> Site Media
+          </Link>
           <div className="bg-white border border-stone-200 shadow-sm px-4 py-2 rounded-lg text-sm font-medium text-stone-600 flex items-center gap-2">
             <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
             {applications.filter(a => a.status === 'Pending').length} Pending

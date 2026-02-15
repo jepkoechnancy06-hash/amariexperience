@@ -1,45 +1,62 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Layout from './components/LayoutNew';
-import VendorDirectory from './components/VendorDirectory';
-import VendorProfile from './components/VendorProfile';
-import PlanningTools from './components/PlanningTools';
-import AirlineBooking from './components/AirlineBooking';
-import InspirationGallery from './components/InspirationGallery';
-import GeminiPlanner from './components/GeminiPlanner';
-import VendorOnboarding from './components/VendorOnboarding';
-import AdminDashboard from './components/AdminDashboard';
-import VendorCategories from './components/VendorCategories';
-import VendorTerms from './components/VendorTerms';
-import AdminVendorVerification from './components/AdminVendorVerification';
-import AdminGuard from './components/AdminGuard';
-import Login from './components/Login';
-import UserDashboard from './components/UserDashboard';
-import AboutUs from './components/AboutUs';
-import Community from './components/Community';
-import Activities from './components/Activities';
-import DianiHistory from './components/DianiHistory';
-import FAQ from './components/FAQ';
-import ContactUs from './components/ContactUs';
-import PrivacyPolicy from './components/PrivacyPolicy';
-import TermsOfService from './components/TermsOfService';
-import Wishlist from './components/Wishlist';
 import ScrollToTop from './components/ScrollToTop';
+import AdminGuard from './components/AdminGuard';
 import { AuthProvider } from './contexts/AuthContext';
 import { ArrowRight, Check, Star, Heart, Sun, MapPin, Sparkles, Play } from 'lucide-react';
-import { MOCK_VENDORS } from './constants';
 import { getApprovedVendors } from './services/vendorService';
+import { getSiteImage } from './services/siteImageService';
+
+// Lazy-loaded route components for code splitting
+const VendorDirectory = lazy(() => import('./components/VendorDirectory'));
+const VendorProfile = lazy(() => import('./components/VendorProfile'));
+const PlanningTools = lazy(() => import('./components/PlanningTools'));
+const AirlineBooking = lazy(() => import('./components/AirlineBooking'));
+const InspirationGallery = lazy(() => import('./components/InspirationGallery'));
+const VendorOnboarding = lazy(() => import('./components/VendorOnboarding'));
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
+const VendorCategories = lazy(() => import('./components/VendorCategories'));
+const VendorTerms = lazy(() => import('./components/VendorTerms'));
+const AdminVendorVerification = lazy(() => import('./components/AdminVendorVerification'));
+const AdminSiteMedia = lazy(() => import('./components/AdminSiteMedia'));
+const Login = lazy(() => import('./components/Login'));
+const UserDashboard = lazy(() => import('./components/UserDashboard'));
+const AboutUs = lazy(() => import('./components/AboutUs'));
+const Community = lazy(() => import('./components/Community'));
+const Activities = lazy(() => import('./components/Activities'));
+const DianiHistory = lazy(() => import('./components/DianiHistory'));
+const FAQ = lazy(() => import('./components/FAQ'));
+const ContactUs = lazy(() => import('./components/ContactUs'));
+const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./components/TermsOfService'));
+const Wishlist = lazy(() => import('./components/Wishlist'));
+
+const PageLoader = () => (
+  <div className="min-h-[60vh] flex items-center justify-center">
+    <div className="w-8 h-8 border-3 border-amari-200 border-t-amari-500 rounded-full animate-spin" />
+  </div>
+);
+
+const HOMEPAGE_HERO_DEFAULT = 'https://parkside.pewa.ke/wp-content/uploads/2025/12/WhatsApp-Image-2025-12-29-at-8.44.09-PM.jpeg';
 
 const CouplesLanding = () => {
-  const [featuredVendors, setFeaturedVendors] = useState(MOCK_VENDORS.slice(0, 3));
+  const [featuredVendors, setFeaturedVendors] = useState<any[]>([]);
+  const [vendorsLoaded, setVendorsLoaded] = useState(false);
+  const [heroImg, setHeroImg] = useState(HOMEPAGE_HERO_DEFAULT);
 
   useEffect(() => {
     let mounted = true;
-    getApprovedVendors().then((vendors) => {
-      if (!mounted) return;
-      if (vendors && vendors.length > 0) {
-        setFeaturedVendors(vendors.slice(0, 3));
-      }
+    getApprovedVendors()
+      .then((vendors) => {
+        if (!mounted) return;
+        if (vendors && vendors.length > 0) {
+          setFeaturedVendors(vendors.slice(0, 6));
+        }
+      })
+      .finally(() => { if (mounted) setVendorsLoaded(true); });
+    getSiteImage('homepage', 'hero', HOMEPAGE_HERO_DEFAULT).then((url) => {
+      if (mounted) setHeroImg(url);
     });
     return () => { mounted = false; };
   }, []);
@@ -50,7 +67,7 @@ const CouplesLanding = () => {
       <div className="relative min-h-[80vh] sm:min-h-[90vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://parkside.pewa.ke/wp-content/uploads/2025/12/WhatsApp-Image-2025-12-29-at-8.44.09-PM.jpeg"
+            src={heroImg}
             alt="Diani Beach"
             className="w-full h-full object-cover scale-105"
             loading="eager"
@@ -85,23 +102,6 @@ const CouplesLanding = () => {
                 <Play size={14} /> Amari Concierge
               </Link>
             </div>
-
-            {/* Trust badges */}
-            <div className="mt-8 sm:mt-12 flex items-center gap-4 sm:gap-6 animate-in fade-in duration-1000 delay-500">
-              <div className="flex -space-x-2">
-                {['https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80'].map((src, i) => (
-                  <div key={i} className="w-9 h-9 rounded-full border-2 border-amari-900 overflow-hidden">
-                    <img src={src} alt="" className="w-full h-full object-cover" />
-                  </div>
-                ))}
-              </div>
-              <div>
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => <Star key={i} size={12} className="text-amari-gold fill-amari-gold" />)}
-                </div>
-                <p className="text-white/50 text-xs mt-0.5">Trusted by 200+ couples</p>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -115,7 +115,7 @@ const CouplesLanding = () => {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12 sm:mb-20">
             <span className="text-amari-500 text-xs font-bold uppercase tracking-[0.3em] mb-3 block">Why Amari</span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-amari-900 mb-5">Everything You Need</h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-amari-900">Everything You Need</h2>
             <p className="text-stone-500 max-w-xl mx-auto text-lg">The essential elements for a seamless destination wedding experience.</p>
           </div>
 
@@ -173,46 +173,48 @@ const CouplesLanding = () => {
       </section>
 
       {/* ─── FEATURED VENDORS ──────────────────────────────────── */}
-      <section className="py-16 sm:py-28 bg-stone-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
-            <div>
-              <span className="text-amari-500 font-bold uppercase tracking-[0.3em] text-xs mb-3 block">Featured</span>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-amari-900">Coastal Favorites</h2>
-              <p className="mt-4 text-stone-500 max-w-lg text-lg">A preview of our curated directory — find your perfect match.</p>
-            </div>
-            <Link to="/vendors" className="bg-amari-900 text-white px-7 py-3.5 rounded-full font-bold hover:bg-amari-800 hover:shadow-lg transition-all duration-300 flex items-center gap-2 self-start md:self-auto text-sm">
-              Full Directory <ArrowRight size={15} />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {featuredVendors.map((vendor) => (
-              <Link key={vendor.id} to={`/vendor/${vendor.id}`} className="group bg-white rounded-2xl overflow-hidden border border-stone-200/60 hover:border-amari-200 hover:shadow-2xl hover:shadow-amari-500/5 transition-all duration-500 block">
-                <div className="relative h-60 overflow-hidden">
-                  <img src={vendor.imageUrl} alt={vendor.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                  <div className="absolute top-4 right-4 glass rounded-full px-3 py-1 flex items-center gap-1">
-                    <Star size={12} className="text-amari-gold fill-amari-gold" />
-                    <span className="text-xs font-bold text-stone-900">{vendor.rating}</span>
-                  </div>
-                  <div className="absolute bottom-4 left-4">
-                    <span className="glass-dark text-white/90 text-[10px] font-bold uppercase tracking-[0.15em] rounded-full px-3 py-1">{vendor.category}</span>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-bold text-stone-900 mb-1.5 group-hover:text-amari-600 transition-colors">{vendor.name}</h3>
-                  <div className="flex items-center text-stone-400 text-xs mb-3">
-                    <MapPin size={13} className="mr-1 text-amari-300" />
-                    {vendor.location}
-                  </div>
-                  <p className="text-stone-500 text-sm leading-relaxed line-clamp-2">{vendor.description}</p>
-                </div>
+      {vendorsLoaded && featuredVendors.length > 0 && (
+        <section className="py-16 sm:py-28 bg-stone-50">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
+              <div>
+                <span className="text-amari-500 font-bold uppercase tracking-[0.3em] text-xs mb-3 block">Featured</span>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-amari-900">Coastal Favorites</h2>
+                <p className="mt-4 text-stone-500 max-w-lg text-lg">A preview of our curated directory — find your perfect match.</p>
+              </div>
+              <Link to="/vendors" className="bg-amari-900 text-white px-7 py-3.5 rounded-full font-bold hover:bg-amari-800 hover:shadow-lg transition-all duration-300 flex items-center gap-2 self-start md:self-auto text-sm">
+                Full Directory <ArrowRight size={15} />
               </Link>
-            ))}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {featuredVendors.map((vendor) => (
+                <Link key={vendor.id} to={`/vendor/${vendor.id}`} className="group bg-white rounded-2xl overflow-hidden border border-stone-200/60 hover:border-amari-200 hover:shadow-2xl hover:shadow-amari-500/5 transition-all duration-500 block">
+                  <div className="relative h-60 overflow-hidden">
+                    <img src={vendor.imageUrl} alt={vendor.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                    <div className="absolute top-4 right-4 glass rounded-full px-3 py-1 flex items-center gap-1">
+                      <Star size={12} className="text-amari-gold fill-amari-gold" />
+                      <span className="text-xs font-bold text-stone-900">{vendor.rating}</span>
+                    </div>
+                    <div className="absolute bottom-4 left-4">
+                      <span className="glass-dark text-white/90 text-[10px] font-bold uppercase tracking-[0.15em] rounded-full px-3 py-1">{vendor.category}</span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-lg font-bold text-stone-900 mb-1.5 group-hover:text-amari-600 transition-colors">{vendor.name}</h3>
+                    <div className="flex items-center text-stone-400 text-xs mb-3">
+                      <MapPin size={13} className="mr-1 text-amari-300" />
+                      {vendor.location}
+                    </div>
+                    <p className="text-stone-500 text-sm leading-relaxed line-clamp-2">{vendor.description}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ─── TESTIMONIAL STRIP ─────────────────────────────────── */}
       <section className="py-20 bg-amari-50">
@@ -305,34 +307,37 @@ const App: React.FC = () => {
       <Router>
         <ScrollToTop />
         <Layout>
-          <Routes>
-            <Route path="/" element={<CouplesLanding />} />
-            <Route path="/couples" element={<CouplesLanding />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<UserDashboard />} />
-            <Route path="/profile" element={<UserDashboard />} />
-            <Route path="/partner" element={<VendorOnboarding />} />
-            <Route path="/vendors" element={<VendorDirectory />} />
-            <Route path="/vendor/:id" element={<VendorProfile />} />
-            <Route path="/vendor-categories" element={<VendorCategories />} />
-            <Route path="/vendor-terms" element={<VendorTerms />} />
-            <Route path="/tools" element={<PlanningTools />} />
-            <Route path="/flights" element={<AirlineBooking />} />
-            <Route path="/gallery" element={<InspirationGallery />} />
-            <Route path="/about" element={<AboutUs />} />
-                        <Route path="/community" element={<Community />} />
-            <Route path="/activities" element={<Activities />} />
-            <Route path="/history" element={<DianiHistory />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/contact" element={<ContactUs />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<TermsOfService />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/concierge" element={<ConciergePage />} />
-            <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
-            <Route path="/admin/vendor-verification" element={<AdminGuard><AdminVendorVerification /></AdminGuard>} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<CouplesLanding />} />
+              <Route path="/couples" element={<CouplesLanding />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/dashboard" element={<UserDashboard />} />
+              <Route path="/profile" element={<UserDashboard />} />
+              <Route path="/partner" element={<VendorOnboarding />} />
+              <Route path="/vendors" element={<VendorDirectory />} />
+              <Route path="/vendor/:id" element={<VendorProfile />} />
+              <Route path="/vendor-categories" element={<VendorCategories />} />
+              <Route path="/vendor-terms" element={<VendorTerms />} />
+              <Route path="/tools" element={<PlanningTools />} />
+              <Route path="/flights" element={<AirlineBooking />} />
+              <Route path="/gallery" element={<InspirationGallery />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/activities" element={<Activities />} />
+              <Route path="/history" element={<DianiHistory />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/concierge" element={<ConciergePage />} />
+              <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
+              <Route path="/admin/vendor-verification" element={<AdminGuard><AdminVendorVerification /></AdminGuard>} />
+              <Route path="/admin/site-media" element={<AdminGuard><AdminSiteMedia /></AdminGuard>} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </Layout>
       </Router>
     </AuthProvider>

@@ -6,7 +6,7 @@ import { Upload, Heart, MessageSquare, User, X, ChevronLeft, ChevronRight, Send,
 const STORAGE_KEY = 'amari_inspiration_posts_v1';
 const COMMENTS_KEY = 'amari_gallery_comments_v1';
 
-const IMAGES = [
+const DEFAULT_IMAGES = [
   { src: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format', story: 'The ocean whispers wedding vows to those who listen closely enough.', author: 'Amina Hassan & Carlos Rivera', tag: 'Ceremony' },
   { src: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&auto=format', story: 'Sunsets in Diani paint promises in colors only lovers understand.', author: 'Zara Patel & Marcus Ochieng', tag: 'Sunset' },
   { src: 'https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=800&auto=format', story: 'Every grain of sand holds a story waiting to be told.', author: 'Lena Thompson & David Mwangi', tag: 'Details' },
@@ -23,6 +23,27 @@ const IMAGES = [
 
 const InspirationGallery: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
+  const [galleryImages, setGalleryImages] = useState(DEFAULT_IMAGES);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/admin/inspirations?active_only=true')
+      .then((r) => r.ok ? r.json() : { posts: [] })
+      .then((data) => {
+        if (!mounted) return;
+        const dbPosts = (data.posts || []) as any[];
+        if (dbPosts.length > 0) {
+          setGalleryImages(dbPosts.map((p: any) => ({
+            src: p.image_url,
+            story: p.story || '',
+            author: p.author || '',
+            tag: p.tag || '',
+          })));
+        }
+      })
+      .catch(() => {});
+    return () => { mounted = false; };
+  }, []);
   const [posts, setPosts] = useState<InspirationPost[]>([]);
   const [authorType, setAuthorType] = useState<InspirationPost['authorType']>(isAuthenticated ? 'User' : 'Guest');
   const [authorName, setAuthorName] = useState(isAuthenticated ? `${user?.firstName} ${user?.lastName}` : '');
@@ -179,7 +200,7 @@ const InspirationGallery: React.FC = () => {
       {/* ─── GALLERY GRID ──────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-8 relative z-10 pb-12">
         <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-          {IMAGES.map((image, index) => {
+          {galleryImages.map((image, index) => {
             const imgComments = commentsForImage(index);
             return (
               <div
@@ -218,16 +239,16 @@ const InspirationGallery: React.FC = () => {
           <div className="relative w-full h-full sm:h-auto sm:max-w-5xl sm:mx-4 flex flex-col lg:flex-row bg-white sm:rounded-2xl overflow-hidden sm:max-h-[90vh] shadow-2xl" onClick={(e) => e.stopPropagation()}>
             {/* Image side */}
             <div className="relative lg:w-3/5 bg-stone-900 flex items-center justify-center min-h-[200px] sm:min-h-[300px] lg:min-h-0 flex-shrink-0">
-              <img src={IMAGES[lightboxIdx].src.replace('w=800', 'w=1200')} alt={IMAGES[lightboxIdx].tag} className="w-full h-full object-contain max-h-[40vh] sm:max-h-[50vh] lg:max-h-[90vh]" />
+              <img src={galleryImages[lightboxIdx].src.replace('w=800', 'w=1200')} alt={galleryImages[lightboxIdx].tag} className="w-full h-full object-contain max-h-[40vh] sm:max-h-[50vh] lg:max-h-[90vh]" />
               {/* Nav arrows */}
-              <button onClick={() => setLightboxIdx(lightboxIdx === 0 ? IMAGES.length - 1 : lightboxIdx - 1)} className="absolute left-2 top-1/2 -translate-y-1/2 glass rounded-full p-2 hover:scale-110 transition">
+              <button onClick={() => setLightboxIdx(lightboxIdx === 0 ? galleryImages.length - 1 : lightboxIdx - 1)} className="absolute left-2 top-1/2 -translate-y-1/2 glass rounded-full p-2 hover:scale-110 transition">
                 <ChevronLeft size={20} className="text-stone-700" />
               </button>
-              <button onClick={() => setLightboxIdx(lightboxIdx === IMAGES.length - 1 ? 0 : lightboxIdx + 1)} className="absolute right-2 top-1/2 -translate-y-1/2 glass rounded-full p-2 hover:scale-110 transition">
+              <button onClick={() => setLightboxIdx(lightboxIdx === galleryImages.length - 1 ? 0 : lightboxIdx + 1)} className="absolute right-2 top-1/2 -translate-y-1/2 glass rounded-full p-2 hover:scale-110 transition">
                 <ChevronRight size={20} className="text-stone-700" />
               </button>
               <div className="absolute top-3 left-3 glass-dark text-white/80 text-xs font-bold rounded-full px-3 py-1">
-                {lightboxIdx + 1} / {IMAGES.length}
+                {lightboxIdx + 1} / {galleryImages.length}
               </div>
             </div>
 
@@ -235,11 +256,11 @@ const InspirationGallery: React.FC = () => {
             <div className="lg:w-2/5 flex flex-col flex-1 min-h-0 lg:max-h-[90vh]">
               <div className="p-5 border-b border-stone-100">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="bg-amari-50 text-amari-600 text-[10px] font-bold uppercase tracking-wider rounded-full px-3 py-1">{IMAGES[lightboxIdx].tag}</span>
+                  <span className="bg-amari-50 text-amari-600 text-[10px] font-bold uppercase tracking-wider rounded-full px-3 py-1">{galleryImages[lightboxIdx].tag}</span>
                   <button onClick={() => setLightboxIdx(null)} className="text-stone-400 hover:text-stone-600 transition"><X size={20} /></button>
                 </div>
-                <p className="text-stone-700 text-sm leading-relaxed italic">"{IMAGES[lightboxIdx].story}"</p>
-                <p className="text-stone-400 text-xs mt-2">— {IMAGES[lightboxIdx].author}</p>
+                <p className="text-stone-700 text-sm leading-relaxed italic">"{galleryImages[lightboxIdx].story}"</p>
+                <p className="text-stone-400 text-xs mt-2">— {galleryImages[lightboxIdx].author}</p>
               </div>
 
               {/* Comments list */}
